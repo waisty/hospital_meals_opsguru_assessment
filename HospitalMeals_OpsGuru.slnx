@@ -1,26 +1,26 @@
 <Solution>
   <Folder Name="/Auth/">
     <Project Path="Auth.ServiceViewModels/Auth.ServiceViewModels.csproj" Id="97188dbe-92a9-487b-b35c-21e4499b7087" />
-    <Project Path="Core.Auth/Auth.Core.csproj" Id="c77f8889-9571-4660-a502-a568862b97db" />
-    <Project Path="Service.UIViewModels/Auth.UIViewModels.csproj" Id="36ef132f-cd15-42ce-87a4-b66260c808a6" />
-    <Project Path="WebApi.Auth/Auth.WebApi.csproj" Id="f852064a-767f-4d34-b173-5070f11b0108" />
+    <Project Path="Auth.Core/Auth.Core.csproj" Id="c77f8889-9571-4660-a502-a568862b97db" />
+    <Project Path="Auth.UIViewModels/Auth.UIViewModels.csproj" Id="36ef132f-cd15-42ce-87a4-b66260c808a6" />
+    <Project Path="Auth.WebApi/Auth.WebApi.csproj" Id="f852064a-767f-4d34-b173-5070f11b0108" />
   </Folder>
   <Folder Name="/Kitchen/">
-    <Project Path="Core.Kitchen/Kitchen.Core.csproj" Id="287f835f-4ff7-4537-a4d6-0a3b9dbb6313" />
+    <Project Path="Kitchen.Core/Kitchen.Core.csproj" Id="287f835f-4ff7-4537-a4d6-0a3b9dbb6313" />
     <Project Path="Kitchen.ServiceViewModels/Kitchen.ServiceViewModels.csproj" Id="0f2b920a-128a-4393-aa15-46539ac57c39" />
     <Project Path="Kitchen.UIViewModels/Kitchen.UIViewModels.csproj" Id="06ab722c-6529-459c-840f-893684aff47b" />
-    <Project Path="WebApi.Kitchen/Kitchen.WebApi.csproj" Id="efaf47f9-dedb-42d7-9e22-306fb3dba40b" />
+    <Project Path="Kitchen.WebApi/Kitchen.WebApi.csproj" Id="efaf47f9-dedb-42d7-9e22-306fb3dba40b" />
   </Folder>
   <Folder Name="/Meals/">
-    <Project Path="Core.Meals/Meals.Core.csproj" Id="f6527b1d-5f24-4e31-bc12-1851aab65ad4" />
+    <Project Path="Meals.Core/Meals.Core.csproj" Id="f6527b1d-5f24-4e31-bc12-1851aab65ad4" />
     <Project Path="Meals.ServiceViewModels/Meals.ServiceViewModels.csproj" Id="db1f29ba-1dd1-4f5f-8d9c-d7740b2199e6" />
     <Project Path="Meals.UIViewModels/Meals.UIViewModels.csproj" Id="a39ec85d-076b-4ff1-9cd5-6321efe043b3" />
-    <Project Path="WebApi.Meals/Meals.WebApi.csproj" Id="01c6fe4a-bdda-4072-a73d-43f0d5e3ac19" />
+    <Project Path="Meals.WebApi/Meals.WebApi.csproj" Id="01c6fe4a-bdda-4072-a73d-43f0d5e3ac19" />
   </Folder>
   <Folder Name="/Patient/">
-    <Project Path="Core.Patient/Patient.Core.csproj" Id="9ff0da70-7f6f-4c4c-afcd-d029c03bf916" />
+    <Project Path="Patient.Core/Patient.Core.csproj" Id="9ff0da70-7f6f-4c4c-afcd-d029c03bf916" />
     <Project Path="Patient.ServiceViewModels/Patient.ServiceViewModels.csproj" Id="aba31dd2-852e-4ccc-a030-53a0a2192b86" />
     <Project Path="Patient.UIViewModels/Patient.UIViewModels.csproj" Id="802bac80-f74d-4e76-b34c-bd04d28836ad" />
-    <Project Path="WebApi.Patient/Patient.WebApi.csproj" Id="a5a76a0d-dbbd-4389-b2a8-c40b0df2f234" />
+    <Project Path="Patient.WebApi/Patient.WebApi.csproj" Id="a5a76a0d-dbbd-4389-b2a8-c40b0df2f234" />
   </Folder>
 </Solution>
