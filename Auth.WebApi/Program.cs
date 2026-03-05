@@ -22,10 +22,10 @@ app.MapPost("/login", () =>
 
 //}).RequireAuthorization();
 
-app.MapPost("/get-users", () =>
-{
+//app.MapPost("/get-users", () =>
+//{
 
-}).RequireAuthorization();
+//}).RequireAuthorization();
 
 app.Run();
 
