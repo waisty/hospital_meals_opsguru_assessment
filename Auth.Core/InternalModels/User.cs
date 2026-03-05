@@ -15,4 +15,6 @@ namespace Core.Auth.InternalModels
         public bool MealsUser { get; set; }
         public bool KitchenUser { get; set; }
     }
+
+    
 }

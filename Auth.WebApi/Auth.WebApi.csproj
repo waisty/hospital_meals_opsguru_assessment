@@ -12,7 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core.Auth\Auth.Core.csproj" />
+    <ProjectReference Include="..\Auth.Core\Auth.Core.csproj" />
+    <ProjectReference Include="..\WebExceptionHandler\WebExceptionHandler.csproj" />
   </ItemGroup>
 
   <ItemGroup>
