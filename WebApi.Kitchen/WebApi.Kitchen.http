@@ -1,0 +1,6 @@
+@WebApi.Kitchen_HostAddress = http://localhost:5166
+
+GET {{WebApi.Kitchen_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
