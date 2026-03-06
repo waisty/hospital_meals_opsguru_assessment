@@ -27,13 +27,13 @@ namespace Auth.Core.Implementation
 
         /// <summary>
         /// Registers mock Auth implementations for testing (no database, no migrations, no seed).
-        /// Use MockAuthRepo and MockAuthHandler to control authentication behavior in tests.
+        /// Use MockAuthRepo to control which username/password pairs are valid; real AuthHandler generates JWTs.
         /// </summary>
         public static IServiceCollection AddMockAuthServicesForTesting(this IServiceCollection services)
         {
             services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddSingleton<MockAuthRepo>();
-            services.AddDbContext<AuthDBContext>();
+            services.AddScoped<IAuthRepo>(sp => sp.GetRequiredService<MockAuthRepo>());
             services.AddScoped<IAuthHandler, AuthHandler>();
             return services;
         }

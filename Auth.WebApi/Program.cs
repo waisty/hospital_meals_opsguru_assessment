@@ -5,8 +5,10 @@ using WebExceptionHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-builder.Services.AddAuthServices(builder.Configuration);
+if (builder.Environment.IsEnvironment("Testing"))
+    builder.Services.AddMockAuthServicesForTesting();
+else
+    builder.Services.AddAuthServices(builder.Configuration);
 
 // Add services to the container.
 
@@ -33,4 +35,7 @@ app.MapPost("/login", async (UserAuthRequest request, IAuthHandler authHandler) 
 //}).RequireAuthorization();
 
 app.Run();
+
+/// <summary>Entry point type for integration tests (WebApplicationFactory).</summary>
+public partial class Program { }
 
