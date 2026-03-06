@@ -153,11 +153,11 @@ namespace Hospital.Meals.Core.Implementation
             await _repo.SetRecipeIngredientsForRecipeAsync(recipeId, recipeIngredients, cancellationToken).ConfigureAwait(false);
         }
 
-        // Patient meal request
+        // Patient request
 
-        public async Task<Guid> AddPatientMealRequestAsync(PatientMealRequestCreateRequest request, CancellationToken cancellationToken = default)
+        public async Task<Guid> AddPatientRequestAsync(PatientRequestCreateRequest request, CancellationToken cancellationToken = default)
         {
-            var mealRequest = new PatientMealRequest
+            var patientRequest = new PatientRequest
             {
                 PatientId = request.PatientId,
                 PatientName = request.PatientName,
@@ -165,25 +165,27 @@ namespace Hospital.Meals.Core.Implementation
                 RequestedForDate = request.RequestedForDate,
                 ApprovalStatus = MealRequestAppprovalStatus.Pending
             };
-            await _repo.AddPatientMealRequestAsync(mealRequest, cancellationToken).ConfigureAwait(false);
+            await _repo.AddPatientRequestAsync(patientRequest, cancellationToken).ConfigureAwait(false);
 
-            return mealRequest.Id;
+            return patientRequest.Id;
         }
 
-        public async Task<PatientMealRequestViewModel?> GetPatientMealRequestByIdAsync(string id, CancellationToken cancellationToken = default)
+        
+
+        public async Task<PatientRequestViewModel?> GetPatientRequestByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             if (!Guid.TryParse(id, out var guid))
                 return null;
-            var request = await _repo.GetPatientMealRequestByIdAsync(guid, cancellationToken).ConfigureAwait(false);
-            return request == null ? null : request.ToPatientMealRequestViewModel();
+            var request = await _repo.GetPatientRequestByIdAsync(guid, cancellationToken).ConfigureAwait(false);
+            return request == null ? null : request.ToPatientRequestViewModel();
         }
 
-        public async Task<PagedResult<PatientMealRequestViewModel>> ListPatientMealRequestsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<PagedResult<PatientRequestViewModel>> ListPatientRequestsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
         {
-            var paged = await _repo.ListPatientMealRequestsAsync(page, pageSize, cancellationToken).ConfigureAwait(false);
-            return new PagedResult<PatientMealRequestViewModel>
+            var paged = await _repo.ListPatientRequestsAsync(page, pageSize, cancellationToken).ConfigureAwait(false);
+            return new PagedResult<PatientRequestViewModel>
             {
-                Items = paged.Items.Select(r => r.ToPatientMealRequestViewModel()).ToList(),
+                Items = paged.Items.Select(r => r.ToPatientRequestViewModel()).ToList(),
                 TotalCount = paged.TotalCount,
                 Page = paged.Page,
                 PageSize = paged.PageSize

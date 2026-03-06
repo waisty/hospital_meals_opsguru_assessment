@@ -23,10 +23,10 @@ namespace Hospital.Meals.Core.Contracts
         Task<IReadOnlyList<RecipeIngredient>> GetRecipeIngredientsByRecipeIdAsync(string recipeId, CancellationToken cancellationToken = default);
         Task SetRecipeIngredientsForRecipeAsync(string recipeId, IReadOnlyList<RecipeIngredient> recipeIngredients, CancellationToken cancellationToken = default);
 
-        // Patient meal request
-        Task AddPatientMealRequestAsync(PatientMealRequest request, CancellationToken cancellationToken = default);
-        Task<PatientMealRequest?> GetPatientMealRequestByIdAsync(Guid id, CancellationToken cancellationToken = default);
-        Task<PagedResult<PatientMealRequest>> ListPatientMealRequestsAsync(int page, int pageSize, CancellationToken cancellationToken = default);
+        // Patient request
+        Task AddPatientRequestAsync(PatientRequest request, CancellationToken cancellationToken = default);
+        Task<PatientRequest?> GetPatientRequestByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<PagedResult<PatientRequest>> ListPatientRequestsAsync(int page, int pageSize, CancellationToken cancellationToken = default);
 
         // Allergy (reference data)
         Task AddAllergyAsync(Allergy allergy, CancellationToken cancellationToken = default);

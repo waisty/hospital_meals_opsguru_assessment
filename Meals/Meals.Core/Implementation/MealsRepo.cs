@@ -138,31 +138,31 @@ namespace Hospital.Meals.Core.Implementation
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        // Patient meal request
-        public async Task AddPatientMealRequestAsync(PatientMealRequest request, CancellationToken cancellationToken = default)
+        // Patient request
+        public async Task AddPatientRequestAsync(PatientRequest request, CancellationToken cancellationToken = default)
         {
-            _context.PatientMealRequests.Add(request);
+            _context.PatientRequests.Add(request);
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<PatientMealRequest?> GetPatientMealRequestByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<PatientRequest?> GetPatientRequestByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _context.PatientMealRequests
+            return await _context.PatientRequests
                 .FirstOrDefaultAsync(r => r.Id == id, cancellationToken)
                 .ConfigureAwait(false);
         }
 
-        public async Task<PagedResult<PatientMealRequest>> ListPatientMealRequestsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<PagedResult<PatientRequest>> ListPatientRequestsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
         {
-            var totalCount = await _context.PatientMealRequests.CountAsync(cancellationToken).ConfigureAwait(false);
-            var items = await _context.PatientMealRequests
+            var totalCount = await _context.PatientRequests.CountAsync(cancellationToken).ConfigureAwait(false);
+            var items = await _context.PatientRequests
                 .OrderBy(r => r.RequestedForDate)
                 .ThenBy(r => r.PatientId)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
-            return new PagedResult<PatientMealRequest>
+            return new PagedResult<PatientRequest>
             {
                 Items = items,
                 TotalCount = totalCount,

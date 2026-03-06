@@ -1,6 +1,6 @@
 namespace Hospital.Meals.ViewModels
 {
-    public class PatientMealRequestViewModel
+    public class PatientRequestViewModel
     {
         public Guid Id { get; set; }
         public string PatientId { get; set; } = "";

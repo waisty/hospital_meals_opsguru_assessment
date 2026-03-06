@@ -138,24 +138,24 @@ public static class EndpointMapping
             return Results.NoContent();
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
 
-        // Patient meal request
-        api.MapPost("/meal-requests", async (PatientMealRequestCreateRequest request, IMealsHandler handler, CancellationToken ct) =>
+        // Patient request
+        api.MapPost("/patient-requests", async (PatientRequestCreateRequest request, IMealsHandler handler, CancellationToken ct) =>
         {
-            var id = await handler.AddPatientMealRequestAsync(request, ct);
-            return Results.Created($"/api/v1/meal-requests/{id}", new { Id = id.ToString() });
+            var id = await handler.AddPatientRequestAsync(request, ct);
+            return Results.Created($"/api/v1/patient-requests/{id}", new { Id = id.ToString() });
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
 
-        api.MapGet("/meal-requests/{id}", async (string id, IMealsHandler handler, CancellationToken ct) =>
+        api.MapGet("/patient-requests/{id}", async (string id, IMealsHandler handler, CancellationToken ct) =>
         {
-            var request = await handler.GetPatientMealRequestByIdAsync(id, ct);
+            var request = await handler.GetPatientRequestByIdAsync(id, ct);
             return request is null ? Results.NotFound() : Results.Ok(request);
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
 
-        api.MapGet("/meal-requests", async (int page, int pageSize, IMealsHandler handler, CancellationToken ct) =>
+        api.MapGet("/patient-requests", async (int page, int pageSize, IMealsHandler handler, CancellationToken ct) =>
         {
             if (page < 1) page = 1;
             if (pageSize < 1 || pageSize > 100) pageSize = 10;
-            var result = await handler.ListPatientMealRequestsAsync(page, pageSize, ct);
+            var result = await handler.ListPatientRequestsAsync(page, pageSize, ct);
             return Results.Ok(result);
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
 

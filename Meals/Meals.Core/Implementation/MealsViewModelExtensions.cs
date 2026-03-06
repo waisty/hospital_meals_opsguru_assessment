@@ -62,7 +62,7 @@ namespace Hospital.Meals.Core.Implementation
             DietTypeExclusionIds = dietTypeIds
         };
 
-        public static PatientMealRequestViewModel ToPatientMealRequestViewModel(this PatientMealRequest request) => new()
+        public static PatientRequestViewModel ToPatientRequestViewModel(this PatientRequest request) => new()
         {
             Id = request.Id,
             PatientId = request.PatientId,

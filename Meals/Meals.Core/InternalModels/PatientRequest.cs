@@ -5,7 +5,7 @@ using static Hospital.Meals.Core.Contracts.Enums;
 
 namespace Hospital.Meals.Core.InternalModels
 {
-    internal class PatientMealRequest
+    internal class PatientRequest
     {
         public Guid Id { get; set; }
         public string PatientId { get; set; } = "";
@@ -15,9 +15,9 @@ namespace Hospital.Meals.Core.InternalModels
         public MealRequestAppprovalStatus ApprovalStatus { get; set; }
         public string? StatusReason { get; set; }
 
-        public static void Configure(EntityTypeBuilder<PatientMealRequest> entity)
+        public static void Configure(EntityTypeBuilder<PatientRequest> entity)
         {
-            entity.ToTable("patient_meal_requests");
+            entity.ToTable("patient_requests");
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Id)
                 .HasColumnName("id")
