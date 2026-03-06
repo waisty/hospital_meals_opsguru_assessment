@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
-using Hospital.Auth.UIViewModels;
+using Hospital.Auth.ViewModels;
 using Xunit;
 
 namespace Hospital.Auth.WebApi.Tests;

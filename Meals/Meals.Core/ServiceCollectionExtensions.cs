@@ -29,7 +29,10 @@ namespace Hospital.Meals.Core
                 var baseUrl = configuration["PatientAPIEndpoint"] ?? configuration["PatientServiceEndpoint"] ?? throw new InvalidOperationException("PatientAPIEndpoint or PatientServiceEndpoint not configured.");
                 client.BaseAddress = new Uri(baseUrl.TrimEnd('/') + "/");
                 client.Timeout = TimeSpan.FromHours(6);
-            }).AddHttpMessageHandler<DelegatingHandler>();
+            }).ConfigureAdditionalHttpMessageHandlers((handlers, sp) =>
+            {
+                handlers.Add(new MealsServiceTokenHandler(configuration));
+            });
             services.AddHostedService<MealsDbMigrationHostedService>();
             services.AddHostedService<MealsSeedDataHostedService>();
             return services;

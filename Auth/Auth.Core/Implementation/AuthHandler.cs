@@ -1,5 +1,5 @@
 using Hospital.Auth.Core.Contracts;
-using Hospital.Auth.UIViewModels;
+using Hospital.Auth.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hospital.Auth.UIViewModels
+namespace Hospital.Auth.ViewModels
 {
     public class UserAuthRequest
     {

@@ -24,7 +24,7 @@ public static class EndpointMapping
         {
             var meal = await handler.GetMealByIdAsync(id, ct);
             return meal is null ? Results.NotFound() : Results.Ok(meal);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         api.MapGet("/meals", async (int page, int pageSize, IMealsHandler handler, CancellationToken ct) =>
         {
@@ -32,7 +32,7 @@ public static class EndpointMapping
             if (pageSize < 1 || pageSize > 100) pageSize = 10;
             var result = await handler.ListMealsAsync(page, pageSize, ct);
             return Results.Ok(result);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         // Recipe
         api.MapPost("/recipes", async (RecipeCreateRequest request, IMealsHandler handler, CancellationToken ct) =>
@@ -45,13 +45,13 @@ public static class EndpointMapping
         {
             var recipe = await handler.GetRecipeByIdAsync(id, ct);
             return recipe is null ? Results.NotFound() : Results.Ok(recipe);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         api.MapGet("/recipes/{id}/detail", async (string id, IMealsHandler handler, CancellationToken ct) =>
         {
             var detail = await handler.GetRecipeDetailByIdAsync(id, ct);
             return detail is null ? Results.NotFound() : Results.Ok(detail);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         api.MapGet("/recipes", async (int page, int pageSize, IMealsHandler handler, CancellationToken ct) =>
         {
@@ -59,14 +59,14 @@ public static class EndpointMapping
             if (pageSize < 1 || pageSize > 100) pageSize = 10;
             var result = await handler.ListRecipesAsync(page, pageSize, ct);
             return Results.Ok(result);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         // Recipe ingredients
         api.MapGet("/recipes/{recipeId}/ingredients", async (string recipeId, IMealsHandler handler, CancellationToken ct) =>
         {
             var list = await handler.GetRecipeIngredientsByRecipeIdAsync(recipeId, ct);
             return Results.Ok(list);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         api.MapPut("/recipes/{recipeId}/ingredients", async (string recipeId, SetRecipeIngredientsRequest request, IMealsHandler handler, CancellationToken ct) =>
         {
@@ -85,13 +85,13 @@ public static class EndpointMapping
         {
             var ingredient = await handler.GetIngredientByIdAsync(id, ct);
             return ingredient is null ? Results.NotFound() : Results.Ok(ingredient);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         api.MapGet("/ingredients/{id}/detail", async (string id, IMealsHandler handler, CancellationToken ct) =>
         {
             var detail = await handler.GetIngredientDetailByIdAsync(id, ct);
             return detail is null ? Results.NotFound() : Results.Ok(detail);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         api.MapGet("/ingredients", async (int page, int pageSize, IMealsHandler handler, CancellationToken ct) =>
         {
@@ -99,14 +99,14 @@ public static class EndpointMapping
             if (pageSize < 1 || pageSize > 100) pageSize = 10;
             var result = await handler.ListIngredientsAsync(page, pageSize, ct);
             return Results.Ok(result);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         // Ingredient exclusions
         api.MapGet("/ingredients/{ingredientId}/allergies", async (string ingredientId, IMealsHandler handler, CancellationToken ct) =>
         {
             var ids = await handler.GetAllergyIdsByIngredientIdAsync(ingredientId, ct);
             return Results.Ok(ids);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         api.MapPut("/ingredients/{ingredientId}/allergies", async (string ingredientId, SetIngredientAllergyExclusionsRequest request, IMealsHandler handler, CancellationToken ct) =>
         {
@@ -118,7 +118,7 @@ public static class EndpointMapping
         {
             var ids = await handler.GetClinicalStateIdsByIngredientIdAsync(ingredientId, ct);
             return Results.Ok(ids);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         api.MapPut("/ingredients/{ingredientId}/clinical-states", async (string ingredientId, SetIngredientClinicalStateExclusionsRequest request, IMealsHandler handler, CancellationToken ct) =>
         {
@@ -130,26 +130,26 @@ public static class EndpointMapping
         {
             var ids = await handler.GetDietTypeExclusionIdsByIngredientIdAsync(ingredientId, ct);
             return Results.Ok(ids);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         api.MapPut("/ingredients/{ingredientId}/diet-types", async (string ingredientId, SetIngredientDietTypeExclusionsRequest request, IMealsHandler handler, CancellationToken ct) =>
         {
             await handler.SetDietTypeExclusionsForIngredientAsync(ingredientId, request, ct);
             return Results.NoContent();
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         // Patient request
         api.MapPost("/patient-requests", async (PatientRequestCreateRequest request, IMealsHandler handler, CancellationToken ct) =>
         {
             var id = await handler.AddPatientRequestAsync(request, ct);
             return Results.Created($"/api/v1/patient-requests/{id}", new { Id = id.ToString() });
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         api.MapGet("/patient-requests/{id}", async (string id, IMealsHandler handler, CancellationToken ct) =>
         {
             var request = await handler.GetPatientRequestByIdAsync(id, ct);
             return request is null ? Results.NotFound() : Results.Ok(request);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         api.MapGet("/patient-requests", async (int page, int pageSize, IMealsHandler handler, CancellationToken ct) =>
         {
@@ -157,7 +157,7 @@ public static class EndpointMapping
             if (pageSize < 1 || pageSize > 100) pageSize = 10;
             var result = await handler.ListPatientRequestsAsync(page, pageSize, ct);
             return Results.Ok(result);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         // Allergy (reference data)
         api.MapPost("/allergies", async (AllergyCreateRequest request, IMealsHandler handler, CancellationToken ct) =>
@@ -176,13 +176,13 @@ public static class EndpointMapping
         {
             var allergy = await handler.GetAllergyByIdAsync(id, ct);
             return allergy is null ? Results.NotFound() : Results.Ok(allergy);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         api.MapGet("/allergies", async (IMealsHandler handler, CancellationToken ct) =>
         {
             var list = await handler.ListAllergiesAsync(ct);
             return Results.Ok(list);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         // Clinical state (reference data)
         api.MapPost("/clinical-states", async (ClinicalStateCreateRequest request, IMealsHandler handler, CancellationToken ct) =>
@@ -201,13 +201,13 @@ public static class EndpointMapping
         {
             var clinicalState = await handler.GetClinicalStateByIdAsync(id, ct);
             return clinicalState is null ? Results.NotFound() : Results.Ok(clinicalState);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         api.MapGet("/clinical-states", async (IMealsHandler handler, CancellationToken ct) =>
         {
             var list = await handler.ListClinicalStatesAsync(ct);
             return Results.Ok(list);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         // Diet type (reference data)
         api.MapPost("/diet-types", async (DietTypeCreateRequest request, IMealsHandler handler, CancellationToken ct) =>
@@ -226,12 +226,12 @@ public static class EndpointMapping
         {
             var dietType = await handler.GetDietTypeByIdAsync(id, ct);
             return dietType is null ? Results.NotFound() : Results.Ok(dietType);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         api.MapGet("/diet-types", async (IMealsHandler handler, CancellationToken ct) =>
         {
             var list = await handler.ListDietTypesAsync(ct);
             return Results.Ok(list);
-        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
     }
 }

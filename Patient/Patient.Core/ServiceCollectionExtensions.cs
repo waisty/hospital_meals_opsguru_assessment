@@ -28,7 +28,10 @@ namespace Hospital.Patient.Core
                 var baseUrl = configuration["MealsAPIEndpoint"] ?? throw new Exception("MealsAPIEndpoint not found");
                 client.BaseAddress = new Uri(baseUrl);
                 client.Timeout = TimeSpan.FromHours(6);
-            }).AddHttpMessageHandler<DelegatingHandler>(); ;
+            }).ConfigureAdditionalHttpMessageHandlers((handlers, sp) =>
+            {
+                handlers.Add(new PatientServiceTokenHandler(configuration));
+            });
             services.AddScoped<IPatientHandler, PatientHandler>();
             services.AddHostedService<PatientDbMigrationHostedService>();
             services.AddHostedService<PatientSeedDataHostedService>();

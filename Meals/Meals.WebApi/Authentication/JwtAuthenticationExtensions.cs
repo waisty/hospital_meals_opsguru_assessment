@@ -8,6 +8,7 @@ namespace Hospital.Meals.WebApi.Authentication;
 public static class JwtAuthenticationExtensions
 {
     public const string MealsAdminPolicyName = "MealsAdmin";
+    public const string MealsUserPolicyName = "MealsUser";
     public const string PatientServicePolicyName = "PatientService";
 
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
@@ -36,6 +37,7 @@ public static class JwtAuthenticationExtensions
         {
             options.AddPolicy(MealsAdminPolicyName, policy => policy.RequireClaim(ClaimIds.mealsAdminClaim));
             options.AddPolicy(PatientServicePolicyName, policy => policy.RequireClaim(ClaimIds.patientsServiceClaim));
+            options.AddPolicy(MealsUserPolicyName, policy => policy.RequireClaim(ClaimIds.mealsUserClaim));
         });
 
         return services;

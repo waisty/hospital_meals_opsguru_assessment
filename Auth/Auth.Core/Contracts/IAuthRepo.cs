@@ -1,4 +1,4 @@
-using Hospital.Auth.UIViewModels;
+using Hospital.Auth.ViewModels;
 using Hospital.Auth.Core.InternalModels;
 using System;
 using System.Collections.Generic;
