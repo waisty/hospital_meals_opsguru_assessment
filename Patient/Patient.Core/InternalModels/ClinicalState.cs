@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Hospital.Patient.UIViewModels;
+using Hospital.Patient.ViewModels;
 
 namespace Hospital.Patient.Core.InternalModels
 {

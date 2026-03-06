@@ -1,6 +1,6 @@
 using Hospital.Meals.Core.Contracts;
 using Hospital.Meals.Core.InternalModels;
-using Hospital.Meals.UIViewModels;
+using Hospital.Meals.ViewModels;
 using static Hospital.Meals.Core.Contracts.Enums;
 using MealEntity = Hospital.Meals.Core.InternalModels.Meal;
 

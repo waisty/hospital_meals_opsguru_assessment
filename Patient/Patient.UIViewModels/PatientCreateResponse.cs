@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hospital.Patient.UIViewModels
+namespace Hospital.Patient.ViewModels
 {
     public class PatientCreateResponse
     {

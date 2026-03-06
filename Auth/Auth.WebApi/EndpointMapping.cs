@@ -1,5 +1,5 @@
 using Hospital.Auth.Core.Contracts;
-using Hospital.Auth.UIViewModels;
+using Hospital.Auth.ViewModels;
 
 namespace Hospital.Auth.WebApi;
 

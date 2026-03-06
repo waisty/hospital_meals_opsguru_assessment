@@ -1,5 +1,5 @@
 using Hospital.Meals.Core.Contracts;
-using Hospital.Meals.UIViewModels;
+using Hospital.Meals.ViewModels;
 using Hospital.Meals.WebApi.Authentication;
 using Hospital.Meals.WebApi.Validation;
 

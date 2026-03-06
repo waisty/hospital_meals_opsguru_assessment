@@ -1,4 +1,4 @@
-using Hospital.Patient.UIViewModels;
+using Hospital.Patient.ViewModels;
 
 namespace Hospital.Patient.Core.Contracts
 {

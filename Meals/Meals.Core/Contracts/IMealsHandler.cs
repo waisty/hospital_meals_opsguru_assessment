@@ -1,4 +1,4 @@
-using Hospital.Meals.UIViewModels;
+using Hospital.Meals.ViewModels;
 
 namespace Hospital.Meals.Core.Contracts
 {

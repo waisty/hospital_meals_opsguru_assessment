@@ -1,6 +1,6 @@
 using Hospital.Patient.Core.Contracts;
 using Hospital.Patient.Core.InternalModels;
-using Hospital.Patient.UIViewModels;
+using Hospital.Patient.ViewModels;
 using PatientEntity = Hospital.Patient.Core.InternalModels.Patient;
 
 namespace Hospital.Patient.Core.Implementation

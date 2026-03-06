@@ -1,4 +1,4 @@
-namespace Hospital.Patient.UIViewModels
+namespace Hospital.Patient.ViewModels
 {
     public class PatientUpdateRequest
     {

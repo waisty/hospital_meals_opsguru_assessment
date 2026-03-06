@@ -1,4 +1,4 @@
-namespace Hospital.Patient.UIViewModels
+namespace Hospital.Patient.ViewModels
 {
     /// <summary>
     /// Request to set the list of allergy ids for a patient.

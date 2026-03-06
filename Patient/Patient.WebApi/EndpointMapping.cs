@@ -1,5 +1,5 @@
 using Hospital.Patient.Core.Contracts;
-using Hospital.Patient.UIViewModels;
+using Hospital.Patient.ViewModels;
 using Hospital.Patient.WebApi.Authentication;
 using Hospital.Patient.WebApi.Validation;
 

@@ -1,4 +1,4 @@
-namespace Hospital.Meals.UIViewModels
+namespace Hospital.Meals.ViewModels
 {
     public class DietTypeUpdateRequest
     {

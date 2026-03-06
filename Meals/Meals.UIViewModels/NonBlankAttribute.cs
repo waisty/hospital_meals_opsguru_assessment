@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Hospital.Meals.UIViewModels;
+namespace Hospital.Meals.ViewModels;
 
 /// <summary>
 /// Validates that a string is not null, empty, or whitespace-only.

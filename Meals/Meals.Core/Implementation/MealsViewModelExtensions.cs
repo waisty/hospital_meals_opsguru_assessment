@@ -1,5 +1,5 @@
 using Hospital.Meals.Core.InternalModels;
-using Hospital.Meals.UIViewModels;
+using Hospital.Meals.ViewModels;
 using static Hospital.Meals.Core.Contracts.Enums;
 
 namespace Hospital.Meals.Core.Implementation
