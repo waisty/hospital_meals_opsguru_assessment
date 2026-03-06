@@ -9,6 +9,7 @@ namespace Hospital.Meals.Core.InternalModels
         public string Name { get; set; } = "";
         public string RecipeId { get; set; } = "";
         public string? DietTypeId { get; set; }
+        public bool Disabled { get; set; }
 
         public static void Configure(EntityTypeBuilder<Meal> entity)
         {
@@ -18,6 +19,7 @@ namespace Hospital.Meals.Core.InternalModels
             entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(256).IsRequired();
             entity.Property(e => e.RecipeId).HasColumnName("recipe_id").HasMaxLength(256).IsRequired();
             entity.Property(e => e.DietTypeId).HasColumnName("diet_type_id").HasMaxLength(256);
+            entity.Property(e => e.Disabled).HasColumnName("disabled");
             entity.HasOne<Recipe>()
                 .WithMany()
                 .HasForeignKey(e => e.RecipeId)
