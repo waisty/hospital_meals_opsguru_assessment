@@ -170,10 +170,11 @@ namespace Hospital.Patient.Core.Implementation
 
         private static string CreateReadableIdFromName(string name)
         {
+            //TODO: this should be changed to a numbersequence if there is time
             var cleaned = System.Text.RegularExpressions.Regex.Replace(name, @"[^A-Za-z0-9]", "").ToUpperInvariant();
             var truncated = cleaned.Length > 20 ? cleaned[..20] : cleaned;
             var suffix = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()[^5..];
-            return truncated + suffix;
+            return $"{truncated}_{suffix}";
         }
 
         public async Task<DietTypeViewModel?> GetDietTypeByIdAsync(string id, CancellationToken cancellationToken = default)
