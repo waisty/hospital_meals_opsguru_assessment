@@ -11,6 +11,10 @@ namespace Hospital.Patient.Core.Contracts
 
         // Allergy
         Task AddAllergyAsync(Allergy allergy, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Adds the allergy in a transaction and publishes it to the Meals API; commits only when both succeed.
+        /// </summary>
+        Task AddAllergyAndPublishAsync(Allergy allergy, CancellationToken cancellationToken = default);
         Task<bool> UpdateAllergyAsync(string id, string name, CancellationToken cancellationToken = default);
         Task<Allergy?> GetAllergyByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<Allergy>> ListAllergiesAsync(CancellationToken cancellationToken = default);

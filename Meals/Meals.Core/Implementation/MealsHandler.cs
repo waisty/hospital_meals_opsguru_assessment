@@ -194,6 +194,9 @@ namespace Hospital.Meals.Core.Implementation
 
         public async Task AddAllergyAsync(AllergyCreateRequest request, CancellationToken cancellationToken = default)
         {
+            var existing = await _repo.GetAllergyByIdAsync(request.Id, cancellationToken).ConfigureAwait(false);
+            if (existing is not null)
+                return;
             var allergy = new Allergy { Id = request.Id, Name = request.Name };
             await _repo.AddAllergyAsync(allergy, cancellationToken).ConfigureAwait(false);
         }
@@ -224,6 +227,9 @@ namespace Hospital.Meals.Core.Implementation
 
         public async Task AddClinicalStateAsync(ClinicalStateCreateRequest request, CancellationToken cancellationToken = default)
         {
+            var existing = await _repo.GetClinicalStateByIdAsync(request.Id, cancellationToken).ConfigureAwait(false);
+            if (existing is not null)
+                return;
             var clinicalState = new ClinicalState { Id = request.Id, Name = request.Name };
             await _repo.AddClinicalStateAsync(clinicalState, cancellationToken).ConfigureAwait(false);
         }
@@ -254,6 +260,9 @@ namespace Hospital.Meals.Core.Implementation
 
         public async Task AddDietTypeAsync(DietTypeCreateRequest request, CancellationToken cancellationToken = default)
         {
+            var existing = await _repo.GetDietTypeByIdAsync(request.Id, cancellationToken).ConfigureAwait(false);
+            if (existing is not null)
+                return;
             var dietType = new DietType { Id = request.Id, Name = request.Name };
             await _repo.AddDietTypeAsync(dietType, cancellationToken).ConfigureAwait(false);
         }

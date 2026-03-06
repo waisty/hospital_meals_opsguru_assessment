@@ -62,7 +62,7 @@ namespace Hospital.Auth.Core.Implementation
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(claims),
-                    Expires = DateTime.UtcNow.AddHours(1),
+                    Expires = DateTime.UtcNow.AddHours(6),
                     SigningCredentials = creds,
                     Issuer = configuration["Jwt:Issuer"] ?? throw new Exception("JWT Issuer not found"),
                     Audience = configuration["Jwt:Audience"] ?? throw new Exception("Jwt Audience not found")

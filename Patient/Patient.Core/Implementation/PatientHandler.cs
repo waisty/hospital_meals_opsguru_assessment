@@ -8,12 +8,10 @@ namespace Hospital.Patient.Core.Implementation
     internal sealed class PatientHandler : IPatientHandler
     {
         private readonly IPatientRepo _repo;
-        private readonly IMealsApiClient _apiClient;
 
-        public PatientHandler(IPatientRepo repo, IMealsApiClient apiClient)
+        public PatientHandler(IPatientRepo repo)
         {
             _repo = repo;
-            _apiClient = apiClient;
         }
 
         public async Task<Guid> AddPatientAsync(PatientCreateRequest request, CancellationToken cancellationToken = default)
@@ -74,7 +72,7 @@ namespace Hospital.Patient.Core.Implementation
         public async Task<string> AddAllergyAsync(AllergyCreateRequest request, CancellationToken cancellationToken = default)
         {
             var allergy = new Allergy { Id = CreateReadableIdFromName(request.Name), Name = request.Name };
-            await _repo.AddAllergyAsync(allergy, cancellationToken).ConfigureAwait(false);
+            await _repo.AddAllergyAndPublishAsync(allergy, cancellationToken).ConfigureAwait(false);
             return allergy.Id;
         }
 
