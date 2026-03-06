@@ -19,7 +19,10 @@ namespace Hospital.Meals.Core.InternalModels
         {
             entity.ToTable("patient_meal_requests");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.PatientId).HasColumnName("patient_id").HasMaxLength(256).IsRequired();
             entity.Property(e => e.PatientName).HasColumnName("patient_name").HasMaxLength(256);
             entity.Property(e => e.RecipeId).HasColumnName("recipe_id").HasMaxLength(256).IsRequired();

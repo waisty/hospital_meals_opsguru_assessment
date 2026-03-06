@@ -1,3 +1,4 @@
+using Hospital.Meals.Core.Contracts;
 using Hospital.Meals.Core.Implementation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,7 @@ namespace Hospital.Meals.Core
         public static IServiceCollection AddMealsServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<MealsDBContext>();
+            services.AddScoped<IMealsRepo, MealsRepo>();
             services.AddHostedService<MealsDbMigrationHostedService>();
             services.AddHostedService<MealsSeedDataHostedService>();
             return services;

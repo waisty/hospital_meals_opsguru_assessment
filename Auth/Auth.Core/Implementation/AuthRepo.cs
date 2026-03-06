@@ -26,7 +26,6 @@ namespace Hospital.Auth.Core.Implementation
                     "SELECT * FROM dbo.users WHERE username = {0} AND password_hash = crypt({1}, password_hash)",
                     username,
                     password)
-                .AsNoTracking()
                 .FirstOrDefaultAsync()
                 .ConfigureAwait(false);
             return user;

@@ -71,7 +71,6 @@ namespace Hospital.Auth.Core.Implementation
                 {
                     string? passwordHash = await db.Database
                         .SqlQueryRaw<string>("SELECT crypt({0}, gen_salt('bf')) AS \"Value\"", password)
-                        .AsNoTracking()
                         .FirstOrDefaultAsync(cancellationToken)
                         .ConfigureAwait(false);
 

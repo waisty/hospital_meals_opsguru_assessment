@@ -1,0 +1,6 @@
+<Solution>
+    <Project Path="Meals.Core/Hospital.Meals.Core.csproj" Id="f6527b1d-5f24-4e31-bc12-1851aab65ad4" />
+    <Project Path="Meals.ServiceViewModels/Hospital.Meals.ServiceViewModels.csproj" Id="db1f29ba-1dd1-4f5f-8d9c-d7740b2199e6" />
+    <Project Path="Meals.UIViewModels/Hospital.Meals.UIViewModels.csproj" Id="a39ec85d-076b-4ff1-9cd5-6321efe043b3" />
+    <Project Path="Meals.WebApi/Hospital.Meals.WebApi.csproj" Id="01c6fe4a-bdda-4072-a73d-43f0d5e3ac19" />
+</Solution>

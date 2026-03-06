@@ -35,6 +35,7 @@ namespace Hospital.Patient.Core.InternalModels
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Id)
                 .HasColumnName("id")
+                .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(256).IsRequired();
             entity.Property(e => e.DietTypeId).HasColumnName("diet_type_id").HasMaxLength(256).IsRequired();
