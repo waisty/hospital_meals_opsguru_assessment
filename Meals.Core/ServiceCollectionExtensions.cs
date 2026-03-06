@@ -8,14 +8,15 @@ namespace Hospital.Meals.Core
     public static class ServiceCollectionExtensions
     {
         /// <summary>
-        /// Registers meals-related services (DbContext and a hosted service that applies
-        /// pending EF Core migrations when the application starts).
-        /// Use ConnectionString in configuration for the meals database.
+        /// Registers meals-related services (DbContext, migration hosted service, and seed data
+        /// hosted service). Use ConnectionString in configuration for the meals database.
+        /// Seed runs when the database is empty or when SeedData:Enabled is true.
         /// </summary>
         public static IServiceCollection AddMealsServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<MealsDBContext>();
             services.AddHostedService<MealsDbMigrationHostedService>();
+            services.AddHostedService<MealsSeedDataHostedService>();
             return services;
         }
     }
