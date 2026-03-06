@@ -10,36 +10,36 @@ namespace Hospital.Patient.Core.Contracts
         Task<PagedResult<InternalModels.Patient>> ListPatientsAsync(int page, int pageSize, CancellationToken cancellationToken = default);
 
         // Allergy
-        Task AddAllergyAsync(Allergy allergy, CancellationToken cancellationToken = default);
+        //Task AddAllergyAsync(Allergy allergy, CancellationToken cancellationToken = default);
         /// <summary>
         /// Adds the allergy in a transaction and publishes it to the Meals API; commits only when both succeed.
         /// </summary>
         Task AddAllergyAndPublishAsync(Allergy allergy, CancellationToken cancellationToken = default);
-        Task<bool> UpdateAllergyAsync(string id, string name, CancellationToken cancellationToken = default);
+        Task<bool> UpdateAllergyAndPublishAsync(string id, string name, CancellationToken cancellationToken = default);
         Task<Allergy?> GetAllergyByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<Allergy>> ListAllergiesAsync(CancellationToken cancellationToken = default);
         Task<IReadOnlyList<string>> GetAllergyIdsByPatientIdAsync(Guid patientId, CancellationToken cancellationToken = default);
         Task SetAllergyIdsForPatientAsync(Guid patientId, IReadOnlyList<string> allergyIds, CancellationToken cancellationToken = default);
 
         // Clinical state
-        Task AddClinicalStateAsync(ClinicalState clinicalState, CancellationToken cancellationToken = default);
+        //Task AddClinicalStateAsync(ClinicalState clinicalState, CancellationToken cancellationToken = default);
         /// <summary>
         /// Adds the clinical state in a transaction and publishes it to the Meals API; commits only when both succeed.
         /// </summary>
         Task AddClinicalStateAndPublishAsync(ClinicalState clinicalState, CancellationToken cancellationToken = default);
-        Task<bool> UpdateClinicalStateAsync(string id, string name, CancellationToken cancellationToken = default);
+        Task<bool> UpdateClinicalStateAndPublishAsync(string id, string name, CancellationToken cancellationToken = default);
         Task<ClinicalState?> GetClinicalStateByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<ClinicalState>> ListClinicalStatesAsync(CancellationToken cancellationToken = default);
         Task<IReadOnlyList<string>> GetClinicalStateIdsByPatientIdAsync(Guid patientId, CancellationToken cancellationToken = default);
         Task SetClinicalStateIdsForPatientAsync(Guid patientId, IReadOnlyList<string> clinicalStateIds, CancellationToken cancellationToken = default);
 
         // Diet type
-        Task AddDietTypeAsync(DietType dietType, CancellationToken cancellationToken = default);
+        //Task AddDietTypeAsync(DietType dietType, CancellationToken cancellationToken = default);
         /// <summary>
         /// Adds the diet type in a transaction and publishes it to the Meals API; commits only when both succeed.
         /// </summary>
         Task AddDietTypeAndPublishAsync(DietType dietType, CancellationToken cancellationToken = default);
-        Task<bool> UpdateDietTypeAsync(string id, string name, CancellationToken cancellationToken = default);
+        Task<bool> UpdateDietTypeAndPublishAsync(string id, string name, CancellationToken cancellationToken = default);
         Task<DietType?> GetDietTypeByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<DietType>> ListDietTypesAsync(CancellationToken cancellationToken = default);
     }

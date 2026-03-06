@@ -10,9 +10,9 @@ namespace Hospital.Meals.Core.Contracts
         {
             //explicitly setting the enum values so they don't get moved around by mistake in the future
             Pending = 0,
-            Analyzing = 1,
-            Rejected = 2,
-            Accepted = 3
+            //Analyzing = 1,
+            Rejected = 1,
+            Accepted = 2
         }
     }
 }

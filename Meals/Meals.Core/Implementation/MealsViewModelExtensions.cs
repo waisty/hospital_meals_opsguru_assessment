@@ -70,7 +70,8 @@ namespace Hospital.Meals.Core.Implementation
             RecipeId = request.RecipeId,
             RequestedForDate = request.RequestedForDate,
             ApprovalStatus = (MealRequestApprovalStatus)(int)request.ApprovalStatus,
-            StatusReason = request.StatusReason
+            StatusReason = request.StatusReason,
+            UnsafeIngredientId = request.UnsafeIngredientId
         };
 
         public static AllergyViewModel ToAllergyViewModel(this Allergy allergy) => new()
