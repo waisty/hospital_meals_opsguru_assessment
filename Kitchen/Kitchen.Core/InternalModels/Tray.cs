@@ -25,7 +25,7 @@ namespace Hospital.Kitchen.Core.InternalModels
                 .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.PatientMealRequestId).HasColumnName("patient_meal_request_id");
-            entity.HasIndex(e => e.PatientMealRequestId);
+            entity.HasIndex(e => e.PatientMealRequestId).IsUnique();
             entity.Property(e => e.PatientId).HasColumnName("patient_id").HasMaxLength(256).IsRequired();
             entity.Property(e => e.PatientName).HasColumnName("patient_name").HasMaxLength(256);
             entity.Property(e => e.RecipeName).HasColumnName("recipe_name").HasMaxLength(256).IsRequired();
