@@ -23,7 +23,7 @@ namespace Patient.Core.Implementation
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(_configuration["PatientConnectionString"]);
+            optionsBuilder.UseNpgsql(_configuration["ConnectionString"]);
             base.OnConfiguring(optionsBuilder);
         }
 
