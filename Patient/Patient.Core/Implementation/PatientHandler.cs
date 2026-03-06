@@ -66,6 +66,12 @@ namespace Hospital.Patient.Core.Implementation
             return allergy.Id;
         }
 
+        public async Task<bool> UpdateAllergyAsync(string id, AllergyUpdateRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request is null) return false;
+            return await _repo.UpdateAllergyAsync(id, request.Name, cancellationToken).ConfigureAwait(false);
+        }
+
         public async Task<AllergyViewModel?> GetAllergyByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             var allergy = await _repo.GetAllergyByIdAsync(id, cancellationToken).ConfigureAwait(false);
@@ -103,6 +109,12 @@ namespace Hospital.Patient.Core.Implementation
             return clinicalState.Id;
         }
 
+        public async Task<bool> UpdateClinicalStateAsync(string id, ClinicalStateUpdateRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request is null) return false;
+            return await _repo.UpdateClinicalStateAsync(id, request.Name, cancellationToken).ConfigureAwait(false);
+        }
+
         public async Task<ClinicalStateViewModel?> GetClinicalStateByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             var clinicalState = await _repo.GetClinicalStateByIdAsync(id, cancellationToken).ConfigureAwait(false);
@@ -138,6 +150,12 @@ namespace Hospital.Patient.Core.Implementation
             var dietType = new DietType { Id = CreateReadableIdFromName(request.Name), Name = request.Name };
             await _repo.AddDietTypeAsync(dietType, cancellationToken).ConfigureAwait(false);
             return dietType.Id;
+        }
+
+        public async Task<bool> UpdateDietTypeAsync(string id, DietTypeUpdateRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request is null) return false;
+            return await _repo.UpdateDietTypeAsync(id, request.Name, cancellationToken).ConfigureAwait(false);
         }
 
         private static string CreateReadableIdFromName(string name)

@@ -50,6 +50,15 @@ namespace Hospital.Patient.Core.Implementation
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task<bool> UpdateAllergyAsync(string id, string name, CancellationToken cancellationToken = default)
+        {
+            var allergy = await _context.Allergies.FirstOrDefaultAsync(a => a.Id == id, cancellationToken).ConfigureAwait(false);
+            if (allergy is null) return false;
+            allergy.Name = name;
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            return true;
+        }
+
         public async Task<Allergy?> GetAllergyByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             return await _context.Allergies
@@ -93,6 +102,15 @@ namespace Hospital.Patient.Core.Implementation
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task<bool> UpdateClinicalStateAsync(string id, string name, CancellationToken cancellationToken = default)
+        {
+            var clinicalState = await _context.ClinicalStates.FirstOrDefaultAsync(c => c.Id == id, cancellationToken).ConfigureAwait(false);
+            if (clinicalState is null) return false;
+            clinicalState.Name = name;
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            return true;
+        }
+
         public async Task<ClinicalState?> GetClinicalStateByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             return await _context.ClinicalStates
@@ -134,6 +152,15 @@ namespace Hospital.Patient.Core.Implementation
         {
             _context.DietTypes.Add(dietType);
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<bool> UpdateDietTypeAsync(string id, string name, CancellationToken cancellationToken = default)
+        {
+            var dietType = await _context.DietTypes.FirstOrDefaultAsync(d => d.Id == id, cancellationToken).ConfigureAwait(false);
+            if (dietType is null) return false;
+            dietType.Name = name;
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            return true;
         }
 
         public async Task<DietType?> GetDietTypeByIdAsync(string id, CancellationToken cancellationToken = default)

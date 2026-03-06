@@ -56,6 +56,12 @@ app.MapPost("/allergies", async (AllergyCreateRequest request, IPatientHandler h
     return Results.Created($"/allergies/{allergyId}", new AllergyCreateResponse() { Id = allergyId});
 }).RequireAuthorization(JwtAuthenticationExtensions.AdminPolicyName);
 
+app.MapPut("/allergies/{id}", async (string id, AllergyUpdateRequest request, IPatientHandler handler, CancellationToken ct) =>
+{
+    var updated = await handler.UpdateAllergyAsync(id, request, ct);
+    return updated ? Results.NoContent() : Results.NotFound();
+}).RequireAuthorization(JwtAuthenticationExtensions.AdminPolicyName);
+
 app.MapGet("/allergies/{id}", async (string id, IPatientHandler handler, CancellationToken ct) =>
 {
     var allergy = await handler.GetAllergyByIdAsync(id, ct);
@@ -87,6 +93,12 @@ app.MapPost("/clinical-states", async (ClinicalStateCreateRequest request, IPati
     return Results.Created($"/clinical-states/{clinicalStateId}", new ClinicalStateCreateResponse() { Id = clinicalStateId });
 }).RequireAuthorization(JwtAuthenticationExtensions.AdminPolicyName);
 
+app.MapPut("/clinical-states/{id}", async (string id, ClinicalStateUpdateRequest request, IPatientHandler handler, CancellationToken ct) =>
+{
+    var updated = await handler.UpdateClinicalStateAsync(id, request, ct);
+    return updated ? Results.NoContent() : Results.NotFound();
+}).RequireAuthorization(JwtAuthenticationExtensions.AdminPolicyName);
+
 app.MapGet("/clinical-states/{id}", async (string id, IPatientHandler handler, CancellationToken ct) =>
 {
     var clinicalState = await handler.GetClinicalStateByIdAsync(id, ct);
@@ -116,6 +128,12 @@ app.MapPost("/diet-types", async (DietTypeCreateRequest request, IPatientHandler
 {
     string dietTypeId = await handler.AddDietTypeAsync(request, ct);
     return Results.Created($"/diet-types/{dietTypeId}", new DietTypeCreateResponse() { Id = dietTypeId });
+}).RequireAuthorization(JwtAuthenticationExtensions.AdminPolicyName);
+
+app.MapPut("/diet-types/{id}", async (string id, DietTypeUpdateRequest request, IPatientHandler handler, CancellationToken ct) =>
+{
+    var updated = await handler.UpdateDietTypeAsync(id, request, ct);
+    return updated ? Results.NoContent() : Results.NotFound();
 }).RequireAuthorization(JwtAuthenticationExtensions.AdminPolicyName);
 
 app.MapGet("/diet-types/{id}", async (string id, IPatientHandler handler, CancellationToken ct) =>
