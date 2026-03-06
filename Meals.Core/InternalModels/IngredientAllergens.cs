@@ -1,8 +1,0 @@
-namespace Hospital.Meals.Core.InternalModels
-{
-    internal class IngredientAllergens
-    {
-        public string IngredientId { get; set; } = "";
-        public string AllergyId { get; set; } = "";
-    }
-}

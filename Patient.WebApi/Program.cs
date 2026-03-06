@@ -10,6 +10,8 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
+app.MapGet("/", () => Results.Ok(new { service = "Hospital.Patient.WebApi", status = "running" }));
+
 app.UseJwtAuthentication();
 
 // Patient

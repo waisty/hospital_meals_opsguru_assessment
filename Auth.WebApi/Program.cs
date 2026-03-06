@@ -14,6 +14,8 @@ else
 
 var app = builder.Build();
 
+app.MapGet("/", () => Results.Ok(new { service = "Hospital.Auth.WebApi", status = "running" }));
+
 // Configure the HTTP request pipeline.
 
 app.MapPost("/login", async (UserAuthRequest request, IAuthHandler authHandler) =>
