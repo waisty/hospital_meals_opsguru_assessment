@@ -155,7 +155,7 @@ namespace Hospital.Meals.Core.Implementation
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<Guid> AddPatientRequestWithSafetyCheckAsync(PatientRequestCreateRequest request, CancellationToken cancellationToken = default)
+        public async Task<(Guid requestId, MealRequestAppprovalStatus status, string? statusReason, string unsafeIngredientId)> AddPatientRequestWithSafetyCheckAsync(PatientRequestCreateRequest request, CancellationToken cancellationToken = default)
         {
             var patientState = await _patientApiClient.GetPatientDetailAsync(request.PatientId, cancellationToken).ConfigureAwait(false) ?? throw new Exception($"Patient '{request.PatientId}' not found");
 
@@ -169,13 +169,12 @@ namespace Hospital.Meals.Core.Implementation
             };
             await AddPatientRequestAsync(patientRequest, cancellationToken).ConfigureAwait(false);
 
-            
             if (patientState == null)
             {
                 patientRequest.ApprovalStatus = MealRequestAppprovalStatus.Rejected;
                 patientRequest.StatusReason = $"Patient '{request.PatientId}' state not found";
                 await UpdatePatientRequestAsync(patientRequest, cancellationToken).ConfigureAwait(false);
-                return patientRequest.Id;
+                return (patientRequest.Id, patientRequest.ApprovalStatus, patientRequest.StatusReason, patientRequest.UnsafeIngredientId ?? "");
             }
 
             try
@@ -194,7 +193,7 @@ namespace Hospital.Meals.Core.Implementation
                 await UpdatePatientRequestAsync(patientRequest, cancellationToken).ConfigureAwait(false);
             }
 
-            return patientRequest.Id;
+            return (patientRequest.Id, patientRequest.ApprovalStatus, patientRequest.StatusReason, patientRequest.UnsafeIngredientId ?? "");
         }
 
         private async Task VerifyRecipeSafetyAndUpdatePatientRequestAsync(PatientRequest patientRequest, IReadOnlyList<string> allergyIds, IReadOnlyList<string> clinicalStateIds, string? dietTypeId, CancellationToken cancellationToken = default)
@@ -446,5 +445,6 @@ namespace Hospital.Meals.Core.Implementation
             }
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
+
     }
 }

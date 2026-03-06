@@ -155,9 +155,11 @@ namespace Hospital.Meals.Core.Implementation
 
         // Patient request
 
-        public async Task<Guid> AddPatientRequestAsync(PatientRequestCreateRequest request, CancellationToken cancellationToken = default)
+        public async Task<(Guid requestId, MealRequestAppprovalStatus status, string? statusReason, string unsafeIngredientId)> AddPatientRequestAsync(PatientRequestCreateRequest request, CancellationToken cancellationToken = default)
         {
-            return await _repo.AddPatientRequestWithSafetyCheckAsync(request, cancellationToken).ConfigureAwait(false);
+            var ret = await _repo.AddPatientRequestWithSafetyCheckAsync(request, cancellationToken).ConfigureAwait(false);
+
+            return ret;
         }
 
         public async Task<PatientRequestViewModel?> GetPatientRequestByIdAsync(string id, CancellationToken cancellationToken = default)

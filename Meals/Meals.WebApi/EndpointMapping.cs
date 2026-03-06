@@ -141,8 +141,16 @@ public static class EndpointMapping
         // Patient request
         api.MapPost("/patient-requests", async (PatientRequestCreateRequest request, IMealsHandler handler, CancellationToken ct) =>
         {
-            var id = await handler.AddPatientRequestAsync(request, ct);
-            return Results.Created($"/api/v1/patient-requests/{id}", new { Id = id.ToString() });
+            var requestInfo = await handler.AddPatientRequestAsync(request, ct);
+            var response = new PatientCreateRequestResponse()
+            {
+                Id = requestInfo.requestId.ToString(),
+                StatusReason = requestInfo.statusReason ?? "",
+                StatusString = requestInfo.status.ToString(),
+                UnsafeIngredientId = requestInfo.unsafeIngredientId
+            };
+
+            return requestInfo.status == Enums.MealRequestAppprovalStatus.Rejected ? Results.Conflict(response) : Results.Created($"/api/v1/patient-requests/{response.Id}", response);
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
         api.MapGet("/patient-requests/{id}", async (string id, IMealsHandler handler, CancellationToken ct) =>

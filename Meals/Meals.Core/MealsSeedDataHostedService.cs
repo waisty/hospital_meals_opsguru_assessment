@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace Hospital.Meals.Core.Implementation
 {
     /// <summary>
-    /// Seeds reference data (diet types, allergies, clinical states, ingredients, exclusions,
+    /// Seeds reference data (diet types, allergies, clinical states, ingredients, allergy/clinical/diet-type exclusions,
     /// recipes, recipe ingredients, meals) when the database is empty or when SeedData:Enabled is true.
     /// Uses the same IDs for allergies, clinical states, and diet types as the Patient WebApi.
     /// </summary>
@@ -61,6 +61,7 @@ namespace Hospital.Meals.Core.Implementation
             await SeedIngredientsAsync(db, cancellationToken).ConfigureAwait(false);
             await SeedIngredientAllergyExclusionsAsync(db, cancellationToken).ConfigureAwait(false);
             await SeedIngredientClinicalStateExclusionsAsync(db, cancellationToken).ConfigureAwait(false);
+            await SeedIngredientDietTypeExclusionsAsync(db, cancellationToken).ConfigureAwait(false);
             await SeedRecipesAsync(db, cancellationToken).ConfigureAwait(false);
             await SeedRecipeIngredientsAsync(db, cancellationToken).ConfigureAwait(false);
             await SeedMealsAsync(db, cancellationToken).ConfigureAwait(false);
@@ -217,6 +218,29 @@ namespace Hospital.Meals.Core.Implementation
                 catch (Exception ex)
                 {
                     _logger.LogWarning(ex, "Seed ingredient_clinical_state_exclusion failed for {IngredientId}+{ClinicalStateId}.", ingredientId, clinicalStateId);
+                }
+            }
+        }
+
+        private async Task SeedIngredientDietTypeExclusionsAsync(MealsDBContext db, CancellationToken cancellationToken)
+        {
+            // Diet type exclusions: ingredients that a diet type cannot have (e.g. vegetarians exclude eggs, chicken, fish).
+            var seed = new[]
+            {
+                (IngredientId: "EGG", DietTypeId: "VEGETARIAN"),
+                (IngredientId: "CHICKEN", DietTypeId: "VEGETARIAN"),
+                (IngredientId: "SHRIMP", DietTypeId: "VEGETARIAN"),
+            };
+            foreach (var (ingredientId, dietTypeId) in seed)
+            {
+                try
+                {
+                    db.IngredientDietTypeExclusions.Add(new IngredientDietTypeExclusions { IngredientId = ingredientId, DietTypeId = dietTypeId });
+                    await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Seed ingredient_diet_type_exclusion failed for {IngredientId}+{DietTypeId}.", ingredientId, dietTypeId);
                 }
             }
         }

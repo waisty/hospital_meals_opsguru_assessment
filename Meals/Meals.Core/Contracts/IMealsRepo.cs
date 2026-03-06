@@ -1,5 +1,6 @@
 using Hospital.Meals.Core.InternalModels;
 using Hospital.Meals.ViewModels;
+using static Hospital.Meals.Core.Contracts.Enums;
 
 namespace Hospital.Meals.Core.Contracts
 {
@@ -30,7 +31,7 @@ namespace Hospital.Meals.Core.Contracts
         /// <summary>
         /// Adds the patient request, fetches patient state, verifies recipe safety (allergies, clinical states, diet type), and updates the request. Returns the new request id.
         /// </summary>
-        Task<Guid> AddPatientRequestWithSafetyCheckAsync(PatientRequestCreateRequest request, CancellationToken cancellationToken = default);
+        Task<(Guid requestId, MealRequestAppprovalStatus status, string? statusReason, string unsafeIngredientId)> AddPatientRequestWithSafetyCheckAsync(PatientRequestCreateRequest request, CancellationToken cancellationToken);
         Task<PatientRequest?> GetPatientRequestByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<PagedResult<PatientRequest>> ListPatientRequestsAsync(int page, int pageSize, CancellationToken cancellationToken = default);
 
