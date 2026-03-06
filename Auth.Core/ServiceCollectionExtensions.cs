@@ -1,4 +1,5 @@
 using Auth.Core.Contracts;
+using Auth.Core.MockImplementation;
 using Core.Auth.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,19 @@ namespace Auth.Core.Implementation
             services.AddScoped<IAuthHandler, AuthHandler>();
             services.AddHostedService<AuthDbMigrationHostedService>();
             services.AddHostedService<AuthSeedDataHostedService>();
+            return services;
+        }
+
+        /// <summary>
+        /// Registers mock Auth implementations for testing (no database, no migrations, no seed).
+        /// Use MockAuthRepo and MockAuthHandler to control authentication behavior in tests.
+        /// </summary>
+        public static IServiceCollection AddMockAuthServicesForTesting(this IServiceCollection services)
+        {
+            services.AddExceptionHandler<GlobalExceptionHandler>();
+            services.AddSingleton<MockAuthRepo>();
+            services.AddDbContext<AuthDBContext>();
+            services.AddScoped<IAuthHandler, AuthHandler>();
             return services;
         }
     }

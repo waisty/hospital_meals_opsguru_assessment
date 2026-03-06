@@ -17,4 +17,8 @@
     <ProjectReference Include="..\WebExceptionHandler\WebExceptionHandler.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Mocks\" />
+  </ItemGroup>
+
 </Project>
