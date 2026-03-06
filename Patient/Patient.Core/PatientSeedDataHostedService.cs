@@ -143,17 +143,18 @@ namespace Hospital.Patient.Core.Implementation
         {
             var seedPatients = new[]
             {
-                (Name: "John Doe", DietTypeId: "REGULAR", Notes: "Sample patient 1"),
-                (Name: "Jane Smith", DietTypeId: "VEGETARIAN", Notes: "Sample patient 2"),
+                (Name: "John Doe", MobileNumber: "+15551234001", DietTypeId: "REGULAR", Notes: "Sample patient 1"),
+                (Name: "Jane Smith", MobileNumber: "+15551234002", DietTypeId: "VEGETARIAN", Notes: "Sample patient 2"),
             };
 
-            foreach (var (name, dietTypeId, notes) in seedPatients)
+            foreach (var (name, mobileNumber, dietTypeId, notes) in seedPatients)
             {
                 try
                 {
                     var patient = new PatientEntity
                     {
                         Name = name,
+                        MobileNumber = mobileNumber,
                         DietTypeId = dietTypeId,
                         Notes = notes ?? ""
                     };

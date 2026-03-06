@@ -21,6 +21,7 @@ namespace Hospital.Patient.Core.Implementation
             var patient = new PatientEntity
             {
                 Name = request.Name,
+                MobileNumber = request.MobileNumber,
                 DietTypeId = request.DietTypeId,
                 Notes = request.Notes ?? ""
             };

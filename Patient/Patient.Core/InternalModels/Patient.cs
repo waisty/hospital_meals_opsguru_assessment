@@ -8,6 +8,7 @@ namespace Hospital.Patient.Core.InternalModels
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = "";
+        public string MobileNumber { get; set; } = "";
         public string DietTypeId { get; set; } = "";
         public string Notes { get; set; } = "";
 
@@ -15,6 +16,7 @@ namespace Hospital.Patient.Core.InternalModels
         {
             Id = Id.ToString(),
             Name = Name,
+            MobileNumber = MobileNumber,
             DietTypeId = DietTypeId,
             Notes = Notes
         };
@@ -23,6 +25,7 @@ namespace Hospital.Patient.Core.InternalModels
         {
             Id = Id.ToString(),
             Name = Name,
+            MobileNumber = MobileNumber,
             DietTypeId = DietTypeId,
             Notes = Notes,
             AllergyIds = allergyIds,
@@ -38,6 +41,8 @@ namespace Hospital.Patient.Core.InternalModels
                 .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(256).IsRequired();
+            entity.Property(e => e.MobileNumber).HasColumnName("mobile_number").HasMaxLength(32).IsRequired();
+            entity.HasIndex(e => e.MobileNumber).IsUnique();
             entity.Property(e => e.DietTypeId).HasColumnName("diet_type_id").HasMaxLength(256).IsRequired();
             entity.Property(e => e.Notes).HasColumnName("notes");
             entity.HasOne<DietType>()
