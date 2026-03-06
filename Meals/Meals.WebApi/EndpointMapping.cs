@@ -191,6 +191,12 @@ public static class EndpointMapping
             return Results.Created($"/api/v1/clinical-states/{request.Id}", null);
         }).RequireAuthorization(JwtAuthenticationExtensions.PatientServicePolicyName);
 
+        api.MapPut("/clinical-states/{id}", async (string id, ClinicalStateUpdateRequest request, IMealsHandler handler, CancellationToken ct) =>
+        {
+            var updated = await handler.UpdateClinicalStateAsync(id, request, ct);
+            return updated ? Results.NoContent() : Results.NotFound();
+        }).RequireAuthorization(JwtAuthenticationExtensions.PatientServicePolicyName);
+
         api.MapGet("/clinical-states/{id}", async (string id, IMealsHandler handler, CancellationToken ct) =>
         {
             var clinicalState = await handler.GetClinicalStateByIdAsync(id, ct);
@@ -208,6 +214,12 @@ public static class EndpointMapping
         {
             await handler.AddDietTypeAsync(request, ct);
             return Results.Created($"/api/v1/diet-types/{request.Id}", null);
+        }).RequireAuthorization(JwtAuthenticationExtensions.PatientServicePolicyName);
+
+        api.MapPut("/diet-types/{id}", async (string id, DietTypeUpdateRequest request, IMealsHandler handler, CancellationToken ct) =>
+        {
+            var updated = await handler.UpdateDietTypeAsync(id, request, ct);
+            return updated ? Results.NoContent() : Results.NotFound();
         }).RequireAuthorization(JwtAuthenticationExtensions.PatientServicePolicyName);
 
         api.MapGet("/diet-types/{id}", async (string id, IMealsHandler handler, CancellationToken ct) =>

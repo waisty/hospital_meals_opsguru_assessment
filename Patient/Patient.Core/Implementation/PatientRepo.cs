@@ -117,12 +117,24 @@ namespace Hospital.Patient.Core.Implementation
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task AddClinicalStateAndPublishAsync(ClinicalState clinicalState, CancellationToken cancellationToken = default)
+        {
+            await ExecuteInTransactionAsync(async ct =>
+            {
+                await AddClinicalStateAsync(clinicalState, ct).ConfigureAwait(false);
+                var response = await _mealsApiClient.PublishClinicalStateAsync(clinicalState.Id, clinicalState.Name, ct).ConfigureAwait(false);
+                response.EnsureSuccessStatusCode();
+            }, cancellationToken).ConfigureAwait(false);
+        }
+
         public async Task<bool> UpdateClinicalStateAsync(string id, string name, CancellationToken cancellationToken = default)
         {
             var clinicalState = await _context.ClinicalStates.FirstOrDefaultAsync(c => c.Id == id, cancellationToken).ConfigureAwait(false);
             if (clinicalState is null) return false;
             clinicalState.Name = name;
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            var response = await _mealsApiClient.PublishClinicalStateUpdateAsync(id, name, cancellationToken).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
             return true;
         }
 
@@ -169,12 +181,24 @@ namespace Hospital.Patient.Core.Implementation
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task AddDietTypeAndPublishAsync(DietType dietType, CancellationToken cancellationToken = default)
+        {
+            await ExecuteInTransactionAsync(async ct =>
+            {
+                await AddDietTypeAsync(dietType, ct).ConfigureAwait(false);
+                var response = await _mealsApiClient.PublishDietTypeAsync(dietType.Id, dietType.Name, ct).ConfigureAwait(false);
+                response.EnsureSuccessStatusCode();
+            }, cancellationToken).ConfigureAwait(false);
+        }
+
         public async Task<bool> UpdateDietTypeAsync(string id, string name, CancellationToken cancellationToken = default)
         {
             var dietType = await _context.DietTypes.FirstOrDefaultAsync(d => d.Id == id, cancellationToken).ConfigureAwait(false);
             if (dietType is null) return false;
             dietType.Name = name;
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            var response = await _mealsApiClient.PublishDietTypeUpdateAsync(id, name, cancellationToken).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
             return true;
         }
 

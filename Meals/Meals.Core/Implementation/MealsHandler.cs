@@ -240,6 +240,12 @@ namespace Hospital.Meals.Core.Implementation
             await _repo.AddClinicalStateAsync(clinicalState, cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task<bool> UpdateClinicalStateAsync(string id, ClinicalStateUpdateRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request is null) return false;
+            return await _repo.UpdateClinicalStateAsync(id, request.Name, cancellationToken).ConfigureAwait(false);
+        }
+
         public async Task<ClinicalStateViewModel?> GetClinicalStateByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             var clinicalState = await _repo.GetClinicalStateByIdAsync(id, cancellationToken).ConfigureAwait(false);
@@ -271,6 +277,12 @@ namespace Hospital.Meals.Core.Implementation
                 return;
             var dietType = new DietType { Id = request.Id, Name = request.Name };
             await _repo.AddDietTypeAsync(dietType, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<bool> UpdateDietTypeAsync(string id, DietTypeUpdateRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request is null) return false;
+            return await _repo.UpdateDietTypeAsync(id, request.Name, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<DietTypeViewModel?> GetDietTypeByIdAsync(string id, CancellationToken cancellationToken = default)

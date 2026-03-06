@@ -38,6 +38,7 @@ namespace Hospital.Meals.Core.Contracts
 
         // Clinical state (reference data)
         Task AddClinicalStateAsync(ClinicalState clinicalState, CancellationToken cancellationToken = default);
+        Task<bool> UpdateClinicalStateAsync(string id, string name, CancellationToken cancellationToken = default);
         Task<ClinicalState?> GetClinicalStateByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<ClinicalState>> ListClinicalStatesAsync(CancellationToken cancellationToken = default);
         Task<IReadOnlyList<string>> GetClinicalStateIdsByIngredientIdAsync(string ingredientId, CancellationToken cancellationToken = default);
@@ -45,6 +46,7 @@ namespace Hospital.Meals.Core.Contracts
 
         // Diet type (reference data)
         Task AddDietTypeAsync(DietType dietType, CancellationToken cancellationToken = default);
+        Task<bool> UpdateDietTypeAsync(string id, string name, CancellationToken cancellationToken = default);
         Task<DietType?> GetDietTypeByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<DietType>> ListDietTypesAsync(CancellationToken cancellationToken = default);
         Task<IReadOnlyList<string>> GetDietTypeExclusionIdsByIngredientIdAsync(string ingredientId, CancellationToken cancellationToken = default);

@@ -233,6 +233,17 @@ namespace Hospital.Meals.Core.Implementation
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task<bool> UpdateClinicalStateAsync(string id, string name, CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(id);
+            ArgumentNullException.ThrowIfNull(name);
+            var clinicalState = await _context.ClinicalStates.FirstOrDefaultAsync(c => c.Id == id, cancellationToken).ConfigureAwait(false);
+            if (clinicalState is null) return false;
+            clinicalState.Name = name;
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            return true;
+        }
+
         public async Task<ClinicalState?> GetClinicalStateByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             return await _context.ClinicalStates
@@ -275,6 +286,17 @@ namespace Hospital.Meals.Core.Implementation
         {
             _context.DietTypes.Add(dietType);
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<bool> UpdateDietTypeAsync(string id, string name, CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(id);
+            ArgumentNullException.ThrowIfNull(name);
+            var dietType = await _context.DietTypes.FirstOrDefaultAsync(d => d.Id == id, cancellationToken).ConfigureAwait(false);
+            if (dietType is null) return false;
+            dietType.Name = name;
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            return true;
         }
 
         public async Task<DietType?> GetDietTypeByIdAsync(string id, CancellationToken cancellationToken = default)

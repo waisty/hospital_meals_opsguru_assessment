@@ -115,7 +115,7 @@ namespace Hospital.Patient.Core.Implementation
         public async Task<string> AddClinicalStateAsync(ClinicalStateCreateRequest request, CancellationToken cancellationToken = default)
         {
             var clinicalState = new ClinicalState { Id = CreateReadableIdFromName(request.Name), Name = request.Name };
-            await _repo.AddClinicalStateAsync(clinicalState, cancellationToken).ConfigureAwait(false);
+            await _repo.AddClinicalStateAndPublishAsync(clinicalState, cancellationToken).ConfigureAwait(false);
             return clinicalState.Id;
         }
 
@@ -158,7 +158,7 @@ namespace Hospital.Patient.Core.Implementation
         public async Task<string> AddDietTypeAsync(DietTypeCreateRequest request, CancellationToken cancellationToken = default)
         {
             var dietType = new DietType { Id = CreateReadableIdFromName(request.Name), Name = request.Name };
-            await _repo.AddDietTypeAsync(dietType, cancellationToken).ConfigureAwait(false);
+            await _repo.AddDietTypeAndPublishAsync(dietType, cancellationToken).ConfigureAwait(false);
             return dietType.Id;
         }
 

@@ -23,6 +23,10 @@ namespace Hospital.Patient.Core.Contracts
 
         // Clinical state
         Task AddClinicalStateAsync(ClinicalState clinicalState, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Adds the clinical state in a transaction and publishes it to the Meals API; commits only when both succeed.
+        /// </summary>
+        Task AddClinicalStateAndPublishAsync(ClinicalState clinicalState, CancellationToken cancellationToken = default);
         Task<bool> UpdateClinicalStateAsync(string id, string name, CancellationToken cancellationToken = default);
         Task<ClinicalState?> GetClinicalStateByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<ClinicalState>> ListClinicalStatesAsync(CancellationToken cancellationToken = default);
@@ -31,6 +35,10 @@ namespace Hospital.Patient.Core.Contracts
 
         // Diet type
         Task AddDietTypeAsync(DietType dietType, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Adds the diet type in a transaction and publishes it to the Meals API; commits only when both succeed.
+        /// </summary>
+        Task AddDietTypeAndPublishAsync(DietType dietType, CancellationToken cancellationToken = default);
         Task<bool> UpdateDietTypeAsync(string id, string name, CancellationToken cancellationToken = default);
         Task<DietType?> GetDietTypeByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<DietType>> ListDietTypesAsync(CancellationToken cancellationToken = default);
