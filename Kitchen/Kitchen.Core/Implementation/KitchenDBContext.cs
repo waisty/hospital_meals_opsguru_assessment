@@ -15,6 +15,7 @@ namespace Hospital.Kitchen.Core.Implementation
 
         public DbSet<Tray> Trays { get; set; }
         public DbSet<TrayIngredient> TrayIngredients { get; set; }
+        public DbSet<TrayStatusHistory> TrayStatusHistories { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -27,6 +28,7 @@ namespace Hospital.Kitchen.Core.Implementation
             modelBuilder.HasDefaultSchema("dbo");
             modelBuilder.Entity<Tray>(Tray.Configure);
             modelBuilder.Entity<TrayIngredient>(TrayIngredient.Configure);
+            modelBuilder.Entity<TrayStatusHistory>(e => TrayStatusHistory.Configure(e));
         }
     }
 }
