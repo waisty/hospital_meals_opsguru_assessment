@@ -85,6 +85,17 @@ namespace Hospital.Patient.Core.Implementation
             return await _repo.GetAllergyIdsByPatientIdAsync(guid, cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task<bool> UpdatePatientAllergiesAsync(string patientId, PatientAllergiesUpdateRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request is null || !Guid.TryParse(patientId, out var guid))
+                return false;
+            var patient = await _repo.GetPatientByIdAsync(guid, cancellationToken).ConfigureAwait(false);
+            if (patient is null)
+                return false;
+            await _repo.SetAllergyIdsForPatientAsync(guid, request.AllergyIds ?? [], cancellationToken).ConfigureAwait(false);
+            return true;
+        }
+
         public async Task AddClinicalStateAsync(ClinicalStateCreateRequest request, CancellationToken cancellationToken = default)
         {
             var clinicalState = new ClinicalState { Id = request.Id, Name = request.Name };
@@ -108,6 +119,17 @@ namespace Hospital.Patient.Core.Implementation
             if (!Guid.TryParse(patientId, out var guid))
                 return Array.Empty<string>();
             return await _repo.GetClinicalStateIdsByPatientIdAsync(guid, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<bool> UpdatePatientClinicalStatesAsync(string patientId, PatientClinicalStatesUpdateRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request is null || !Guid.TryParse(patientId, out var guid))
+                return false;
+            var patient = await _repo.GetPatientByIdAsync(guid, cancellationToken).ConfigureAwait(false);
+            if (patient is null)
+                return false;
+            await _repo.SetClinicalStateIdsForPatientAsync(guid, request.ClinicalStateIds ?? [], cancellationToken).ConfigureAwait(false);
+            return true;
         }
 
         public async Task AddDietTypeAsync(DietTypeCreateRequest request, CancellationToken cancellationToken = default)

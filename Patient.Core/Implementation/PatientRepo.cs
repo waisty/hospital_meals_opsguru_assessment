@@ -80,6 +80,19 @@ namespace Hospital.Patient.Core.Implementation
                 .ConfigureAwait(false);
         }
 
+        public async Task SetAllergyIdsForPatientAsync(Guid patientId, IReadOnlyList<string> allergyIds, CancellationToken cancellationToken = default)
+        {
+            await _context.PatientAllergies
+                .Where(pa => pa.PatientId == patientId)
+                .ExecuteDeleteAsync(cancellationToken)
+                .ConfigureAwait(false);
+            foreach (var allergyId in allergyIds)
+            {
+                _context.PatientAllergies.Add(new PatientAllergy { PatientId = patientId, AllergyId = allergyId });
+            }
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
+
         public async Task AddClinicalStateAsync(ClinicalState clinicalState, CancellationToken cancellationToken = default)
         {
             _context.ClinicalStates.Add(clinicalState);
@@ -111,6 +124,19 @@ namespace Hospital.Patient.Core.Implementation
                 .Select(pc => pc.ClinicalStateId)
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
+        }
+
+        public async Task SetClinicalStateIdsForPatientAsync(Guid patientId, IReadOnlyList<string> clinicalStateIds, CancellationToken cancellationToken = default)
+        {
+            await _context.PatientClinicalStates
+                .Where(pc => pc.PatientId == patientId)
+                .ExecuteDeleteAsync(cancellationToken)
+                .ConfigureAwait(false);
+            foreach (var clinicalStateId in clinicalStateIds)
+            {
+                _context.PatientClinicalStates.Add(new PatientClinicalState { PatientId = patientId, ClinicalStateId = clinicalStateId });
+            }
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public async Task AddDietTypeAsync(DietType dietType, CancellationToken cancellationToken = default)

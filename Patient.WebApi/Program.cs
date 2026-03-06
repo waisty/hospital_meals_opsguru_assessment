@@ -64,6 +64,12 @@ app.MapGet("/patients/{patientId}/allergies", async (string patientId, IPatientH
     return Results.Ok(ids);
 }).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminPolicyName);
 
+app.MapPut("/patients/{patientId}/allergies", async (string patientId, PatientAllergiesUpdateRequest request, IPatientHandler handler, CancellationToken ct) =>
+{
+    var updated = await handler.UpdatePatientAllergiesAsync(patientId, request, ct);
+    return updated ? Results.NoContent() : Results.NotFound();
+}).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminPolicyName);
+
 // Clinical state
 app.MapPost("/clinical-states", async (ClinicalStateCreateRequest request, IPatientHandler handler, CancellationToken ct) =>
 {
@@ -87,6 +93,12 @@ app.MapGet("/patients/{patientId}/clinical-states", async (string patientId, IPa
 {
     var ids = await handler.GetClinicalStateIdsByPatientIdAsync(patientId, ct);
     return Results.Ok(ids);
+}).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminPolicyName);
+
+app.MapPut("/patients/{patientId}/clinical-states", async (string patientId, PatientClinicalStatesUpdateRequest request, IPatientHandler handler, CancellationToken ct) =>
+{
+    var updated = await handler.UpdatePatientClinicalStatesAsync(patientId, request, ct);
+    return updated ? Results.NoContent() : Results.NotFound();
 }).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminPolicyName);
 
 // Diet type
