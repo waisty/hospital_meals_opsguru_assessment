@@ -1,8 +1,10 @@
+using Auth.Core.Implementation;
 using WebExceptionHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+builder.Services.AddAuthServices(builder.Configuration);
 
 // Add services to the container.
 
