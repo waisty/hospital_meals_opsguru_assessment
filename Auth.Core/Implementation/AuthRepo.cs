@@ -50,19 +50,7 @@ namespace Auth.Core.Implementation
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.ToTable("users");
-                entity.HasKey(e => e.Username);
-                entity.Property(e => e.Username).HasColumnName("username").HasMaxLength(256);
-                entity.Property(e => e.PasswordHash).HasColumnName("password_hash").HasMaxLength(256).IsRequired();
-                entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(256);
-                entity.Property(e => e.Admin).HasColumnName("admin");
-                entity.Property(e => e.PatientAdmin).HasColumnName("patient_admin");
-                entity.Property(e => e.MealsAdmin).HasColumnName("meals_admin");
-                entity.Property(e => e.MealsUser).HasColumnName("meals_user");
-                entity.Property(e => e.KitchenUser).HasColumnName("kitchen_user");
-            });
+            modelBuilder.Entity<User>(User.Configure);
 
             modelBuilder.HasDbFunction(typeof(AuthDBContext).GetMethod(nameof(Crypt), new[] { typeof(string), typeof(string) }) ?? throw new Exception($"{nameof(Crypt)} function not found in ${nameof(AuthDBContext)}"))
                 .HasName("crypt");
