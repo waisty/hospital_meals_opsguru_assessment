@@ -1,6 +1,9 @@
+using Hospital.Kitchen.Core;
 using Hospital.Kitchen.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddKitchenServices(builder.Configuration);
 
 var app = builder.Build();
 

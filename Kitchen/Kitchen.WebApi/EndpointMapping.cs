@@ -1,33 +1,19 @@
-namespace Hospital.Kitchen.WebApi;
+using Hospital.Kitchen.Core.Contracts;
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+namespace Hospital.Kitchen.WebApi;
 
 public static class EndpointMapping
 {
-    private static readonly string[] Summaries =
-    [
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    ];
-
     public static void MapEndpoints(this WebApplication app)
     {
         app.MapGet("/", () => Results.Ok(new { service = "Hospital.Kitchen.WebApi", status = "running" }));
 
         var api = app.MapGroup("/api/v1");
 
-        api.MapGet("/weatherforecast", () =>
+        api.MapPost("/trays", async (CreateTrayRequest request, IKitchenHandler handler, CancellationToken ct) =>
         {
-            var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast(
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    Summaries[Random.Shared.Next(Summaries.Length)]
-                ))
-                .ToArray();
-            return forecast;
+            var trayId = await handler.CreateTrayAsync(request, ct);
+            return Results.Created($"/api/v1/trays/{trayId}", new { id = trayId });
         });
     }
 }
