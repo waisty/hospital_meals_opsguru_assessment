@@ -19,9 +19,9 @@ var app = builder.Build();
 
 app.MapGet("/", () => Results.Ok(new { service = "Hospital.Auth.WebApi", status = "running" }));
 
-// Configure the HTTP request pipeline.
+var api = app.MapGroup("/api/v1");
 
-app.MapPost("/login", async (UserAuthRequest request, IAuthHandler authHandler) =>
+api.MapPost("/login", async (UserAuthRequest request, IAuthHandler authHandler) =>
 {
     var response = await authHandler.AuthenticateUserAsync(request);
     return response is null ? Results.Unauthorized() : Results.Ok(response);

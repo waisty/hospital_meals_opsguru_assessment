@@ -21,7 +21,7 @@ public sealed class LoginEndpointTests : IClassFixture<AuthWebApiFixture>
 
         using var client = _fixture.CreateClient();
         var request = new UserAuthRequest { Username = "testuser", Password = "testpass" };
-        var response = await client.PostAsJsonAsync("/login", request);
+        var response = await client.PostAsJsonAsync("/api/v1/login", request);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var body = await response.Content.ReadFromJsonAsync<UserAuthResponse>();
@@ -37,7 +37,7 @@ public sealed class LoginEndpointTests : IClassFixture<AuthWebApiFixture>
 
         using var client = _fixture.CreateClient();
         var request = new UserAuthRequest { Username = "validuser", Password = "wrongpass" };
-        var response = await client.PostAsJsonAsync("/login", request);
+        var response = await client.PostAsJsonAsync("/api/v1/login", request);
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -49,7 +49,7 @@ public sealed class LoginEndpointTests : IClassFixture<AuthWebApiFixture>
 
         using var client = _fixture.CreateClient();
         var request = new UserAuthRequest { Username = "nobody", Password = "any" };
-        var response = await client.PostAsJsonAsync("/login", request);
+        var response = await client.PostAsJsonAsync("/api/v1/login", request);
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
