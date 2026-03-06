@@ -8,10 +8,12 @@ namespace Hospital.Patient.Core.Implementation
     internal sealed class PatientHandler : IPatientHandler
     {
         private readonly IPatientRepo _repo;
+        private readonly IMealsApiClient _apiClient;
 
-        public PatientHandler(IPatientRepo repo)
+        public PatientHandler(IPatientRepo repo, IMealsApiClient apiClient)
         {
             _repo = repo;
+            _apiClient = apiClient;
         }
 
         public async Task<Guid> AddPatientAsync(PatientCreateRequest request, CancellationToken cancellationToken = default)

@@ -17,6 +17,12 @@ namespace Hospital.Patient.Core
         {
             services.AddDbContext<PatientDBContext>();
             services.AddScoped<IPatientRepo, PatientRepo>();
+            services.AddHttpClient<IMealsApiClient, MealsApiClient>(client =>
+            {
+                var baseUrl = configuration["MealsAPIEndpoint"] ?? throw new Exception("MealsAPIEndpoint not found");
+                client.BaseAddress = new Uri(baseUrl);
+                client.Timeout = TimeSpan.FromSeconds(30);
+            });
             services.AddScoped<IPatientHandler, PatientHandler>();
             services.AddHostedService<PatientDbMigrationHostedService>();
             services.AddHostedService<PatientSeedDataHostedService>();
