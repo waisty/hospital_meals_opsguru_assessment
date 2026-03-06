@@ -157,17 +157,19 @@ namespace Hospital.Meals.Core.Implementation
 
         public async Task<Guid> AddPatientRequestWithSafetyCheckAsync(PatientRequestCreateRequest request, CancellationToken cancellationToken = default)
         {
+            var patientState = await _patientApiClient.GetPatientDetailAsync(request.PatientId, cancellationToken).ConfigureAwait(false) ?? throw new Exception($"Patient '{request.PatientId}' not found");
+
             var patientRequest = new PatientRequest
             {
                 PatientId = request.PatientId,
-                PatientName = request.PatientName,
+                PatientName = patientState.Name,
                 RecipeId = request.RecipeId,
-                RequestedForDate = request.RequestedForDate,
+                RequestedForDate = DateTime.UtcNow,
                 ApprovalStatus = MealRequestAppprovalStatus.Pending
             };
             await AddPatientRequestAsync(patientRequest, cancellationToken).ConfigureAwait(false);
 
-            var patientState = await _patientApiClient.GetPatientDetailAsync(request.PatientId, cancellationToken).ConfigureAwait(false);
+            
             if (patientState == null)
             {
                 patientRequest.ApprovalStatus = MealRequestAppprovalStatus.Rejected;
