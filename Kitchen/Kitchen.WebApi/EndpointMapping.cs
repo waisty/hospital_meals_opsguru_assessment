@@ -1,4 +1,5 @@
 using Hospital.Kitchen.Core.Contracts;
+using Hospital.Kitchen.WebApi.Authentication;
 
 namespace Hospital.Kitchen.WebApi;
 
@@ -14,6 +15,6 @@ public static class EndpointMapping
         {
             var trayId = await handler.CreateTrayAsync(request, ct);
             return Results.Created($"/api/v1/trays/{trayId}", new { id = trayId });
-        });
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsServicePolicyName);
     }
 }
