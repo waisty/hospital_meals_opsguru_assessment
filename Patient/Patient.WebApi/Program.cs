@@ -39,7 +39,7 @@ app.MapGet("/patients/{id}/detail", async (string id, IPatientHandler handler, C
 {
     var detail = await handler.GetPatientDetailByIdAsync(id, ct);
     return detail is null ? Results.NotFound() : Results.Ok(detail);
-}).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminPolicyName);
+}).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminPolicyName, JwtAuthenticationExtensions.MealsServicePolicyName);
 
 app.MapGet("/patients", async (int page, int pageSize, IPatientHandler handler, CancellationToken ct) =>
 {

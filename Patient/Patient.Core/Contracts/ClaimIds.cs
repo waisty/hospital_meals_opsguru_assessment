@@ -10,5 +10,6 @@ namespace Hospital.Patient.Core.Contracts
         public const string adminClaim = "admin";
         public const string patientAdminClaim = "patientAdmin";
         public const string patientsServiceClaim = "patientsService";
+        public const string mealsServiceClaim = "mealsService";
     }
 }
