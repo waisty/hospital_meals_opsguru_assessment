@@ -16,7 +16,7 @@ app.UseJwtAuthentication();
 app.MapPost("/patients", async (PatientCreateRequest request, IPatientHandler handler, CancellationToken ct) =>
 {
     var id = await handler.AddPatientAsync(request, ct);
-    return Results.Created($"/patients/{id}", null);
+    return Results.Created($"/patients/{id}", new PatientCreateResponse { Id = id.ToString() });
 }).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminPolicyName);
 
 app.MapGet("/patients/{id}", async (string id, IPatientHandler handler, CancellationToken ct) =>
