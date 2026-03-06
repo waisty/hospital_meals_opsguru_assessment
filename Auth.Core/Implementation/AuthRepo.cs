@@ -50,6 +50,7 @@ namespace Auth.Core.Implementation
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasDefaultSchema("dbo");
             modelBuilder.Entity<User>(User.Configure);
 
             modelBuilder.HasDbFunction(typeof(AuthDBContext).GetMethod(nameof(Crypt), new[] { typeof(string), typeof(string) }) ?? throw new Exception($"{nameof(Crypt)} function not found in ${nameof(AuthDBContext)}"))

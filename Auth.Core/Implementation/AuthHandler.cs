@@ -36,19 +36,19 @@ namespace Auth.Core.Implementation
                 {
                     claimsList.Add(new Claim("admin", user.Admin.ToString()));
                 }
-                if (user.MealsAdmin)
+                if (user.Admin || user.MealsAdmin)
                 {
                     claimsList.Add(new Claim("mealsAdmin", user.MealsAdmin.ToString()));
                 }
-                if (user.PatientAdmin)
+                if (user.Admin || user.PatientAdmin)
                 {
                     claimsList.Add(new Claim("patientAdmin", user.PatientAdmin.ToString()));
                 }
-                if (user.MealsUser)
+                if (user.Admin || user.MealsUser)
                 {
                     claimsList.Add(new Claim("mealsUser", user.MealsUser.ToString()));
                 }
-                if (user.KitchenUser)
+                if (user.Admin || user.KitchenUser)
                 {
                     claimsList.Add(new Claim("kitchenUser", user.KitchenUser.ToString()));
                 }

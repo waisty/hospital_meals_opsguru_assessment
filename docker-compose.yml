@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: hospitalmeals-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: alicia
+      POSTGRES_DB: hospitalmeals_auth_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d hospitalmeals_auth_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  auth-webapi:
+    build:
+      context: .
+      dockerfile: Auth.WebApi/Dockerfile
+    container_name: hospitalmeals-auth-api
+    environment:
+      ConnectionString: "Host=postgres;Port=5432;Database=hospitalmeals_auth_db;Username=postgres;Password=alicia"
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

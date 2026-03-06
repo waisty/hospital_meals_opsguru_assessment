@@ -20,6 +20,7 @@ namespace Auth.Core.Implementation
             services.AddScoped<IAuthRepo, AuthRepo>();
             services.AddScoped<IAuthHandler, AuthHandler>();
             services.AddHostedService<AuthDbMigrationHostedService>();
+            services.AddHostedService<AuthSeedDataHostedService>();
             return services;
         }
     }
