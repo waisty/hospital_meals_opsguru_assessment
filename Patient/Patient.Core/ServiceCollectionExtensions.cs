@@ -22,12 +22,13 @@ namespace Hospital.Patient.Core
         {
             services.AddDbContext<PatientDBContext>();
             services.AddScoped<IPatientRepo, PatientRepo>();
+            services.AddSingleton<DelegatingHandler, PatientServiceTokenHandler>();
             services.AddHttpClient<IMealsApiClient, MealsApiClient>(client =>
             {
                 var baseUrl = configuration["MealsAPIEndpoint"] ?? throw new Exception("MealsAPIEndpoint not found");
                 client.BaseAddress = new Uri(baseUrl);
                 client.Timeout = TimeSpan.FromSeconds(30);
-            }).AddHttpMessageHandler<PatientServiceTokenHandler>(); ;
+            }).AddHttpMessageHandler<DelegatingHandler>(); ;
             services.AddScoped<IPatientHandler, PatientHandler>();
             services.AddHostedService<PatientDbMigrationHostedService>();
             services.AddHostedService<PatientSeedDataHostedService>();

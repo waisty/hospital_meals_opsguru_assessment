@@ -11,6 +11,7 @@ public static class JwtAuthenticationExtensions
     public const string PatientAdminPolicyName = "PatientAdmin";
     public const string AdminPolicyName = "Admin";
     public const string MealsServicePolicyName = "MealsService";
+    public const string PatientAdminOrMealsServicePolicyName = "PatientAdminOrMealsService";
 
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
@@ -35,9 +36,23 @@ public static class JwtAuthenticationExtensions
             });
         services.AddAuthorization(options =>
         {
-            options.AddPolicy(PatientAdminPolicyName, policy => policy.RequireClaim(ClaimIds.patientAdminClaim, "True"));
-            options.AddPolicy(MealsServicePolicyName, policy => policy.RequireClaim(ClaimIds.mealsServiceClaim, "True"));
-            options.AddPolicy(AdminPolicyName, policy => policy.RequireClaim(ClaimIds.adminClaim, "True"));
+            options.AddPolicy(PatientAdminPolicyName, (policy) =>
+            {
+                policy.RequireClaim(ClaimIds.patientAdminClaim);
+            });
+            options.AddPolicy(MealsServicePolicyName, (policy) =>
+            {
+                policy.RequireClaim(ClaimIds.mealsServiceClaim);
+            });
+            options.AddPolicy(AdminPolicyName, (policy) =>
+            { 
+                policy.RequireClaim(ClaimIds.adminClaim); 
+            });
+            options.AddPolicy(PatientAdminOrMealsServicePolicyName, (policy) =>
+            {
+                policy.RequireAssertion(context =>
+                    context.User.HasClaim(c => c.Type == ClaimIds.patientAdminClaim) || context.User.HasClaim(c => c.Type == ClaimIds.mealsServiceClaim));
+            });
         });
 
         return services;

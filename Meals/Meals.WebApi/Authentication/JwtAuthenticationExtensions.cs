@@ -34,8 +34,8 @@ public static class JwtAuthenticationExtensions
 
         services.AddAuthorization(options =>
         {
-            options.AddPolicy(MealsAdminPolicyName, policy => policy.RequireClaim(ClaimIds.mealsAdminClaim, "True"));
-            options.AddPolicy(PatientServicePolicyName, policy => policy.RequireClaim(ClaimIds.patientsServiceClaim, "True"));
+            options.AddPolicy(MealsAdminPolicyName, policy => policy.RequireClaim(ClaimIds.mealsAdminClaim));
+            options.AddPolicy(PatientServicePolicyName, policy => policy.RequireClaim(ClaimIds.patientsServiceClaim));
         });
 
         return services;

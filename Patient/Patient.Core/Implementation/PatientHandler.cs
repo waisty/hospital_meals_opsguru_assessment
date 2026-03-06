@@ -52,19 +52,20 @@ namespace Hospital.Patient.Core.Implementation
         {
             if (!Guid.TryParse(id, out var guid))
                 return null;
-            var getPatientTask = _repo.GetPatientByIdAsync(guid, cancellationToken);
-            var getAllergyIdsTask = _repo.GetAllergyIdsByPatientIdAsync(guid, cancellationToken);
-            var getClinicalStateIdsTask = _repo.GetClinicalStateIdsByPatientIdAsync(guid, cancellationToken);
+            var patient = await _repo.GetPatientByIdAsync(guid, cancellationToken);
+            
 
-            Task[] tasks = [getPatientTask, getAllergyIdsTask, getClinicalStateIdsTask];
+            //Task[] tasks = [getPatientTask, getAllergyIdsTask, getClinicalStateIdsTask];
 
-            await Task.WhenAll(tasks);
+            //await Task.WhenAll(tasks);
 
-            var patient = getPatientTask.GetAwaiter().GetResult();
+            //var patient = getPatientTask.GetAwaiter().GetResult();
             if (patient == null) return null;
 
-            var allergyIds = getAllergyIdsTask.GetAwaiter().GetResult();
-            var clinicalStateIds = getClinicalStateIdsTask.GetAwaiter().GetResult();
+            var allergyIds = await _repo.GetAllergyIdsByPatientIdAsync(guid, cancellationToken);
+            var clinicalStateIds = await _repo.GetClinicalStateIdsByPatientIdAsync(guid, cancellationToken);
+            //var allergyIds = getAllergyIdsTask.GetAwaiter().GetResult();
+            //var clinicalStateIds = getClinicalStateIdsTask.GetAwaiter().GetResult();
 
             return patient.ToPatientDetailViewModel(allergyIds, clinicalStateIds);
         }
