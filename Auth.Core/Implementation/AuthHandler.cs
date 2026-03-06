@@ -1,5 +1,6 @@
 using Hospital.Auth.Core.Contracts;
 using Hospital.Auth.UIViewModels;
+using Hospital.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -31,27 +32,27 @@ namespace Hospital.Auth.Core.Implementation
             {
                 var claimsList = new List<Claim>
                 {
-                    new Claim("username", request.Username)
+                    new Claim(ClaimIds.usernameClaim, request.Username)
                 };
                 if (user.Admin)
                 {
-                    claimsList.Add(new Claim("admin", user.Admin.ToString()));
+                    claimsList.Add(new Claim(ClaimIds.adminClaim, user.Admin.ToString()));
                 }
                 if (user.Admin || user.MealsAdmin)
                 {
-                    claimsList.Add(new Claim("mealsAdmin", user.MealsAdmin.ToString()));
+                    claimsList.Add(new Claim(ClaimIds.mealsAdminClaim, user.MealsAdmin.ToString()));
                 }
                 if (user.Admin || user.PatientAdmin)
                 {
-                    claimsList.Add(new Claim("patientAdmin", user.PatientAdmin.ToString()));
+                    claimsList.Add(new Claim(ClaimIds.patientAdminClaim, user.PatientAdmin.ToString()));
                 }
                 if (user.Admin || user.MealsUser)
                 {
-                    claimsList.Add(new Claim("mealsUser", user.MealsUser.ToString()));
+                    claimsList.Add(new Claim(ClaimIds.mealsUserClaim, user.MealsUser.ToString()));
                 }
                 if (user.Admin || user.KitchenUser)
                 {
-                    claimsList.Add(new Claim("kitchenUser", user.KitchenUser.ToString()));
+                    claimsList.Add(new Claim(ClaimIds.kitchenUserClaim, user.KitchenUser.ToString()));
                 }
 
                 var claims = claimsList.ToArray();

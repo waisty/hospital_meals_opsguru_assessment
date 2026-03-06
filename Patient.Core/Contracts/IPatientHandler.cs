@@ -3,7 +3,7 @@ using Hospital.Patient.UIViewModels;
 
 namespace Hospital.Patient.Core.Contracts
 {
-    internal interface IPatientHandler
+    public interface IPatientHandler
     {
         // Patient
         Task AddPatientAsync(PatientCreateRequest request, CancellationToken cancellationToken = default);

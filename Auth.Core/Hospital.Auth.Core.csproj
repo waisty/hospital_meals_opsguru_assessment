@@ -14,11 +14,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Auth.UIViewModels\Hospital.Auth.UIViewModels.csproj" />
+    <ProjectReference Include="..\Hospital.Contracts\Hospital.Contracts.csproj" />
     <ProjectReference Include="..\WebExceptionHandler\WebExceptionHandler.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Mocks\" />
   </ItemGroup>
 
 </Project>
