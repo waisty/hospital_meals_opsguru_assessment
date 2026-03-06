@@ -166,6 +166,7 @@ namespace Hospital.Meals.Core.Implementation
                 ApprovalStatus = MealRequestAppprovalStatus.Pending
             };
             await _repo.AddPatientMealRequestAsync(mealRequest, cancellationToken).ConfigureAwait(false);
+
             return mealRequest.Id;
         }
 
