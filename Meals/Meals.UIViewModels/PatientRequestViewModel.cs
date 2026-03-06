@@ -10,5 +10,6 @@ namespace Hospital.Meals.ViewModels
         public MealRequestApprovalStatus ApprovalStatus { get; set; }
         public string? StatusReason { get; set; }
         public string? UnsafeIngredientId { get; set; }
+        public DateTime? FinalizedDateTime { get; set; }
     }
 }

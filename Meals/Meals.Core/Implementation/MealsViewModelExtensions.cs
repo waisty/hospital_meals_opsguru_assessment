@@ -71,7 +71,8 @@ namespace Hospital.Meals.Core.Implementation
             RequestedForDate = request.RequestedForDate,
             ApprovalStatus = (MealRequestApprovalStatus)(int)request.ApprovalStatus,
             StatusReason = request.StatusReason,
-            UnsafeIngredientId = request.UnsafeIngredientId
+            UnsafeIngredientId = request.UnsafeIngredientId,
+            FinalizedDateTime = request.FinalizedDateTime
         };
 
         public static AllergyViewModel ToAllergyViewModel(this Allergy allergy) => new()

@@ -251,6 +251,7 @@ namespace Hospital.Meals.Core.Implementation
             patientRequest.ApprovalStatus = MealRequestAppprovalStatus.Accepted;
             patientRequest.StatusReason = null;
             patientRequest.UnsafeIngredientId = null;
+            patientRequest.FinalizedDateTime = DateTime.UtcNow;
             _context.PatientRequests.Update(patientRequest);
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }

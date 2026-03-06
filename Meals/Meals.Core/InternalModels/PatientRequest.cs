@@ -15,6 +15,7 @@ namespace Hospital.Meals.Core.InternalModels
         public MealRequestAppprovalStatus ApprovalStatus { get; set; }
         public string? StatusReason { get; set; }
         public string? UnsafeIngredientId { get; set; }
+        public DateTime? FinalizedDateTime { get; set; }
 
         public static void Configure(EntityTypeBuilder<PatientRequest> entity)
         {
@@ -31,6 +32,7 @@ namespace Hospital.Meals.Core.InternalModels
             entity.Property(e => e.ApprovalStatus).HasColumnName("approval_status").HasConversion<int>();
             entity.Property(e => e.StatusReason).HasColumnName("status_reason");
             entity.Property(e => e.UnsafeIngredientId).HasColumnName("unsafe_ingredient_id").HasMaxLength(256);
+            entity.Property(e => e.FinalizedDateTime).HasColumnName("finalized_date_time");
             entity.HasOne<Recipe>()
                 .WithMany()
                 .HasForeignKey(e => e.RecipeId)
