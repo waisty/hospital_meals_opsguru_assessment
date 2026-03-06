@@ -24,7 +24,6 @@
     <Project Path="Patient.UIViewModels/Patient.UIViewModels.csproj" Id="802bac80-f74d-4e76-b34c-bd04d28836ad" />
     <Project Path="Patient.WebApi/Patient.WebApi.csproj" Id="a5a76a0d-dbbd-4389-b2a8-c40b0df2f234" />
   </Folder>
-  <Folder Name="/Util/">
-    <Project Path="WebExceptionHandler/WebExceptionHandler.csproj" Id="a5e16675-4d26-4848-b734-5bc9eee5f352" />
-  </Folder>
+  <Project Path="Hospital.Contracts/Hospital.Contracts.csproj" Id="65e87948-9d48-4c55-a0eb-db46dfc9751f" />
+  <Project Path="WebExceptionHandler/WebExceptionHandler.csproj" Id="a5e16675-4d26-4848-b734-5bc9eee5f352" />
 </Solution>

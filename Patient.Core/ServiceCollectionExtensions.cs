@@ -12,6 +12,7 @@ namespace Patient.Core
         {
             services.AddDbContext<PatientDBContext>();
             services.AddScoped<IPatientRepo, PatientRepo>();
+            services.AddScoped<IPatientHandler, PatientHandler>();
             services.AddHostedService<PatientDbMigrationHostedService>();
             return services;
         }
