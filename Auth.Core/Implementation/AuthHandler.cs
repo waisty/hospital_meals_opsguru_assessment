@@ -30,8 +30,10 @@ namespace Auth.Core.Implementation
             }
             else
             {
-                var claimsList = new List<Claim>();
-                claimsList.Add(new Claim("username", request.Username));
+                var claimsList = new List<Claim>
+                {
+                    new Claim("username", request.Username)
+                };
                 if (user.Admin)
                 {
                     claimsList.Add(new Claim("admin", user.Admin.ToString()));
@@ -55,7 +57,7 @@ namespace Auth.Core.Implementation
 
                 var claims = claimsList.ToArray();
 
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ?? throw new Exception("JWT configuration key not found")));
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ?? throw new Exception("JWT Key key not found")));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
                 var tokenDescriptor = new SecurityTokenDescriptor
@@ -63,8 +65,8 @@ namespace Auth.Core.Implementation
                     Subject = new ClaimsIdentity(claims),
                     Expires = DateTime.UtcNow.AddHours(1),
                     SigningCredentials = creds,
-                    Issuer = configuration["Jwt:Issuer"],
-                    Audience = configuration["Jwt:Audience"]
+                    Issuer = configuration["Jwt:Issuer"] ?? throw new Exception("JWT Issuer not found"),
+                    Audience = configuration["Jwt:Audience"] ?? throw new Exception("Jwt Audience not found")
                 };
 
                 var tokenHandler = new JwtSecurityTokenHandler();

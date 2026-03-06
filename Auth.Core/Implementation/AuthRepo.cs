@@ -25,8 +25,15 @@ namespace Auth.Core.Implementation
 
         public async Task<User?> GetUserWithUsernameAndPasswordAsync(string username, string password)
         {
-            string passwordHash = context.Users.Select(_ => AuthDBContext.Crypt(password, AuthDBContext.GenSalt("bf"))).FirstOrDefault()!;
-            var user = await (from u in context.Users where u.Username == username && u.PasswordHash == passwordHash select u).FirstOrDefaultAsync();
+            // Verify password using pgcrypto: crypt(input, stored_hash) equals stored_hash when password is correct.
+            var user = await context.Users
+                .FromSqlRaw(
+                    "SELECT * FROM dbo.users WHERE username = {0} AND password_hash = crypt({1}, password_hash)",
+                    username,
+                    password)
+                .AsNoTracking()
+                .FirstOrDefaultAsync()
+                .ConfigureAwait(false);
             return user;
         }
     }
@@ -45,19 +52,19 @@ namespace Auth.Core.Implementation
             base.OnConfiguring(optionsBuilder);
         }
 
-        public static string Crypt(string password, string salt) => throw new NotSupportedException();
-        public static string GenSalt(string type) => throw new NotSupportedException();
+        //public static string Crypt(string password, string salt) => throw new NotSupportedException();
+        //public static string GenSalt(string type) => throw new NotSupportedException();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema("dbo");
             modelBuilder.Entity<User>(User.Configure);
 
-            modelBuilder.HasDbFunction(typeof(AuthDBContext).GetMethod(nameof(Crypt), new[] { typeof(string), typeof(string) }) ?? throw new Exception($"{nameof(Crypt)} function not found in ${nameof(AuthDBContext)}"))
-                .HasName("crypt");
+            //modelBuilder.HasDbFunction(typeof(AuthDBContext).GetMethod(nameof(Crypt), [typeof(string), typeof(string)]) ?? throw new Exception($"{nameof(Crypt)} function not found in ${nameof(AuthDBContext)}"))
+            //    .HasName("crypt").HasSchema(null);
 
-            modelBuilder.HasDbFunction(typeof(AuthDBContext).GetMethod(nameof(GenSalt), new[] { typeof(string) }) ?? throw new Exception($"{nameof(GenSalt)} function not found in ${nameof(AuthDBContext)}"))
-                .HasName("gen_salt");
+            //modelBuilder.HasDbFunction(typeof(AuthDBContext).GetMethod(nameof(GenSalt), [typeof(string)]) ?? throw new Exception($"{nameof(GenSalt)} function not found in ${nameof(AuthDBContext)}"))
+            //    .HasName("gen_salt").HasSchema(null);
         }
     }
 

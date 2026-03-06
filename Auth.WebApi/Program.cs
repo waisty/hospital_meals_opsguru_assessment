@@ -1,4 +1,6 @@
+using Auth.Core.Contracts;
 using Auth.Core.Implementation;
+using Auth.UIViewModels;
 using WebExceptionHandler;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,9 +16,10 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-app.MapPost("/login", () =>
+app.MapPost("/login", async (UserAuthRequest request, IAuthHandler authHandler) =>
 {
-
+    var response = await authHandler.AuthenticateUserAsync(request);
+    return response is null ? Results.Unauthorized() : Results.Ok(response);
 });
 
 //app.MapPost("/get-users", () =>
