@@ -59,10 +59,11 @@ namespace Hospital.Patient.Core.Implementation
             return patient.ToPatientDetailViewModel(allergyIds, clinicalStateIds);
         }
 
-        public async Task AddAllergyAsync(AllergyCreateRequest request, CancellationToken cancellationToken = default)
+        public async Task<string> AddAllergyAsync(AllergyCreateRequest request, CancellationToken cancellationToken = default)
         {
-            var allergy = new Allergy { Id = request.Id, Name = request.Name };
+            var allergy = new Allergy { Id = CreateReadableIdFromName(request.Name), Name = request.Name };
             await _repo.AddAllergyAsync(allergy, cancellationToken).ConfigureAwait(false);
+            return allergy.Id;
         }
 
         public async Task<AllergyViewModel?> GetAllergyByIdAsync(string id, CancellationToken cancellationToken = default)
@@ -95,10 +96,11 @@ namespace Hospital.Patient.Core.Implementation
             return true;
         }
 
-        public async Task AddClinicalStateAsync(ClinicalStateCreateRequest request, CancellationToken cancellationToken = default)
+        public async Task<string> AddClinicalStateAsync(ClinicalStateCreateRequest request, CancellationToken cancellationToken = default)
         {
-            var clinicalState = new ClinicalState { Id = request.Id, Name = request.Name };
+            var clinicalState = new ClinicalState { Id = CreateReadableIdFromName(request.Name), Name = request.Name };
             await _repo.AddClinicalStateAsync(clinicalState, cancellationToken).ConfigureAwait(false);
+            return clinicalState.Id;
         }
 
         public async Task<ClinicalStateViewModel?> GetClinicalStateByIdAsync(string id, CancellationToken cancellationToken = default)
@@ -131,10 +133,19 @@ namespace Hospital.Patient.Core.Implementation
             return true;
         }
 
-        public async Task AddDietTypeAsync(DietTypeCreateRequest request, CancellationToken cancellationToken = default)
+        public async Task<string> AddDietTypeAsync(DietTypeCreateRequest request, CancellationToken cancellationToken = default)
         {
-            var dietType = new DietType { Id = request.Id, Name = request.Name };
+            var dietType = new DietType { Id = CreateReadableIdFromName(request.Name), Name = request.Name };
             await _repo.AddDietTypeAsync(dietType, cancellationToken).ConfigureAwait(false);
+            return dietType.Id;
+        }
+
+        private static string CreateReadableIdFromName(string name)
+        {
+            var cleaned = System.Text.RegularExpressions.Regex.Replace(name, @"[^A-Za-z0-9]", "").ToUpperInvariant();
+            var truncated = cleaned.Length > 20 ? cleaned[..20] : cleaned;
+            var suffix = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()[^5..];
+            return truncated + suffix;
         }
 
         public async Task<DietTypeViewModel?> GetDietTypeByIdAsync(string id, CancellationToken cancellationToken = default)

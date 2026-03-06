@@ -17,6 +17,7 @@ namespace Hospital.Meals.Core
         {
             services.AddDbContext<MealsDBContext>();
             services.AddScoped<IMealsRepo, MealsRepo>();
+            services.AddScoped<IMealsHandler, MealsHandler>();
             services.AddHostedService<MealsDbMigrationHostedService>();
             services.AddHostedService<MealsSeedDataHostedService>();
             return services;

@@ -7,14 +7,20 @@ using Hospital.Patient.WebApi.Authentication;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 builder.Services.AddPatientServices(builder.Configuration); // includes automatic EF Core migration at startup
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
+app.UseExceptionHandler();
+
 app.MapGet("/", () => Results.Ok(new { service = "Hospital.Patient.WebApi", status = "running" }));
 
 app.UseJwtAuthentication();
+
+
 
 // Patient
 app.MapPost("/patients", async (PatientCreateRequest request, IPatientHandler handler, CancellationToken ct) =>
@@ -46,8 +52,8 @@ app.MapGet("/patients", async (int page, int pageSize, IPatientHandler handler, 
 // Allergy
 app.MapPost("/allergies", async (AllergyCreateRequest request, IPatientHandler handler, CancellationToken ct) =>
 {
-    await handler.AddAllergyAsync(request, ct);
-    return Results.Created($"/allergies/{request.Id}", null);
+    var allergyId = await handler.AddAllergyAsync(request, ct);
+    return Results.Created($"/allergies/{allergyId}", new AllergyCreateResponse() { Id = allergyId});
 }).RequireAuthorization(JwtAuthenticationExtensions.AdminPolicyName);
 
 app.MapGet("/allergies/{id}", async (string id, IPatientHandler handler, CancellationToken ct) =>
@@ -77,8 +83,8 @@ app.MapPut("/patients/{patientId}/allergies", async (string patientId, PatientAl
 // Clinical state
 app.MapPost("/clinical-states", async (ClinicalStateCreateRequest request, IPatientHandler handler, CancellationToken ct) =>
 {
-    await handler.AddClinicalStateAsync(request, ct);
-    return Results.Created($"/clinical-states/{request.Id}", null);
+    string clinicalStateId = await handler.AddClinicalStateAsync(request, ct);
+    return Results.Created($"/clinical-states/{clinicalStateId}", new ClinicalStateCreateResponse() { Id = clinicalStateId });
 }).RequireAuthorization(JwtAuthenticationExtensions.AdminPolicyName);
 
 app.MapGet("/clinical-states/{id}", async (string id, IPatientHandler handler, CancellationToken ct) =>
@@ -108,8 +114,8 @@ app.MapPut("/patients/{patientId}/clinical-states", async (string patientId, Pat
 // Diet type
 app.MapPost("/diet-types", async (DietTypeCreateRequest request, IPatientHandler handler, CancellationToken ct) =>
 {
-    await handler.AddDietTypeAsync(request, ct);
-    return Results.Created($"/diet-types/{request.Id}", null);
+    string dietTypeId = await handler.AddDietTypeAsync(request, ct);
+    return Results.Created($"/diet-types/{dietTypeId}", new DietTypeCreateResponse() { Id = dietTypeId });
 }).RequireAuthorization(JwtAuthenticationExtensions.AdminPolicyName);
 
 app.MapGet("/diet-types/{id}", async (string id, IPatientHandler handler, CancellationToken ct) =>

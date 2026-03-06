@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Repos\" />
+    <ProjectReference Include="..\Meals.UIViewModels\Hospital.Meals.UIViewModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>
