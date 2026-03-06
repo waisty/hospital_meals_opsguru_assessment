@@ -2,9 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Hospital.Meals.Core.Implementation;
 
-namespace Hospital.Meals.Core
+namespace Hospital.Meals.Core.Implementation
 {
     /// <summary>
     /// Applies pending EF Core migrations to the meals database when the application starts.

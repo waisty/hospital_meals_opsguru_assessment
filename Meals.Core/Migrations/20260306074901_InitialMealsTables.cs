@@ -11,6 +11,7 @@ namespace Hospital.Meals.Core.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("CREATE EXTENSION IF NOT EXISTS pgcrypto;");
             migrationBuilder.EnsureSchema(
                 name: "dbo");
 
@@ -128,14 +129,14 @@ namespace Hospital.Meals.Core.Migrations
                 {
                     table.PrimaryKey("PK_ingredient_clinical_state_exclusions", x => new { x.ingredient_id, x.clinical_state_id });
                     table.ForeignKey(
-                        name: "FK_ingredient_clinical_state_exclusions_clinical_states_clinical_state_id",
+                        name: "FK_ingredient_clinical_state_exclusions_clinical_states_clinic~",
                         column: x => x.clinical_state_id,
                         principalSchema: "dbo",
                         principalTable: "clinical_states",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ingredient_clinical_state_exclusions_ingredients_ingredient_id",
+                        name: "FK_ingredient_clinical_state_exclusions_ingredients_ingredient~",
                         column: x => x.ingredient_id,
                         principalSchema: "dbo",
                         principalTable: "ingredients",
@@ -144,30 +145,28 @@ namespace Hospital.Meals.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "recipe_ingredients",
+                name: "ingredient_diet_type_exclusions",
                 schema: "dbo",
                 columns: table => new
                 {
-                    recipe_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     ingredient_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    quantity = table.Column<decimal>(type: "numeric(18,4)", precision: 18, scale: 4, nullable: false),
-                    unit = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true)
+                    diet_type_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_recipe_ingredients", x => new { x.recipe_id, x.ingredient_id });
+                    table.PrimaryKey("PK_ingredient_diet_type_exclusions", x => new { x.ingredient_id, x.diet_type_id });
                     table.ForeignKey(
-                        name: "FK_recipe_ingredients_ingredients_ingredient_id",
-                        column: x => x.ingredient_id,
+                        name: "FK_ingredient_diet_type_exclusions_diet_types_diet_type_id",
+                        column: x => x.diet_type_id,
                         principalSchema: "dbo",
-                        principalTable: "ingredients",
+                        principalTable: "diet_types",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_recipe_ingredients_recipes_recipe_id",
-                        column: x => x.recipe_id,
+                        name: "FK_ingredient_diet_type_exclusions_ingredients_ingredient_id",
+                        column: x => x.ingredient_id,
                         principalSchema: "dbo",
-                        principalTable: "recipes",
+                        principalTable: "ingredients",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -208,7 +207,7 @@ namespace Hospital.Meals.Core.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     patient_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    patient_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    patient_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     recipe_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     requested_for_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     approval_status = table.Column<int>(type: "integer", nullable: false),
@@ -226,6 +225,35 @@ namespace Hospital.Meals.Core.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "recipe_ingredients",
+                schema: "dbo",
+                columns: table => new
+                {
+                    recipe_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    ingredient_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    quantity = table.Column<decimal>(type: "numeric(18,4)", precision: 18, scale: 4, nullable: false),
+                    unit = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_recipe_ingredients", x => new { x.recipe_id, x.ingredient_id });
+                    table.ForeignKey(
+                        name: "FK_recipe_ingredients_ingredients_ingredient_id",
+                        column: x => x.ingredient_id,
+                        principalSchema: "dbo",
+                        principalTable: "ingredients",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_recipe_ingredients_recipes_recipe_id",
+                        column: x => x.recipe_id,
+                        principalSchema: "dbo",
+                        principalTable: "recipes",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ingredient_allergy_exclusions_allergy_id",
                 schema: "dbo",
@@ -237,6 +265,12 @@ namespace Hospital.Meals.Core.Migrations
                 schema: "dbo",
                 table: "ingredient_clinical_state_exclusions",
                 column: "clinical_state_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ingredient_diet_type_exclusions_diet_type_id",
+                schema: "dbo",
+                table: "ingredient_diet_type_exclusions",
+                column: "diet_type_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_meals_diet_type_id",
@@ -281,6 +315,10 @@ namespace Hospital.Meals.Core.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
+                name: "ingredient_diet_type_exclusions",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
                 name: "meals",
                 schema: "dbo");
 
@@ -293,19 +331,19 @@ namespace Hospital.Meals.Core.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "ingredients",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "recipes",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
                 name: "allergies",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
                 name: "clinical_states",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "ingredients",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "recipes",
                 schema: "dbo");
 
             migrationBuilder.DropTable(

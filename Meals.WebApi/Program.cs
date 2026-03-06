@@ -2,7 +2,7 @@ using Hospital.Meals.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddMealsServices(builder.Configuration); // includes EF Core migration and seed data at startup
+builder.Services.AddMealsServices(builder.Configuration);
 
 var app = builder.Build();
 
