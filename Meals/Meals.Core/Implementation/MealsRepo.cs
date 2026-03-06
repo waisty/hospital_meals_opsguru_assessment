@@ -178,6 +178,17 @@ namespace Hospital.Meals.Core.Implementation
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task<bool> UpdateAllergyAsync(string id, string name, CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(id);
+            ArgumentNullException.ThrowIfNull(name);
+            var allergy = await _context.Allergies.FirstOrDefaultAsync(a => a.Id == id, cancellationToken).ConfigureAwait(false);
+            if (allergy is null) return false;
+            allergy.Name = name;
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            return true;
+        }
+
         public async Task<Allergy?> GetAllergyByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             return await _context.Allergies

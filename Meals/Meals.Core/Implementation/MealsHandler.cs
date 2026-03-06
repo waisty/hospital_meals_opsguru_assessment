@@ -201,6 +201,12 @@ namespace Hospital.Meals.Core.Implementation
             await _repo.AddAllergyAsync(allergy, cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task<bool> UpdateAllergyAsync(string id, AllergyUpdateRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request is null) throw new ArgumentNullException(nameof(request));
+            return await _repo.UpdateAllergyAsync(id, request.Name, cancellationToken).ConfigureAwait(false);
+        }
+
         public async Task<AllergyViewModel?> GetAllergyByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             var allergy = await _repo.GetAllergyByIdAsync(id, cancellationToken).ConfigureAwait(false);

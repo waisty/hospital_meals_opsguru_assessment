@@ -69,6 +69,8 @@ namespace Hospital.Patient.Core.Implementation
             if (allergy is null) return false;
             allergy.Name = name;
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            var response = await _mealsApiClient.PublishAllergyUpdateAsync(id, name, cancellationToken).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
             return true;
         }
 

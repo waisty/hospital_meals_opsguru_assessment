@@ -166,6 +166,12 @@ public static class EndpointMapping
             return Results.Created($"/api/v1/allergies/{request.Id}", null);
         }).RequireAuthorization(JwtAuthenticationExtensions.PatientServicePolicyName);
 
+        api.MapPut("/allergies/{id}", async (string id, AllergyUpdateRequest request, IMealsHandler handler, CancellationToken ct) =>
+        {
+            var updated = await handler.UpdateAllergyAsync(id, request, ct);
+            return updated ? Results.NoContent() : Results.NotFound();
+        }).RequireAuthorization(JwtAuthenticationExtensions.PatientServicePolicyName);
+
         api.MapGet("/allergies/{id}", async (string id, IMealsHandler handler, CancellationToken ct) =>
         {
             var allergy = await handler.GetAllergyByIdAsync(id, ct);

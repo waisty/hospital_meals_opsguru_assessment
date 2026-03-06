@@ -17,6 +17,7 @@ namespace Hospital.Meals.Core.InternalModels
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Id).HasColumnName("id").HasMaxLength(256);
             entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(256).IsRequired();
+            entity.HasIndex(e => e.Name).IsUnique();
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.DietTypeId).HasColumnName("diet_type_id").HasMaxLength(256);
             entity.Property(e => e.Disabled).HasColumnName("disabled");

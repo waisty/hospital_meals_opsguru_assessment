@@ -32,6 +32,13 @@ namespace Hospital.Patient.Core.Implementation
             return _httpClient.SendAsync(request, cancellationToken);
         }
 
-        
+        public Task<HttpResponseMessage> PublishAllergyUpdateAsync(string id, string name, CancellationToken cancellationToken = default)
+        {
+            var payload = new { Name = name };
+            var json = JsonSerializer.Serialize(payload, JsonOptions);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var request = new HttpRequestMessage(HttpMethod.Put, $"{AllergiesPath}/{id}") { Content = content };
+            return _httpClient.SendAsync(request, cancellationToken);
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,11 +17,15 @@ namespace Hospital.Meals.WebApi
         {
             _logger.LogError(exception, "Unhandled exception occurred: {Message}", exception.Message);
 
+            var (status, title, detail) = exception is InvalidOperationException opEx && opEx.Message.Contains("not found")
+                ? (StatusCodes.Status404NotFound, "Not Found", opEx.Message)
+                : (StatusCodes.Status500InternalServerError, "Server Error", "An unexpected error occurred. Please try again later.");
+
             var problemDetails = new ProblemDetails
             {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Server Error",
-                Detail = "An unexpected error occurred. Please try again later.",
+                Status = status,
+                Title = title,
+                Detail = detail,
                 Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}"
             };
 

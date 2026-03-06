@@ -21,6 +21,7 @@ namespace Hospital.Auth.Core.InternalModels
             entity.Property(e => e.Username).HasColumnName("username").HasMaxLength(256);
             entity.Property(e => e.PasswordHash).HasColumnName("password_hash").HasMaxLength(256).IsRequired();
             entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(256);
+            entity.HasIndex(e => e.Name).IsUnique();
             entity.Property(e => e.Admin).HasColumnName("admin");
             entity.Property(e => e.PatientAdmin).HasColumnName("patient_admin");
             entity.Property(e => e.MealsAdmin).HasColumnName("meals_admin");

@@ -30,6 +30,7 @@ namespace Hospital.Meals.Core.Contracts
 
         // Allergy (reference data)
         Task AddAllergyAsync(Allergy allergy, CancellationToken cancellationToken = default);
+        Task<bool> UpdateAllergyAsync(string id, string name, CancellationToken cancellationToken = default);
         Task<Allergy?> GetAllergyByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<Allergy>> ListAllergiesAsync(CancellationToken cancellationToken = default);
         Task<IReadOnlyList<string>> GetAllergyIdsByIngredientIdAsync(string ingredientId, CancellationToken cancellationToken = default);

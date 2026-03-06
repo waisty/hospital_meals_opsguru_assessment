@@ -2,6 +2,7 @@
 using Hospital.Auth.Core.Implementation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hospital.Auth.Core.Migrations
 {
     [DbContext(typeof(AuthDBContext))]
-    partial class AuthDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260306130134_UniqueNameIndexes")]
+    partial class UniqueNameIndexes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

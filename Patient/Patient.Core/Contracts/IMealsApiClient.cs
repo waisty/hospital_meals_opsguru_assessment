@@ -12,5 +12,10 @@ namespace Hospital.Patient.Core.Contracts
         /// Publishes a new allergy to the Meals API (POST /api/v1/allergies).
         /// </summary>
         Task<HttpResponseMessage> PublishAllergyAsync(string id, string name, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Publishes an allergy update to the Meals API (PUT /api/v1/allergies/{id}).
+        /// </summary>
+        Task<HttpResponseMessage> PublishAllergyUpdateAsync(string id, string name, CancellationToken cancellationToken = default);
     }
 }
