@@ -1,4 +1,5 @@
 using Hospital.Kitchen.Core.Contracts;
+using Hospital.Kitchen.ViewModels;
 using Hospital.Kitchen.WebApi.Authentication;
 
 namespace Hospital.Kitchen.WebApi;
@@ -11,10 +12,18 @@ public static class EndpointMapping
 
         var api = app.MapGroup("/api/v1");
 
-        api.MapPost("/trays", async (CreateTrayRequest request, IKitchenHandler handler, CancellationToken ct) =>
+        api.MapPost("/trays", async (Hospital.Kitchen.Core.Contracts.CreateTrayRequest request, IKitchenHandler handler, CancellationToken ct) =>
         {
             var trayId = await handler.CreateTrayAsync(request, ct);
             return Results.Created($"/api/v1/trays/{trayId}", new { id = trayId });
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsServicePolicyName);
+
+        api.MapPost("/trays/advance-state", async (AdvanceTrayStateRequest request, IKitchenHandler handler, CancellationToken ct) =>
+        {
+            var success = await handler.AdvanceTrayStateAsync(request.TrayId, (Enums.TrayState)request.FromState, ct);
+            return success
+                ? Results.Ok(new AdvanceTrayStateResponse { Success = true })
+                : Results.Conflict(new AdvanceTrayStateResponse { Success = false });
+        }).RequireAuthorization(JwtAuthenticationExtensions.KitchenUserPolicyName);
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using Hospital.Kitchen.Core.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,7 +9,7 @@ namespace Hospital.Kitchen.Core.InternalModels
     {
         public Guid Id { get; set; }
         public Guid TrayId { get; set; }
-        public string Status { get; set; } = "";
+        public Enums.TrayState Status { get; set; }
         public DateTime Timestamp { get; set; }
 
         public static void Configure(EntityTypeBuilder<TrayStatusHistory> entity)
@@ -20,7 +21,7 @@ namespace Hospital.Kitchen.Core.InternalModels
                 .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.TrayId).HasColumnName("tray_id");
-            entity.Property(e => e.Status).HasColumnName("status").HasMaxLength(64).IsRequired();
+            entity.Property(e => e.Status).HasColumnName("status").HasConversion<int>().IsRequired();
             entity.Property(e => e.Timestamp).HasColumnName("timestamp");
             entity.HasIndex(e => e.TrayId);
             entity.HasOne<Tray>()

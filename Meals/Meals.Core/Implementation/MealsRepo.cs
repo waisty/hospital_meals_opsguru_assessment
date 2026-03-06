@@ -10,11 +10,13 @@ namespace Hospital.Meals.Core.Implementation
     {
         private readonly MealsDBContext _context;
         private readonly IPatientApiClient _patientApiClient;
+        private readonly IKitchenApiClient _kitchenApiClient;
 
-        public MealsRepo(MealsDBContext context, IPatientApiClient patientApiClient)
+        public MealsRepo(MealsDBContext context, IPatientApiClient patientApiClient, IKitchenApiClient kitchenApiClient)
         {
             _context = context;
             _patientApiClient = patientApiClient;
+            _kitchenApiClient = kitchenApiClient;
         }
 
         // Meal
@@ -145,8 +147,17 @@ namespace Hospital.Meals.Core.Implementation
         // Patient request
         private async Task AddPatientRequestAsync(PatientRequest request, CancellationToken cancellationToken = default)
         {
-            _context.PatientRequests.Add(request);
-            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await ExecuteInTransactionAsync(async (ctx) =>
+            {
+                _context.PatientRequests.Add(request);
+                await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+                await _kitchenApiClient.PublishTrayAsync(new KitchenPublishTrayRequest()
+                {
+                     
+                });
+            }, cancellationToken);
+            
         }
 
         public async Task UpdatePatientRequestAsync(PatientRequest request, CancellationToken cancellationToken = default)
@@ -445,6 +456,21 @@ namespace Hospital.Meals.Core.Implementation
                 _context.IngredientDietTypeExclusions.Add(new IngredientDietTypeExclusions { IngredientId = ingredientId, DietTypeId = dietTypeId });
             }
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task ExecuteInTransactionAsync(Func<CancellationToken, Task> work, CancellationToken cancellationToken = default)
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
+            try
+            {
+                await work(cancellationToken).ConfigureAwait(false);
+                await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+            }
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
+                throw;
+            }
         }
 
     }

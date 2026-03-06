@@ -7,5 +7,6 @@ namespace Hospital.Kitchen.Core.Contracts
     public class ClaimIds
     {
         public const string mealsServiceClaim = "mealsService";
+        public const string kitchenUserClaim = "kitchenUser";
     }
 }

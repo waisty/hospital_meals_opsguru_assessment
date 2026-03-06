@@ -33,6 +33,15 @@ namespace Hospital.Meals.Core
             {
                 handlers.Add(new MealsServiceTokenHandler(configuration));
             });
+            services.AddHttpClient<IKitchenApiClient, KitchenApiClient>(client =>
+            {
+                var baseUrl = configuration["KitchenAPIEndpoint"] ?? throw new InvalidOperationException("KitchenAPIEndpoint not configured.");
+                client.BaseAddress = new Uri(baseUrl.TrimEnd('/') + "/");
+                client.Timeout = TimeSpan.FromHours(6);
+            }).ConfigureAdditionalHttpMessageHandlers((handlers, sp) =>
+            {
+                handlers.Add(new MealsServiceTokenHandler(configuration));
+            });
             services.AddHostedService<MealsDbMigrationHostedService>();
             services.AddHostedService<MealsSeedDataHostedService>();
             return services;

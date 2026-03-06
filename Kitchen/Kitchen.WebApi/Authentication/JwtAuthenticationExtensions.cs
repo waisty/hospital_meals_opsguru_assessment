@@ -9,6 +9,7 @@ public static class JwtAuthenticationExtensions
 {
     /// <summary>Policy name for endpoints that only the Meals service may call (requires mealsService claim).</summary>
     public const string MealsServicePolicyName = "MealsService";
+    public const string KitchenUserPolicyName = "KitchenUser";
 
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
@@ -35,6 +36,7 @@ public static class JwtAuthenticationExtensions
         services.AddAuthorization(options =>
         {
             options.AddPolicy(MealsServicePolicyName, policy => policy.RequireClaim(ClaimIds.mealsServiceClaim));
+            options.AddPolicy(KitchenUserPolicyName, policy => policy.RequireClaim(ClaimIds.kitchenUserClaim));
         });
 
         return services;

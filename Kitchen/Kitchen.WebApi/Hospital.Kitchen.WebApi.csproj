@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Kitchen.Core\Hospital.Kitchen.Core.csproj" />
+    <ProjectReference Include="..\Kitchen.UIViewModels\Hospital.Kitchen.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

@@ -13,7 +13,7 @@ namespace Hospital.Kitchen.Core.Contracts
         public string PatientId { get; set; } = "";
         public string PatientName { get; set; } = "";
         public string RecipeName { get; set; } = "";
-        public string State { get; set; } = "";
+        public Enums.TrayState State { get; set; } = Enums.TrayState.Pending;
         public IReadOnlyList<TrayIngredientItem> Ingredients { get; set; } = [];
     }
 }

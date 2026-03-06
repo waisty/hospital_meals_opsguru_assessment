@@ -34,5 +34,10 @@ namespace Hospital.Kitchen.Core.Implementation
             await _repo.AddTrayWithIngredientsAsync(tray, cancellationToken).ConfigureAwait(false);
             return tray.Id;
         }
+
+        public Task<bool> AdvanceTrayStateAsync(Guid trayId, Enums.TrayState fromState, CancellationToken cancellationToken = default)
+        {
+            return _repo.AdvanceTrayStateAsync(trayId, fromState, cancellationToken);
+        }
     }
 }

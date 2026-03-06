@@ -1,4 +1,5 @@
 using Hospital.Kitchen.Core.InternalModels;
+using static Hospital.Kitchen.Core.Contracts.Enums;
 
 namespace Hospital.Kitchen.Core.Contracts
 {
@@ -11,8 +12,8 @@ namespace Hospital.Kitchen.Core.Contracts
         Task AddTrayWithIngredientsAsync(Tray tray, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Updates the tray's State and appends a record to tray status history. Returns false if tray not found.
+        /// Updates the tray's State and appends a record to tray status history. Returns false if tray not found or current state does not match fromState.
         /// </summary>
-        Task<bool> UpdateTrayStateAsync(Guid trayId, string newState, CancellationToken cancellationToken = default);
+        Task<bool> AdvanceTrayStateAsync(Guid trayId, TrayState fromState, CancellationToken cancellationToken = default);
     }
 }
