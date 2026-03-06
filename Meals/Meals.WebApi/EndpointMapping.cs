@@ -1,6 +1,7 @@
 using Hospital.Meals.Core.Contracts;
 using Hospital.Meals.UIViewModels;
 using Hospital.Meals.WebApi.Authentication;
+using Hospital.Meals.WebApi.Validation;
 
 namespace Hospital.Meals.WebApi;
 
@@ -10,7 +11,7 @@ public static class EndpointMapping
     {
         app.MapGet("/", () => Results.Ok(new { service = "Hospital.Meals.WebApi", status = "running" }));
 
-        var api = app.MapGroup("/api/v1");
+        var api = app.MapGroup("/api/v1").AddEndpointFilter<ValidationEndpointFilter>();
 
         // Meal
         api.MapPost("/meals", async (MealCreateRequest request, IMealsHandler handler, CancellationToken ct) =>

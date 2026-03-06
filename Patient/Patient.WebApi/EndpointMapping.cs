@@ -1,6 +1,7 @@
 using Hospital.Patient.Core.Contracts;
 using Hospital.Patient.UIViewModels;
 using Hospital.Patient.WebApi.Authentication;
+using Hospital.Patient.WebApi.Validation;
 
 namespace Hospital.Patient.WebApi;
 
@@ -10,7 +11,7 @@ public static class EndpointMapping
     {
         app.MapGet("/", () => Results.Ok(new { service = "Hospital.Patient.WebApi", status = "running" }));
 
-        var api = app.MapGroup("/api/v1");
+        var api = app.MapGroup("/api/v1").AddEndpointFilter<ValidationEndpointFilter>();
 
         // Patient
         api.MapPost("/patients", async (PatientCreateRequest request, IPatientHandler handler, CancellationToken ct) =>
