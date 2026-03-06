@@ -1,9 +1,11 @@
 using Hospital.Auth.Core.Contracts;
 using Hospital.Auth.Core.Implementation;
 using Hospital.Auth.UIViewModels;
-using WebExceptionHandler;
+using Hospital.Auth.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 if (builder.Environment.IsEnvironment("Testing"))
     builder.Services.AddMockAuthServicesForTesting();

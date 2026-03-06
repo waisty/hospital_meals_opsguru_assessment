@@ -1,4 +1,3 @@
-using Hospital.Contracts;
 using Hospital.Patient.Core.InternalModels;
 
 namespace Hospital.Patient.Core.Contracts

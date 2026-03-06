@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Hospital.Contracts;
 using Hospital.Patient.Core.Contracts;
 using Hospital.Patient.Core.InternalModels;
 

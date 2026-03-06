@@ -1,4 +1,3 @@
-using Hospital.Contracts;
 using Hospital.Patient.Core.Contracts;
 using Hospital.Patient.Core.InternalModels;
 using Hospital.Patient.UIViewModels;

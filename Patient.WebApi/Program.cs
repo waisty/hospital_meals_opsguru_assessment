@@ -1,10 +1,12 @@
 using Hospital.Patient.Core;
 using Hospital.Patient.Core.Contracts;
 using Hospital.Patient.UIViewModels;
+using Hospital.Patient.WebApi;
 using Hospital.Patient.WebApi.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddPatientServices(builder.Configuration); // includes automatic EF Core migration at startup
 builder.Services.AddJwtAuthentication(builder.Configuration);
 

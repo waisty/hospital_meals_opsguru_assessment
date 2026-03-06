@@ -1,7 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Hospital.Contracts;
+using Hospital.Patient.Core.Contracts;
 
 namespace Hospital.Patient.WebApi.Authentication;
 

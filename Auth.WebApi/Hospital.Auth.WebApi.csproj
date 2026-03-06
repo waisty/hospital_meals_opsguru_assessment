@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Auth.Core\Hospital.Auth.Core.csproj" />
-    <ProjectReference Include="..\WebExceptionHandler\WebExceptionHandler.csproj" />
   </ItemGroup>
 
   <ItemGroup>

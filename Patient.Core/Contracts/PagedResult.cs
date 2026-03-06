@@ -1,4 +1,4 @@
-namespace Hospital.Contracts
+namespace Hospital.Patient.Core.Contracts
 {
     /// <summary>
     /// Represents a single page of items with total count for pagination.

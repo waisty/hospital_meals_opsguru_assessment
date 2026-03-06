@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace WebExceptionHandler
+namespace Hospital.Auth.WebApi
 {
     public class GlobalExceptionHandler : IExceptionHandler
     {

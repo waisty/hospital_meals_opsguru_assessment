@@ -3,7 +3,6 @@ using Hospital.Auth.Core.MockImplementation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WebExceptionHandler;
 
 namespace Hospital.Auth.Core.Implementation
 {
@@ -15,7 +14,7 @@ namespace Hospital.Auth.Core.Implementation
         /// </summary>
         public static IServiceCollection AddAuthServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddExceptionHandler<GlobalExceptionHandler>();
+            
             services.AddDbContext<AuthDBContext>();
             services.AddScoped<IAuthRepo, AuthRepo>();
             services.AddScoped<IAuthHandler, AuthHandler>();
@@ -30,7 +29,6 @@ namespace Hospital.Auth.Core.Implementation
         /// </summary>
         public static IServiceCollection AddMockAuthServicesForTesting(this IServiceCollection services)
         {
-            services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddSingleton<MockAuthRepo>();
             services.AddScoped<IAuthRepo>(sp => sp.GetRequiredService<MockAuthRepo>());
             services.AddScoped<IAuthHandler, AuthHandler>();
