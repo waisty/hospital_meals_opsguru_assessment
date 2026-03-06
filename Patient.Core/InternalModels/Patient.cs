@@ -6,14 +6,14 @@ namespace Hospital.Patient.Core.InternalModels
 {
     internal class Patient
     {
-        public string Id { get; set; } = "";
+        public Guid Id { get; set; }
         public string Name { get; set; } = "";
         public string DietTypeId { get; set; } = "";
         public string Notes { get; set; } = "";
 
         public PatientViewModel ToPatientViewModel() => new()
         {
-            Id = Id,
+            Id = Id.ToString(),
             Name = Name,
             DietTypeId = DietTypeId,
             Notes = Notes
@@ -21,7 +21,7 @@ namespace Hospital.Patient.Core.InternalModels
 
         public PatientDetailViewModel ToPatientDetailViewModel(IReadOnlyList<string> allergyIds, IReadOnlyList<string> clinicalStateIds) => new()
         {
-            Id = Id,
+            Id = Id.ToString(),
             Name = Name,
             DietTypeId = DietTypeId,
             Notes = Notes,
@@ -31,9 +31,11 @@ namespace Hospital.Patient.Core.InternalModels
 
         public static void Configure(EntityTypeBuilder<Patient> entity)
         {
-            entity.ToTable("patient");
+            entity.ToTable("patients");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasColumnName("id").HasMaxLength(256);
+            entity.Property(e => e.Id)
+                .HasColumnName("id")
+                .HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(256).IsRequired();
             entity.Property(e => e.DietTypeId).HasColumnName("diet_type_id").HasMaxLength(256).IsRequired();
             entity.Property(e => e.Notes).HasColumnName("notes");

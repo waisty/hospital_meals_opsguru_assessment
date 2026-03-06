@@ -11,14 +11,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hospital.Auth.Core.Migrations
 {
     [DbContext(typeof(AuthDBContext))]
-    [Migration("20260306005256_InitialAuthUsers")]
-    partial class InitialAuthUsers
+    [Migration("20260306130000_RemoveUserIdUseUsernameAsPrimaryKey")]
+    partial class RemoveUserIdUseUsernameAsPrimaryKey
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("dbo")
                 .HasAnnotation("ProductVersion", "10.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -65,7 +66,7 @@ namespace Hospital.Auth.Core.Migrations
 
                     b.HasKey("Username");
 
-                    b.ToTable("users", (string)null);
+                    b.ToTable("users", "dbo");
                 });
 #pragma warning restore 612, 618
         }

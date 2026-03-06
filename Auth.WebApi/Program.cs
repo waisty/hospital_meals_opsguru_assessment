@@ -8,13 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 if (builder.Environment.IsEnvironment("Testing"))
     builder.Services.AddMockAuthServicesForTesting();
 else
-    builder.Services.AddAuthServices(builder.Configuration);
+    builder.Services.AddAuthServices(builder.Configuration); // includes automatic EF Core migration at startup
 
 // Add services to the container.
 
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 

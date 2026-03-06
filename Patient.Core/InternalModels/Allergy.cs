@@ -17,7 +17,7 @@ namespace Hospital.Patient.Core.InternalModels
 
         public static void Configure(EntityTypeBuilder<Allergy> entity)
         {
-            entity.ToTable("allergy");
+            entity.ToTable("allergies");
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Id).HasColumnName("id").HasMaxLength(256);
             entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(256).IsRequired();

@@ -6,7 +6,7 @@ namespace Hospital.Patient.Core.Contracts
     public interface IPatientHandler
     {
         // Patient
-        Task AddPatientAsync(PatientCreateRequest request, CancellationToken cancellationToken = default);
+        Task<Guid> AddPatientAsync(PatientCreateRequest request, CancellationToken cancellationToken = default);
         Task<PatientViewModel?> GetPatientByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<PagedResult<PatientViewModel>> ListPatientsAsync(int page, int pageSize, CancellationToken cancellationToken = default);
         Task<PatientDetailViewModel?> GetPatientDetailByIdAsync(string id, CancellationToken cancellationToken = default);

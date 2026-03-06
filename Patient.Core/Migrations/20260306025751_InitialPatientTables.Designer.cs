@@ -25,7 +25,7 @@ namespace Hospital.Patient.Core.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Hospital.Patient.Core.InternalModels.Allergies", b =>
+            modelBuilder.Entity("Hospital.Patient.Core.InternalModels.Allergy", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(256)
@@ -43,7 +43,7 @@ namespace Hospital.Patient.Core.Migrations
                     b.ToTable("allergies", "dbo");
                 });
 
-            modelBuilder.Entity("Hospital.Patient.Core.InternalModels.ClinicalStates", b =>
+            modelBuilder.Entity("Hospital.Patient.Core.InternalModels.ClinicalState", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(256)
@@ -61,7 +61,7 @@ namespace Hospital.Patient.Core.Migrations
                     b.ToTable("clinical_states", "dbo");
                 });
 
-            modelBuilder.Entity("Hospital.Patient.Core.InternalModels.DietTypes", b =>
+            modelBuilder.Entity("Hospital.Patient.Core.InternalModels.DietType", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(256)
@@ -110,7 +110,7 @@ namespace Hospital.Patient.Core.Migrations
                     b.ToTable("patients", "dbo");
                 });
 
-            modelBuilder.Entity("Hospital.Patient.Core.InternalModels.PatientAllergies", b =>
+            modelBuilder.Entity("Hospital.Patient.Core.InternalModels.PatientAllergy", b =>
                 {
                     b.Property<string>("PatientId")
                         .HasMaxLength(256)
@@ -129,7 +129,7 @@ namespace Hospital.Patient.Core.Migrations
                     b.ToTable("patient_allergies", "dbo");
                 });
 
-            modelBuilder.Entity("Hospital.Patient.Core.InternalModels.PatientClinicalStates", b =>
+            modelBuilder.Entity("Hospital.Patient.Core.InternalModels.PatientClinicalState", b =>
                 {
                     b.Property<string>("PatientId")
                         .HasMaxLength(256)
@@ -150,16 +150,16 @@ namespace Hospital.Patient.Core.Migrations
 
             modelBuilder.Entity("Hospital.Patient.Core.InternalModels.Patient", b =>
                 {
-                    b.HasOne("Hospital.Patient.Core.InternalModels.DietTypes", null)
+                    b.HasOne("Hospital.Patient.Core.InternalModels.DietType", null)
                         .WithMany()
                         .HasForeignKey("DietTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Hospital.Patient.Core.InternalModels.PatientAllergies", b =>
+            modelBuilder.Entity("Hospital.Patient.Core.InternalModels.PatientAllergy", b =>
                 {
-                    b.HasOne("Hospital.Patient.Core.InternalModels.Allergies", null)
+                    b.HasOne("Hospital.Patient.Core.InternalModels.Allergy", null)
                         .WithMany()
                         .HasForeignKey("AllergyId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -172,9 +172,9 @@ namespace Hospital.Patient.Core.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Hospital.Patient.Core.InternalModels.PatientClinicalStates", b =>
+            modelBuilder.Entity("Hospital.Patient.Core.InternalModels.PatientClinicalState", b =>
                 {
-                    b.HasOne("Hospital.Patient.Core.InternalModels.ClinicalStates", null)
+                    b.HasOne("Hospital.Patient.Core.InternalModels.ClinicalState", null)
                         .WithMany()
                         .HasForeignKey("ClinicalStateId")
                         .OnDelete(DeleteBehavior.Restrict)

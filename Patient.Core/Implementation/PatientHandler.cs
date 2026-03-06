@@ -15,21 +15,23 @@ namespace Hospital.Patient.Core.Implementation
             _repo = repo;
         }
 
-        public async Task AddPatientAsync(PatientCreateRequest request, CancellationToken cancellationToken = default)
+        public async Task<Guid> AddPatientAsync(PatientCreateRequest request, CancellationToken cancellationToken = default)
         {
             var patient = new PatientEntity
             {
-                Id = request.Id,
                 Name = request.Name,
                 DietTypeId = request.DietTypeId,
                 Notes = request.Notes ?? ""
             };
             await _repo.AddPatientAsync(patient, cancellationToken).ConfigureAwait(false);
+            return patient.Id;
         }
 
         public async Task<PatientViewModel?> GetPatientByIdAsync(string id, CancellationToken cancellationToken = default)
         {
-            var patient = await _repo.GetPatientByIdAsync(id, cancellationToken).ConfigureAwait(false);
+            if (!Guid.TryParse(id, out var guid))
+                return null;
+            var patient = await _repo.GetPatientByIdAsync(guid, cancellationToken).ConfigureAwait(false);
             return patient == null ? null : patient.ToPatientViewModel();
         }
 
@@ -47,11 +49,13 @@ namespace Hospital.Patient.Core.Implementation
 
         public async Task<PatientDetailViewModel?> GetPatientDetailByIdAsync(string id, CancellationToken cancellationToken = default)
         {
-            var patient = await _repo.GetPatientByIdAsync(id, cancellationToken).ConfigureAwait(false);
+            if (!Guid.TryParse(id, out var guid))
+                return null;
+            var patient = await _repo.GetPatientByIdAsync(guid, cancellationToken).ConfigureAwait(false);
             if (patient == null) return null;
 
-            var allergyIds = await _repo.GetAllergyIdsByPatientIdAsync(id, cancellationToken).ConfigureAwait(false);
-            var clinicalStateIds = await _repo.GetClinicalStateIdsByPatientIdAsync(id, cancellationToken).ConfigureAwait(false);
+            var allergyIds = await _repo.GetAllergyIdsByPatientIdAsync(guid, cancellationToken).ConfigureAwait(false);
+            var clinicalStateIds = await _repo.GetClinicalStateIdsByPatientIdAsync(guid, cancellationToken).ConfigureAwait(false);
 
             return patient.ToPatientDetailViewModel(allergyIds, clinicalStateIds);
         }
@@ -76,7 +80,9 @@ namespace Hospital.Patient.Core.Implementation
 
         public async Task<IReadOnlyList<string>> GetAllergyIdsByPatientIdAsync(string patientId, CancellationToken cancellationToken = default)
         {
-            return await _repo.GetAllergyIdsByPatientIdAsync(patientId, cancellationToken).ConfigureAwait(false);
+            if (!Guid.TryParse(patientId, out var guid))
+                return Array.Empty<string>();
+            return await _repo.GetAllergyIdsByPatientIdAsync(guid, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task AddClinicalStateAsync(ClinicalStateCreateRequest request, CancellationToken cancellationToken = default)
@@ -99,7 +105,9 @@ namespace Hospital.Patient.Core.Implementation
 
         public async Task<IReadOnlyList<string>> GetClinicalStateIdsByPatientIdAsync(string patientId, CancellationToken cancellationToken = default)
         {
-            return await _repo.GetClinicalStateIdsByPatientIdAsync(patientId, cancellationToken).ConfigureAwait(false);
+            if (!Guid.TryParse(patientId, out var guid))
+                return Array.Empty<string>();
+            return await _repo.GetClinicalStateIdsByPatientIdAsync(guid, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task AddDietTypeAsync(DietTypeCreateRequest request, CancellationToken cancellationToken = default)

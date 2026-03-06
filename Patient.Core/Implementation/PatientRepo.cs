@@ -20,7 +20,7 @@ namespace Hospital.Patient.Core.Implementation
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<InternalModels.Patient?> GetPatientByIdAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<InternalModels.Patient?> GetPatientByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await _context.Patients
                 .AsNoTracking()
@@ -33,7 +33,7 @@ namespace Hospital.Patient.Core.Implementation
             var totalCount = await _context.Patients.CountAsync(cancellationToken).ConfigureAwait(false);
             var items = await _context.Patients
                 .AsNoTracking()
-                .OrderBy(p => p.Id)
+                .OrderBy(p => p.Name)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken)
@@ -70,7 +70,7 @@ namespace Hospital.Patient.Core.Implementation
                 .ConfigureAwait(false);
         }
 
-        public async Task<IReadOnlyList<string>> GetAllergyIdsByPatientIdAsync(string patientId, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<string>> GetAllergyIdsByPatientIdAsync(Guid patientId, CancellationToken cancellationToken = default)
         {
             return await _context.PatientAllergies
                 .AsNoTracking()
@@ -103,7 +103,7 @@ namespace Hospital.Patient.Core.Implementation
                 .ConfigureAwait(false);
         }
 
-        public async Task<IReadOnlyList<string>> GetClinicalStateIdsByPatientIdAsync(string patientId, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<string>> GetClinicalStateIdsByPatientIdAsync(Guid patientId, CancellationToken cancellationToken = default)
         {
             return await _context.PatientClinicalStates
                 .AsNoTracking()

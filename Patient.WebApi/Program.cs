@@ -5,7 +5,7 @@ using Hospital.Patient.WebApi.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddPatientServices(builder.Configuration);
+builder.Services.AddPatientServices(builder.Configuration); // includes automatic EF Core migration at startup
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
@@ -15,8 +15,8 @@ app.UseJwtAuthentication();
 // Patient
 app.MapPost("/patients", async (PatientCreateRequest request, IPatientHandler handler, CancellationToken ct) =>
 {
-    await handler.AddPatientAsync(request, ct);
-    return Results.Created($"/patients/{request.Id}", null);
+    var id = await handler.AddPatientAsync(request, ct);
+    return Results.Created($"/patients/{id}", null);
 }).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminPolicyName);
 
 app.MapGet("/patients/{id}", async (string id, IPatientHandler handler, CancellationToken ct) =>

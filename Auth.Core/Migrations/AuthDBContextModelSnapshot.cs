@@ -22,7 +22,7 @@ namespace Hospital.Auth.Core.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Core.Auth.InternalModels.User", b =>
+            modelBuilder.Entity("Hospital.Auth.Core.InternalModels.User", b =>
                 {
                     b.Property<string>("Username")
                         .HasMaxLength(256)
