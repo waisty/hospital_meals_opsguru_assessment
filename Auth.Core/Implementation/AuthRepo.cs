@@ -1,4 +1,4 @@
-﻿using Core.Auth.Contracts;
+using Core.Auth.Contracts;
 using Core.Auth.InternalModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,22 +11,22 @@ namespace Auth.Core.Implementation
 {
     internal class AuthRepo : IAuthRepo
     {
-        private readonly AuthDBContext authContext;
+        private readonly AuthDBContext context;
         public AuthRepo(AuthDBContext authContext)
         {
-            this.authContext = authContext;
+            this.context = authContext;
         }
         
         public async Task<User?> GetUserAsync(string username)
         {
-            var user = await (from u in authContext.Users where u.Username == username select u).FirstOrDefaultAsync();
+            var user = await (from u in context.Users where u.Username == username select u).FirstOrDefaultAsync();
             return user;
         }
 
         public async Task<User?> GetUserWithUsernameAndPasswordAsync(string username, string password)
         {
-            string passwordHash = AuthDBContext.Crypt(password, AuthDBContext.GenSalt("bf"));
-            var user = await (from u in authContext.Users where u.Username == username && u.PasswordHash == password select u).FirstOrDefaultAsync();
+            string passwordHash = context.Users.Select(_ => AuthDBContext.Crypt(password, AuthDBContext.GenSalt("bf"))).FirstOrDefault()!;
+            var user = await (from u in context.Users where u.Username == username && u.PasswordHash == passwordHash select u).FirstOrDefaultAsync();
             return user;
         }
     }
@@ -50,6 +50,20 @@ namespace Auth.Core.Implementation
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("users");
+                entity.HasKey(e => e.Username);
+                entity.Property(e => e.Username).HasColumnName("username").HasMaxLength(256);
+                entity.Property(e => e.PasswordHash).HasColumnName("password_hash").HasMaxLength(256).IsRequired();
+                entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(256);
+                entity.Property(e => e.Admin).HasColumnName("admin");
+                entity.Property(e => e.PatientAdmin).HasColumnName("patient_admin");
+                entity.Property(e => e.MealsAdmin).HasColumnName("meals_admin");
+                entity.Property(e => e.MealsUser).HasColumnName("meals_user");
+                entity.Property(e => e.KitchenUser).HasColumnName("kitchen_user");
+            });
+
             modelBuilder.HasDbFunction(typeof(AuthDBContext).GetMethod(nameof(Crypt), new[] { typeof(string), typeof(string) }) ?? throw new Exception($"{nameof(Crypt)} function not found in ${nameof(AuthDBContext)}"))
                 .HasName("crypt");
 

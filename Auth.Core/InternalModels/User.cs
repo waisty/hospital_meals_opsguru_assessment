@@ -1,7 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Core.Auth.InternalModels
 {
     internal class User
@@ -15,6 +11,4 @@ namespace Core.Auth.InternalModels
         public bool MealsUser { get; set; }
         public bool KitchenUser { get; set; }
     }
-
-    
 }
