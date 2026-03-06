@@ -1,4 +1,4 @@
-namespace Patient.UIViewModels
+namespace Hospital.Patient.UIViewModels
 {
     /// <summary>
     /// Patient with associated allergy and clinical state ids for display or edit.

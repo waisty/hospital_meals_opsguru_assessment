@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Auth.UIViewModels
+namespace Hospital.Auth.UIViewModels
 {
     public class UserAuthResponse
     {

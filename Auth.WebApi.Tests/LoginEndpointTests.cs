@@ -1,9 +1,9 @@
 using System.Net;
 using System.Net.Http.Json;
-using Auth.UIViewModels;
+using Hospital.Auth.UIViewModels;
 using Xunit;
 
-namespace Auth.WebApi.Tests;
+namespace Hospital.Auth.WebApi.Tests;
 
 public sealed class LoginEndpointTests : IClassFixture<AuthWebApiFixture>
 {

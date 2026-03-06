@@ -1,11 +1,11 @@
-using Core.Auth.InternalModels;
+using Hospital.Auth.Core.InternalModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Auth.Core.Implementation
+namespace Hospital.Auth.Core.Implementation
 {
     /// <summary>
     /// Seeds initial users when the database is empty or when SeedData:Enabled is true.

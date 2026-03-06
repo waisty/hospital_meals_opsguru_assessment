@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Patient.Core.Contracts;
-using Patient.Core.Implementation;
+using Hospital.Patient.Core.Contracts;
+using Hospital.Patient.Core.Implementation;
 
-namespace Patient.Core
+namespace Hospital.Patient.Core
 {
     public static class ServiceCollectionExtensions
     {

@@ -1,6 +1,6 @@
-using Auth.Core.Contracts;
-using Auth.Core.Implementation;
-using Auth.UIViewModels;
+using Hospital.Auth.Core.Contracts;
+using Hospital.Auth.Core.Implementation;
+using Hospital.Auth.UIViewModels;
 using WebExceptionHandler;
 
 var builder = WebApplication.CreateBuilder(args);

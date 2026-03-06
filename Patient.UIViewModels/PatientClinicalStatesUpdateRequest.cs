@@ -1,4 +1,4 @@
-namespace Patient.UIViewModels
+namespace Hospital.Patient.UIViewModels
 {
     /// <summary>
     /// Request to set the list of clinical state ids for a patient.

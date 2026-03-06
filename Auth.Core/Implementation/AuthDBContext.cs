@@ -1,8 +1,8 @@
-using Core.Auth.InternalModels;
+using Hospital.Auth.Core.InternalModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace Auth.Core.Implementation
+namespace Hospital.Auth.Core.Implementation
 {
     internal class AuthDBContext : DbContext
     {

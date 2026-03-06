@@ -1,10 +1,10 @@
-﻿using Auth.UIViewModels;
-using Core.Auth.InternalModels;
+using Hospital.Auth.UIViewModels;
+using Hospital.Auth.Core.InternalModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Auth.Contracts
+namespace Hospital.Auth.Core.Contracts
 {
     public interface IAuthRepo
     {

@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Patient.Core.Contracts;
-using Patient.Core.InternalModels;
+using Hospital.Contracts;
+using Hospital.Patient.Core.Contracts;
+using Hospital.Patient.Core.InternalModels;
 
-namespace Patient.Core.Implementation
+namespace Hospital.Patient.Core.Implementation
 {
     internal sealed class PatientRepo : IPatientRepo
     {

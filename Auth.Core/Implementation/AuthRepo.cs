@@ -1,8 +1,8 @@
-using Core.Auth.Contracts;
-using Core.Auth.InternalModels;
+using Hospital.Auth.Core.Contracts;
+using Hospital.Auth.Core.InternalModels;
 using Microsoft.EntityFrameworkCore;
 
-namespace Auth.Core.Implementation
+namespace Hospital.Auth.Core.Implementation
 {
     internal class AuthRepo : IAuthRepo
     {

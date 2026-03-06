@@ -1,13 +1,14 @@
-using Patient.UIViewModels;
+using Hospital.Contracts;
+using Hospital.Patient.UIViewModels;
 
-namespace Patient.Core.Contracts
+namespace Hospital.Patient.Core.Contracts
 {
     internal interface IPatientHandler
     {
         // Patient
         Task AddPatientAsync(PatientCreateRequest request, CancellationToken cancellationToken = default);
         Task<PatientViewModel?> GetPatientByIdAsync(string id, CancellationToken cancellationToken = default);
-        Task<PagedResultViewModel<PatientViewModel>> ListPatientsAsync(int page, int pageSize, CancellationToken cancellationToken = default);
+        Task<PagedResult<PatientViewModel>> ListPatientsAsync(int page, int pageSize, CancellationToken cancellationToken = default);
         Task<PatientDetailViewModel?> GetPatientDetailByIdAsync(string id, CancellationToken cancellationToken = default);
 
         // Allergy

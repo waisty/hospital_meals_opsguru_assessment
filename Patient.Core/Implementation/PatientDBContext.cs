@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using InternalModels = Patient.Core.InternalModels;
-using PatientEntity = Patient.Core.InternalModels.Patient;
+using InternalModels = Hospital.Patient.Core.InternalModels;
+using PatientEntity = Hospital.Patient.Core.InternalModels.Patient;
 
-namespace Patient.Core.Implementation
+namespace Hospital.Patient.Core.Implementation
 {
     internal sealed class PatientDBContext : DbContext
     {

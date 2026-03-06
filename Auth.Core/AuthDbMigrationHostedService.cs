@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Auth.Core.Implementation
+namespace Hospital.Auth.Core.Implementation
 {
     /// <summary>
     /// Applies pending EF Core migrations to the auth database when the application starts.

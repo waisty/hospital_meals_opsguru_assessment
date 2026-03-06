@@ -1,8 +1,8 @@
-using Core.Auth.Contracts;
-using Core.Auth.InternalModels;
+using Hospital.Auth.Core.Contracts;
+using Hospital.Auth.Core.InternalModels;
 using System.Collections.Concurrent;
 
-namespace Auth.Core.MockImplementation
+namespace Hospital.Auth.Core.MockImplementation
 {
     /// <summary>
     /// In-memory mock implementation of IAuthRepo for testing.

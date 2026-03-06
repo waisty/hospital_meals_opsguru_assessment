@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Patient.Core.Implementation;
+using Hospital.Patient.Core.Implementation;
 
-namespace Patient.Core
+namespace Hospital.Patient.Core
 {
     /// <summary>
     /// Applies pending EF Core migrations to the patient database when the application starts.

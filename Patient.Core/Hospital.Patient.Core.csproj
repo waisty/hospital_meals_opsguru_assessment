@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Hospital.Contracts\Hospital.Contracts.csproj" />
-    <ProjectReference Include="..\Patient.UIViewModels\Patient.UIViewModels.csproj" />
+    <ProjectReference Include="..\Patient.UIViewModels\Hospital.Patient.UIViewModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>

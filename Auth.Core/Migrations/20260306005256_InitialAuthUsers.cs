@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Auth.Core.Migrations
+namespace Hospital.Auth.Core.Migrations
 {
     /// <inheritdoc />
     public partial class InitialAuthUsers : Migration

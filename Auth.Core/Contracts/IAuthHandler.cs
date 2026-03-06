@@ -1,9 +1,9 @@
-﻿using Auth.UIViewModels;
+using Hospital.Auth.UIViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Auth.Core.Contracts
+namespace Hospital.Auth.Core.Contracts
 {
     public interface IAuthHandler
     {

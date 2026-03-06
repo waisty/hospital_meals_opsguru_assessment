@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Hospital.Patient.UIViewModels;
 
-namespace Patient.Core.InternalModels
+namespace Hospital.Patient.Core.InternalModels
 {
     internal class Patient
     {
@@ -9,6 +10,24 @@ namespace Patient.Core.InternalModels
         public string Name { get; set; } = "";
         public string DietTypeId { get; set; } = "";
         public string Notes { get; set; } = "";
+
+        public PatientViewModel ToPatientViewModel() => new()
+        {
+            Id = Id,
+            Name = Name,
+            DietTypeId = DietTypeId,
+            Notes = Notes
+        };
+
+        public PatientDetailViewModel ToPatientDetailViewModel(IReadOnlyList<string> allergyIds, IReadOnlyList<string> clinicalStateIds) => new()
+        {
+            Id = Id,
+            Name = Name,
+            DietTypeId = DietTypeId,
+            Notes = Notes,
+            AllergyIds = allergyIds,
+            ClinicalStateIds = clinicalStateIds
+        };
 
         public static void Configure(EntityTypeBuilder<Patient> entity)
         {

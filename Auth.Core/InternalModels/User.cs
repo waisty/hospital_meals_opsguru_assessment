@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Core.Auth.InternalModels
+namespace Hospital.Auth.Core.InternalModels
 {
     internal class User
     {

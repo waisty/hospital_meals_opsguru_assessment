@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Patient.Core.Migrations
+namespace Hospital.Patient.Core.Migrations
 {
     /// <inheritdoc />
     public partial class InitialPatientTables : Migration

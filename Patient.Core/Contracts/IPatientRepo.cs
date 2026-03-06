@@ -1,5 +1,7 @@
-using Patient.Core.InternalModels;
-namespace Patient.Core.Contracts
+using Hospital.Contracts;
+using Hospital.Patient.Core.InternalModels;
+
+namespace Hospital.Patient.Core.Contracts
 {
     internal interface IPatientRepo
     {

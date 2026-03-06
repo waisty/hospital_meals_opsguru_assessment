@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Patient.Core.InternalModels
+namespace Hospital.Patient.Core.InternalModels
 {
     internal class PatientClinicalState
     {

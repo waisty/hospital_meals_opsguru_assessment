@@ -1,4 +1,4 @@
-namespace Patient.UIViewModels
+namespace Hospital.Patient.UIViewModels
 {
     public class AllergyCreateRequest
     {

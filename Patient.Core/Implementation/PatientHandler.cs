@@ -1,9 +1,10 @@
-using Patient.Core.Contracts;
-using Patient.Core.InternalModels;
-using Patient.UIViewModels;
-using PatientEntity = Patient.Core.InternalModels.Patient;
+using Hospital.Contracts;
+using Hospital.Patient.Core.Contracts;
+using Hospital.Patient.Core.InternalModels;
+using Hospital.Patient.UIViewModels;
+using PatientEntity = Hospital.Patient.Core.InternalModels.Patient;
 
-namespace Patient.Core.Implementation
+namespace Hospital.Patient.Core.Implementation
 {
     internal sealed class PatientHandler : IPatientHandler
     {
@@ -29,15 +30,15 @@ namespace Patient.Core.Implementation
         public async Task<PatientViewModel?> GetPatientByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             var patient = await _repo.GetPatientByIdAsync(id, cancellationToken).ConfigureAwait(false);
-            return patient == null ? null : ToPatientViewModel(patient);
+            return patient == null ? null : patient.ToPatientViewModel();
         }
 
-        public async Task<PagedResultViewModel<PatientViewModel>> ListPatientsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<PagedResult<PatientViewModel>> ListPatientsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
         {
             var paged = await _repo.ListPatientsAsync(page, pageSize, cancellationToken).ConfigureAwait(false);
-            return new PagedResultViewModel<PatientViewModel>
+            return new PagedResult<PatientViewModel>
             {
-                Items = paged.Items.Select(ToPatientViewModel).ToList(),
+                Items = paged.Items.Select(p => p.ToPatientViewModel()).ToList(),
                 TotalCount = paged.TotalCount,
                 Page = paged.Page,
                 PageSize = paged.PageSize
@@ -52,15 +53,7 @@ namespace Patient.Core.Implementation
             var allergyIds = await _repo.GetAllergyIdsByPatientIdAsync(id, cancellationToken).ConfigureAwait(false);
             var clinicalStateIds = await _repo.GetClinicalStateIdsByPatientIdAsync(id, cancellationToken).ConfigureAwait(false);
 
-            return new PatientDetailViewModel
-            {
-                Id = patient.Id,
-                Name = patient.Name,
-                DietTypeId = patient.DietTypeId,
-                Notes = patient.Notes,
-                AllergyIds = allergyIds,
-                ClinicalStateIds = clinicalStateIds
-            };
+            return patient.ToPatientDetailViewModel(allergyIds, clinicalStateIds);
         }
 
         public async Task AddAllergyAsync(AllergyCreateRequest request, CancellationToken cancellationToken = default)
@@ -72,13 +65,13 @@ namespace Patient.Core.Implementation
         public async Task<AllergyViewModel?> GetAllergyByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             var allergy = await _repo.GetAllergyByIdAsync(id, cancellationToken).ConfigureAwait(false);
-            return allergy == null ? null : ToAllergyViewModel(allergy);
+            return allergy == null ? null : allergy.ToAllergyViewModel();
         }
 
         public async Task<IReadOnlyList<AllergyViewModel>> ListAllergiesAsync(CancellationToken cancellationToken = default)
         {
             var list = await _repo.ListAllergiesAsync(cancellationToken).ConfigureAwait(false);
-            return list.Select(ToAllergyViewModel).ToList();
+            return list.Select(a => a.ToAllergyViewModel()).ToList();
         }
 
         public async Task<IReadOnlyList<string>> GetAllergyIdsByPatientIdAsync(string patientId, CancellationToken cancellationToken = default)
@@ -95,13 +88,13 @@ namespace Patient.Core.Implementation
         public async Task<ClinicalStateViewModel?> GetClinicalStateByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             var clinicalState = await _repo.GetClinicalStateByIdAsync(id, cancellationToken).ConfigureAwait(false);
-            return clinicalState == null ? null : ToClinicalStateViewModel(clinicalState);
+            return clinicalState == null ? null : clinicalState.ToClinicalStateViewModel();
         }
 
         public async Task<IReadOnlyList<ClinicalStateViewModel>> ListClinicalStatesAsync(CancellationToken cancellationToken = default)
         {
             var list = await _repo.ListClinicalStatesAsync(cancellationToken).ConfigureAwait(false);
-            return list.Select(ToClinicalStateViewModel).ToList();
+            return list.Select(c => c.ToClinicalStateViewModel()).ToList();
         }
 
         public async Task<IReadOnlyList<string>> GetClinicalStateIdsByPatientIdAsync(string patientId, CancellationToken cancellationToken = default)
@@ -118,39 +111,14 @@ namespace Patient.Core.Implementation
         public async Task<DietTypeViewModel?> GetDietTypeByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             var dietType = await _repo.GetDietTypeByIdAsync(id, cancellationToken).ConfigureAwait(false);
-            return dietType == null ? null : ToDietTypeViewModel(dietType);
+            return dietType == null ? null : dietType.ToDietTypeViewModel();
         }
 
         public async Task<IReadOnlyList<DietTypeViewModel>> ListDietTypesAsync(CancellationToken cancellationToken = default)
         {
             var list = await _repo.ListDietTypesAsync(cancellationToken).ConfigureAwait(false);
-            return list.Select(ToDietTypeViewModel).ToList();
+            return list.Select(d => d.ToDietTypeViewModel()).ToList();
         }
 
-        private static PatientViewModel ToPatientViewModel(PatientEntity p) => new()
-        {
-            Id = p.Id,
-            Name = p.Name,
-            DietTypeId = p.DietTypeId,
-            Notes = p.Notes
-        };
-
-        private static AllergyViewModel ToAllergyViewModel(Allergy a) => new()
-        {
-            Id = a.Id,
-            Name = a.Name
-        };
-
-        private static ClinicalStateViewModel ToClinicalStateViewModel(ClinicalState c) => new()
-        {
-            Id = c.Id,
-            Name = c.Name
-        };
-
-        private static DietTypeViewModel ToDietTypeViewModel(DietType d) => new()
-        {
-            Id = d.Id,
-            Name = d.Name
-        };
     }
 }

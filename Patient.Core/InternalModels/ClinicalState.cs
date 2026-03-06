@@ -1,12 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Hospital.Patient.UIViewModels;
 
-namespace Patient.Core.InternalModels
+namespace Hospital.Patient.Core.InternalModels
 {
     internal class ClinicalState
     {
         public string Id { get; set; } = "";
         public string Name { get; set; } = "";
+
+        public ClinicalStateViewModel ToClinicalStateViewModel() => new()
+        {
+            Id = Id,
+            Name = Name
+        };
 
         public static void Configure(EntityTypeBuilder<ClinicalState> entity)
         {

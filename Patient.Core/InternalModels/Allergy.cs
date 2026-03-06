@@ -1,12 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Hospital.Patient.UIViewModels;
 
-namespace Patient.Core.InternalModels
+namespace Hospital.Patient.Core.InternalModels
 {
     internal class Allergy
     {
         public string Id { get; set; } = "";
         public string Name { get; set; } = "";
+
+        public AllergyViewModel ToAllergyViewModel() => new()
+        {
+            Id = Id,
+            Name = Name
+        };
 
         public static void Configure(EntityTypeBuilder<Allergy> entity)
         {

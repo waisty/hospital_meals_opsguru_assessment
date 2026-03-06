@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Auth.WebApi\Auth.WebApi.csproj" />
+    <ProjectReference Include="..\Auth.WebApi\Hospital.Auth.WebApi.csproj" />
   </ItemGroup>
 
 </Project>

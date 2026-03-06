@@ -1,12 +1,11 @@
-using Auth.Core.Contracts;
-using Auth.Core.MockImplementation;
-using Core.Auth.Contracts;
+using Hospital.Auth.Core.Contracts;
+using Hospital.Auth.Core.MockImplementation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebExceptionHandler;
 
-namespace Auth.Core.Implementation
+namespace Hospital.Auth.Core.Implementation
 {
     public static class ServiceCollectionExtensions
     {
