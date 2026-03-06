@@ -1,11 +1,16 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Hospital.Contracts;
 
 namespace Hospital.Patient.WebApi.Authentication;
 
 public static class JwtAuthenticationExtensions
 {
+    /// <summary>Policy name for endpoints that require the patientAdmin claim.</summary>
+    public const string PatientAdminPolicyName = "PatientAdmin";
+    public const string AdminPolicyName = "Admin";
+
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtKey = configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key not configured.");
@@ -27,7 +32,11 @@ public static class JwtAuthenticationExtensions
                     ClockSkew = TimeSpan.Zero
                 };
             });
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy(PatientAdminPolicyName, policy => policy.RequireClaim(ClaimIds.patientAdminClaim, "True"));
+            options.AddPolicy(PatientAdminPolicyName, policy => policy.RequireClaim(ClaimIds.adminClaim, "True"));
+        });
 
         return services;
     }
