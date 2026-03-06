@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hospital.Meals.Core.Migrations
 {
     [DbContext(typeof(MealsDBContext))]
-    [Migration("20260306084740_AddDisabledToMealsAndRecipes")]
-    partial class AddDisabledToMealsAndRecipes
+    [Migration("20260306162028_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,6 +41,9 @@ namespace Hospital.Meals.Core.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("allergies", "dbo");
                 });
 
@@ -59,6 +62,9 @@ namespace Hospital.Meals.Core.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("clinical_states", "dbo");
                 });
 
@@ -76,6 +82,9 @@ namespace Hospital.Meals.Core.Migrations
                         .HasColumnName("name");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("diet_types", "dbo");
                 });
@@ -98,6 +107,9 @@ namespace Hospital.Meals.Core.Migrations
                         .HasColumnName("name");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("ingredients", "dbo");
                 });
@@ -191,12 +203,15 @@ namespace Hospital.Meals.Core.Migrations
 
                     b.HasIndex("DietTypeId");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.HasIndex("RecipeId");
 
                     b.ToTable("meals", "dbo");
                 });
 
-            modelBuilder.Entity("Hospital.Meals.Core.InternalModels.PatientMealRequest", b =>
+            modelBuilder.Entity("Hospital.Meals.Core.InternalModels.PatientRequest", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -234,11 +249,16 @@ namespace Hospital.Meals.Core.Migrations
                         .HasColumnType("text")
                         .HasColumnName("status_reason");
 
+                    b.Property<string>("UnsafeIngredientId")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("unsafe_ingredient_id");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("patient_meal_requests", "dbo");
+                    b.ToTable("patient_requests", "dbo");
                 });
 
             modelBuilder.Entity("Hospital.Meals.Core.InternalModels.Recipe", b =>
@@ -270,6 +290,9 @@ namespace Hospital.Meals.Core.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DietTypeId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("recipes", "dbo");
                 });
@@ -362,7 +385,7 @@ namespace Hospital.Meals.Core.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Hospital.Meals.Core.InternalModels.PatientMealRequest", b =>
+            modelBuilder.Entity("Hospital.Meals.Core.InternalModels.PatientRequest", b =>
                 {
                     b.HasOne("Hospital.Meals.Core.InternalModels.Recipe", null)
                         .WithMany()

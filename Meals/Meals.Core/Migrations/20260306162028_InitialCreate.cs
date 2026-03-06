@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -6,12 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Hospital.Meals.Core.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMealsTables : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("CREATE EXTENSION IF NOT EXISTS pgcrypto;");
             migrationBuilder.EnsureSchema(
                 name: "dbo");
 
@@ -76,7 +75,8 @@ namespace Hospital.Meals.Core.Migrations
                     id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     description = table.Column<string>(type: "text", nullable: true),
-                    diet_type_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true)
+                    diet_type_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    disabled = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -179,7 +179,8 @@ namespace Hospital.Meals.Core.Migrations
                     id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     recipe_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    diet_type_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true)
+                    diet_type_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    disabled = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -201,7 +202,7 @@ namespace Hospital.Meals.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "patient_meal_requests",
+                name: "patient_requests",
                 schema: "dbo",
                 columns: table => new
                 {
@@ -211,13 +212,14 @@ namespace Hospital.Meals.Core.Migrations
                     recipe_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     requested_for_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     approval_status = table.Column<int>(type: "integer", nullable: false),
-                    status_reason = table.Column<string>(type: "text", nullable: true)
+                    status_reason = table.Column<string>(type: "text", nullable: true),
+                    unsafe_ingredient_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_patient_meal_requests", x => x.id);
+                    table.PrimaryKey("PK_patient_requests", x => x.id);
                     table.ForeignKey(
-                        name: "FK_patient_meal_requests_recipes_recipe_id",
+                        name: "FK_patient_requests_recipes_recipe_id",
                         column: x => x.recipe_id,
                         principalSchema: "dbo",
                         principalTable: "recipes",
@@ -255,6 +257,27 @@ namespace Hospital.Meals.Core.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_allergies_name",
+                schema: "dbo",
+                table: "allergies",
+                column: "name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_clinical_states_name",
+                schema: "dbo",
+                table: "clinical_states",
+                column: "name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_diet_types_name",
+                schema: "dbo",
+                table: "diet_types",
+                column: "name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ingredient_allergy_exclusions_allergy_id",
                 schema: "dbo",
                 table: "ingredient_allergy_exclusions",
@@ -273,10 +296,24 @@ namespace Hospital.Meals.Core.Migrations
                 column: "diet_type_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ingredients_name",
+                schema: "dbo",
+                table: "ingredients",
+                column: "name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_meals_diet_type_id",
                 schema: "dbo",
                 table: "meals",
                 column: "diet_type_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_meals_name",
+                schema: "dbo",
+                table: "meals",
+                column: "name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_meals_recipe_id",
@@ -285,9 +322,9 @@ namespace Hospital.Meals.Core.Migrations
                 column: "recipe_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_patient_meal_requests_recipe_id",
+                name: "IX_patient_requests_recipe_id",
                 schema: "dbo",
-                table: "patient_meal_requests",
+                table: "patient_requests",
                 column: "recipe_id");
 
             migrationBuilder.CreateIndex(
@@ -301,6 +338,13 @@ namespace Hospital.Meals.Core.Migrations
                 schema: "dbo",
                 table: "recipes",
                 column: "diet_type_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_recipes_name",
+                schema: "dbo",
+                table: "recipes",
+                column: "name",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -323,7 +367,7 @@ namespace Hospital.Meals.Core.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "patient_meal_requests",
+                name: "patient_requests",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
