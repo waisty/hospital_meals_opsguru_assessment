@@ -10,6 +10,7 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres-init:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d hospitalmeals_auth_db"]
       interval: 5s
@@ -25,6 +26,19 @@ services:
       ConnectionString: "Host=postgres;Port=5432;Database=hospitalmeals_auth_db;Username=postgres;Password=alicia"
     ports:
       - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  patient-webapi:
+    build:
+      context: .
+      dockerfile: Patient.WebApi/Dockerfile
+    container_name: hospitalmeals-patient-api
+    environment:
+      ConnectionString: "Host=postgres;Port=5432;Database=hospitalmeals_patient_db;Username=postgres;Password=alicia"
+    ports:
+      - "8081:8080"
     depends_on:
       postgres:
         condition: service_healthy

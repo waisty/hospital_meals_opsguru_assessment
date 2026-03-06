@@ -12,9 +12,9 @@
       "commandName": "Docker",
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "environmentVariables": {
-        "ASPNETCORE_HTTP_PORTS": "8080"
+        "ASPNETCORE_URLS": "http://+:8080"
       },
-      "publishAllPorts": true,
+      "httpPort": 9081,
       "useSSL": false
     }
   },
