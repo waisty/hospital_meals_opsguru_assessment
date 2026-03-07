@@ -113,5 +113,20 @@ namespace Hospital.Patient.Core.Implementation
             await _repo.SetClinicalStateIdsForPatientAsync(guid, request.ClinicalStateIds ?? [], cancellationToken).ConfigureAwait(false);
             return true;
         }
+
+        public async Task<bool> UpdatePatientAsync(string id, PatientUpdateRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request is null || !Guid.TryParse(id, out var guid))
+                return false;
+            var patient = await _repo.GetPatientByIdAsync(guid, cancellationToken).ConfigureAwait(false);
+            if (patient is null)
+                return false;
+            patient.Name = request.Name;
+            patient.MobileNumber = request.MobileNumber;
+            patient.DietTypeId = request.DietTypeId;
+            patient.Notes = request.Notes ?? "";
+            await _repo.UpdatePatientAsync(patient, cancellationToken).ConfigureAwait(false);
+            return true;
+        }
     }
 }

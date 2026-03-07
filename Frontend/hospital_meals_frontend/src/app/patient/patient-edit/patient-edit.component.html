@@ -1,0 +1,163 @@
+<div class="patient-edit-view">
+  @if (loading()) {
+    <p class="loading">Loading…</p>
+  } @else if (error()) {
+    <p class="error">{{ error() }}</p>
+    <a routerLink="/patient/patients" class="back-link">← Back to patients</a>
+  } @else if (detail(); as d) {
+    <header class="page-header">
+      <button type="button" class="back-link" (click)="backToList()">← Back to patients</button>
+      <h2>Edit patient</h2>
+      <p class="subtitle">{{ d.name }}</p>
+    </header>
+
+    <div class="edit-layout">
+      <section class="patient-info">
+        <h3>Patient details</h3>
+        <form class="patient-form" (ngSubmit)="savePatient()">
+          <div class="form-group">
+            <label for="patient-name">Name</label>
+            <input
+              id="patient-name"
+              type="text"
+              class="form-input"
+              [ngModel]="formName()"
+              (ngModelChange)="formName.set($event)"
+              name="name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="patient-mobile">Mobile</label>
+            <input
+              id="patient-mobile"
+              type="text"
+              class="form-input"
+              [ngModel]="formMobile()"
+              (ngModelChange)="formMobile.set($event)"
+              name="mobile"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="patient-diet-type">Diet type</label>
+            <select
+              id="patient-diet-type"
+              class="form-input form-select"
+              [ngModel]="formDietTypeId()"
+              (ngModelChange)="formDietTypeId.set($event)"
+              name="dietTypeId"
+            >
+              @for (dt of dietTypes(); track dt.id) {
+                <option [value]="dt.id">{{ dt.name }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="patient-notes">Notes</label>
+            <textarea
+              id="patient-notes"
+              class="form-input form-textarea"
+              [ngModel]="formNotes()"
+              (ngModelChange)="formNotes.set($event)"
+              name="notes"
+              rows="3"
+            ></textarea>
+          </div>
+          <button type="submit" class="btn-save" [disabled]="savingPatient()">
+            {{ savingPatient() ? 'Saving…' : 'Save patient' }}
+          </button>
+        </form>
+      </section>
+
+      <aside class="right-side">
+        <section class="section-card allergies-card">
+          <h3>Allergies</h3>
+          @if (d.allergies.length > 0) {
+            <ul class="tag-list">
+              @for (a of d.allergies; track a.allergyId) {
+                <li class="tag">
+                  <span>{{ a.allergyName }}</span>
+                  <button
+                    type="button"
+                    class="tag-remove"
+                    (click)="removeAllergy(a)"
+                    [disabled]="savingAllergies()"
+                    title="Remove allergy"
+                  >
+                    ×
+                  </button>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="empty-hint">No allergies assigned.</p>
+          }
+          @if (availableAllergies().length > 0) {
+            <div class="add-row">
+              <select
+                class="add-select"
+                (change)="onAllergySelect($event)"
+                [disabled]="savingAllergies()"
+                title="Add allergy"
+              >
+                <option value="">Add allergy…</option>
+                @for (a of availableAllergies(); track a.id) {
+                  <option [value]="a.id">{{ a.name }}</option>
+                }
+              </select>
+            </div>
+          }
+          @if (savingAllergies()) {
+            <p class="saving">Saving…</p>
+          }
+        </section>
+
+        <section class="section-card clinical-states-card">
+          <h3>Clinical states</h3>
+          @if (d.clinicalStates.length > 0) {
+            <ul class="tag-list">
+              @for (c of d.clinicalStates; track c.clinicalStateId) {
+                <li class="tag">
+                  <span>{{ c.clinicalStateName }}</span>
+                  <button
+                    type="button"
+                    class="tag-remove"
+                    (click)="removeClinicalState(c)"
+                    [disabled]="savingClinicalStates()"
+                    title="Remove clinical state"
+                  >
+                    ×
+                  </button>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="empty-hint">No clinical states assigned.</p>
+          }
+          @if (availableClinicalStates().length > 0) {
+            <div class="add-row">
+              <select
+                class="add-select"
+                (change)="onClinicalStateSelect($event)"
+                [disabled]="savingClinicalStates()"
+                title="Add clinical state"
+              >
+                <option value="">Add clinical state…</option>
+                @for (c of availableClinicalStates(); track c.id) {
+                  <option [value]="c.id">{{ c.name }}</option>
+                }
+              </select>
+            </div>
+          }
+          @if (savingClinicalStates()) {
+            <p class="saving">Saving…</p>
+          }
+        </section>
+      </aside>
+    </div>
+  } @else {
+    <p class="error">Patient not found.</p>
+    <a routerLink="/patient/patients" class="back-link">← Back to patients</a>
+  }
+</div>

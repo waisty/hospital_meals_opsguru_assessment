@@ -21,6 +21,12 @@ public static class PatientEndpointMappings
             return patient is null ? Results.NotFound() : Results.Ok(patient);
         }).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminPolicyName);
 
+        group.MapPut("/patients/{id}", async (string id, PatientUpdateRequest request, IPatientHandler handler, CancellationToken ct) =>
+        {
+            var updated = await handler.UpdatePatientAsync(id, request, ct);
+            return updated ? Results.NoContent() : Results.NotFound();
+        }).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminPolicyName);
+
         group.MapGet("/patients/{id}/detail", async (string id, IPatientHandler handler, CancellationToken ct) =>
         {
             var detail = await handler.GetPatientDetailByIdAsync(id, ct);

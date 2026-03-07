@@ -11,5 +11,6 @@ namespace Hospital.Patient.Core.Contracts
         Task SetAllergyIdsForPatientAsync(Guid patientId, IReadOnlyList<string> allergyIds, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<PatientClinicalStateWithName>> GetPatientClinicalStatesWithNameAsync(Guid patientId, CancellationToken cancellationToken = default);
         Task SetClinicalStateIdsForPatientAsync(Guid patientId, IReadOnlyList<string> clinicalStateIds, CancellationToken cancellationToken = default);
+        Task UpdatePatientAsync(InternalModels.Patient patient, CancellationToken cancellationToken = default);
     }
 }

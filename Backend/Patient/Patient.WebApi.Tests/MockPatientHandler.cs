@@ -97,6 +97,21 @@ public sealed class MockPatientHandler : IPatientHandler, IAllergyHandler, IClin
         });
     }
 
+    public Task<bool> UpdatePatientAsync(string id, PatientUpdateRequest request, CancellationToken cancellationToken = default)
+    {
+        if (request is null || !Guid.TryParse(id, out var guid) || !_patients.TryGetValue(guid, out var existing))
+            return Task.FromResult(false);
+        _patients[guid] = new PatientViewModel
+        {
+            Id = existing.Id,
+            Name = request.Name,
+            MobileNumber = request.MobileNumber,
+            DietTypeId = request.DietTypeId,
+            Notes = request.Notes
+        };
+        return Task.FromResult(true);
+    }
+
     // Allergy
 
     public Task<string> AddAllergyAsync(AllergyCreateRequest request, CancellationToken cancellationToken = default)

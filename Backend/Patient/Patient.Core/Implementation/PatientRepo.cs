@@ -101,5 +101,11 @@ namespace Hospital.Patient.Core.Implementation
             }
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
+
+        public async Task UpdatePatientAsync(InternalModels.Patient patient, CancellationToken cancellationToken = default)
+        {
+            _context.Patients.Update(patient);
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
     }
 }

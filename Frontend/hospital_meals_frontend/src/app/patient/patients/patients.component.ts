@@ -1,6 +1,7 @@
 import { Component, Injector, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { switchMap } from 'rxjs';
+import { RouterLink } from '@angular/router';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
 import type { PagedResult } from '../../shared/models';
 import { PatientService } from '../services/patient.service';
@@ -9,7 +10,7 @@ import type { PatientWithDietTypeNameViewModel } from '../models';
 @Component({
   selector: 'app-patients',
   standalone: true,
-  imports: [PaginationComponent],
+  imports: [RouterLink, PaginationComponent],
   templateUrl: './patients.component.html',
   styleUrl: './patients.component.scss',
 })

@@ -45,5 +45,20 @@
     text-align: center;
     padding: 1.5rem;
   }
+
+  .col-actions {
+    width: 6rem;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .btn-edit {
+    font-size: 0.8125rem;
+    color: #2563eb;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 

@@ -9,6 +9,7 @@ import type {
   PatientDetailViewModel,
   PatientCreateRequest,
   PatientCreateResponse,
+  PatientUpdateRequest,
   PatientAllergiesUpdateRequest,
   PatientClinicalStatesUpdateRequest,
   AllergyViewModel,
@@ -51,6 +52,10 @@ export class PatientService {
 
   createPatient(request: PatientCreateRequest): Observable<PatientCreateResponse> {
     return this.http.post<PatientCreateResponse>(`${this.base}/patients`, request);
+  }
+
+  updatePatient(id: string, request: PatientUpdateRequest): Observable<void> {
+    return this.http.put<void>(`${this.base}/patients/${id}`, request);
   }
 
   getPatientAllergyIds(patientId: string): Observable<string[]> {

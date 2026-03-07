@@ -12,6 +12,7 @@
             <th>Name</th>
             <th>Mobile</th>
             <th>Diet Type</th>
+            <th class="col-actions"></th>
           </tr>
         </thead>
         <tbody>
@@ -20,10 +21,13 @@
               <td>{{ p.name }}</td>
               <td>{{ p.mobileNumber }}</td>
               <td>{{ p.dietTypeName }}</td>
+              <td class="col-actions">
+                <a [routerLink]="['/patient/patients', p.id, 'edit']" class="btn-edit" title="Edit patient">Edit</a>
+              </td>
             </tr>
           } @empty {
             <tr>
-              <td colspan="3" class="empty">No patients found.</td>
+              <td colspan="4" class="empty">No patients found.</td>
             </tr>
           }
         </tbody>
