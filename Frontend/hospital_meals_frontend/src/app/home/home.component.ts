@@ -1,5 +1,5 @@
 import { Component, inject, computed } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../auth/services/auth.service';
 
 export interface DashboardLink {
@@ -17,7 +17,6 @@ export interface DashboardLink {
 })
 export class HomeComponent {
   protected readonly auth = inject(AuthService);
-  private readonly router = inject(Router);
 
   protected readonly dashboardLinks = computed<DashboardLink[]>(() => {
     const links: DashboardLink[] = [];
@@ -26,9 +25,4 @@ export class HomeComponent {
     if (this.auth.canAccessKitchen()) links.push({ path: '/kitchen', label: 'Kitchen', area: 'kitchen' });
     return links;
   });
-
-  protected logout(): void {
-    this.auth.logout();
-    this.router.navigate(['/login']);
-  }
 }

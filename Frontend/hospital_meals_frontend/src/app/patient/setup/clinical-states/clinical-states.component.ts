@@ -1,17 +1,21 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
+import { AddButtonComponent } from '../../../shared/components/add-button/add-button.component';
+import { EditButtonComponent } from '../../../shared/components/edit-button/edit-button.component';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
+import { AuthService } from '../../../auth/services/auth.service';
 import { PatientService } from '../../services/patient.service';
 import type { ClinicalStateViewModel } from '../../models';
 
 @Component({
   selector: 'app-clinical-states',
   standalone: true,
-  imports: [RouterLink, PaginationComponent],
+  imports: [PaginationComponent, AddButtonComponent, EditButtonComponent],
   templateUrl: './clinical-states.component.html',
   styleUrl: './clinical-states.component.scss',
 })
 export class ClinicalStatesComponent {
+  readonly auth = inject(AuthService);
   private readonly patientService = inject(PatientService);
   private readonly router = inject(Router);
 

@@ -1,5 +1,8 @@
 @use 'app/shared/styles/variables' as v;
 
+/* Font Awesome - import so bundler resolves webfont paths */
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
 /* Global styles */
 html, body {
   margin: 0;

@@ -13,6 +13,8 @@
 
   @if (listError()) {
     <p class="error">{{ listError() }}</p>
+  } @else if (isLoadSuspended()) {
+    <p class="hint">Enter at least 2 characters to search.</p>
   } @else if (result() === null) {
     <p class="loading">Loading…</p>
   } @else {
@@ -50,7 +52,7 @@
           </td>
           @if (showEditButton()) {
             <td class="col-actions">
-              <a [routerLink]="['/patient/patients', p.id, 'edit']" class="btn-edit" title="Edit patient" (click)="$event.stopPropagation()">Edit</a>
+              <app-edit-button [link]="['/patient/patients', p.id, 'edit']" title="Edit patient" [stopPropagation]="true" />
             </td>
           }
         </tr>
@@ -62,12 +64,14 @@
     </tbody>
   </table>
 </div>
-    <app-pagination
-      [page]="page()"
-      [pageSize]="pageSize()"
-      [totalCount]="totalCount"
-      (pageChange)="onPageChange($event)"
-      (pageSizeChange)="onPageSizeChange($event)"
-    />
+    @if (showPagination()) {
+      <app-pagination
+        [page]="page()"
+        [pageSize]="pageSize()"
+        [totalCount]="totalCount"
+        (pageChange)="onPageChange($event)"
+        (pageSizeChange)="onPageSizeChange($event)"
+      />
+    }
   }
 </div>

@@ -7,8 +7,10 @@
   } @else if (detail(); as d) {
     <header class="page-header">
       <button type="button" class="back-link" (click)="backToList()">← Back to patients</button>
-      <h2>Edit patient</h2>
-      <p class="subtitle">{{ d.firstName }} {{ d.middleName }} {{ d.lastName }}</p>
+      <h2>{{ isCreateMode() ? 'Add patient' : 'Edit patient' }}</h2>
+      @if (!isCreateMode()) {
+        <p class="subtitle">{{ d.firstName }} {{ d.middleName }} {{ d.lastName }}</p>
+      }
     </header>
 
     <div class="edit-layout">

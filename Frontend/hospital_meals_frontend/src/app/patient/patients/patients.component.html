@@ -1,4 +1,7 @@
 <div class="patients-view">
-  <h2>Patients</h2>
+  <header class="page-header">
+    <h2>Patients</h2>
+    <app-add-button link="/patient/patients/new/edit" label="Add patient" />
+  </header>
   <app-patient-list [showEditButton]="true" [clickToNavigateEnabled]="true" />
 </div>

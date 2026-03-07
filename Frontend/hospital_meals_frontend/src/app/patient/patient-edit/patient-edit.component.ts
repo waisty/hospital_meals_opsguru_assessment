@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { filter, forkJoin, switchMap, tap } from 'rxjs';
+import { take } from 'rxjs';
 import { PatientService } from '../services/patient.service';
 import type {
   PatientDetailViewModel,
@@ -43,6 +44,8 @@ export class PatientEditComponent {
 
   readonly patientId = computed(() => this.detail()?.id ?? null);
 
+  readonly isCreateMode = computed(() => this.route.snapshot.paramMap.get('id') === 'new');
+
   /** Allergies not yet assigned to this patient (for add dropdown). */
   readonly availableAllergies = computed(() => {
     const d = this.detail();
@@ -69,6 +72,32 @@ export class PatientEditComponent {
           const id = params.get('id')!;
           this.loading.set(true);
           this.error.set(null);
+          if (id === 'new') {
+            return this.patientService.listDietTypes().pipe(
+              take(1),
+              tap((dietTypes) => {
+                const defaultDietId = dietTypes.length > 0 ? dietTypes[0].id : '';
+                this.detail.set({
+                  id: '',
+                  firstName: '',
+                  middleName: '',
+                  lastName: '',
+                  mobileNumber: '',
+                  dietTypeId: defaultDietId,
+                  notes: null,
+                  allergies: [],
+                  clinicalStates: [],
+                });
+                this.formFirstName.set('');
+                this.formMiddleName.set('');
+                this.formLastName.set('');
+                this.formMobile.set('');
+                this.formDietTypeId.set(defaultDietId);
+                this.formNotes.set('');
+                this.loading.set(false);
+              })
+            );
+          }
           return this.patientService.getPatientDetailById(id).pipe(
             tap({
               next: (detail) => {
@@ -198,27 +227,61 @@ export class PatientEditComponent {
     this.savingPatient.set(true);
     const allergyIds = d.allergies.map((a) => a.allergyId);
     const clinicalStateIds = d.clinicalStates.map((c) => c.clinicalStateId);
-    forkJoin({
-      patient: this.patientService.updatePatient(d.id, {
-        firstName,
-        middleName: middleName,
-        lastName: lastName.trim(),
-        mobileNumber: mobile,
-        dietTypeId: this.formDietTypeId(),
-        notes: this.formNotes() || null,
-      }),
-      allergies: this.patientService.updatePatientAllergies(d.id, { allergyIds }),
-      clinicalStates: this.patientService.updatePatientClinicalStates(d.id, { clinicalStateIds }),
-    }).subscribe({
-      next: () => {
-        this.savingPatient.set(false);
-        this.router.navigate(['/patient/patients', d.id]);
-      },
-      error: () => {
-        this.savingPatient.set(false);
-        this.error.set('Failed to save patient. Please try again.');
-      },
-    });
+    if (this.isCreateMode()) {
+      this.patientService
+        .createPatient({
+          firstName,
+          middleName,
+          lastName: lastName.trim(),
+          mobileNumber: mobile,
+          dietTypeId: this.formDietTypeId(),
+          notes: this.formNotes() || null,
+        })
+        .subscribe({
+          next: (res) => {
+            const newId = res.id;
+            forkJoin({
+              allergies: this.patientService.updatePatientAllergies(newId, { allergyIds }),
+              clinicalStates: this.patientService.updatePatientClinicalStates(newId, { clinicalStateIds }),
+            }).subscribe({
+              next: () => {
+                this.savingPatient.set(false);
+                this.router.navigate(['/patient/patients', newId]);
+              },
+              error: () => {
+                this.savingPatient.set(false);
+                this.error.set('Failed to save patient. Please try again.');
+              },
+            });
+          },
+          error: () => {
+            this.savingPatient.set(false);
+            this.error.set('Failed to create patient. Please try again.');
+          },
+        });
+    } else {
+      forkJoin({
+        patient: this.patientService.updatePatient(d.id, {
+          firstName,
+          middleName: middleName,
+          lastName: lastName.trim(),
+          mobileNumber: mobile,
+          dietTypeId: this.formDietTypeId(),
+          notes: this.formNotes() || null,
+        }),
+        allergies: this.patientService.updatePatientAllergies(d.id, { allergyIds }),
+        clinicalStates: this.patientService.updatePatientClinicalStates(d.id, { clinicalStateIds }),
+      }).subscribe({
+        next: () => {
+          this.savingPatient.set(false);
+          this.router.navigate(['/patient/patients', d.id]);
+        },
+        error: () => {
+          this.savingPatient.set(false);
+          this.error.set('Failed to save patient. Please try again.');
+        },
+      });
+    }
   }
 
   backToList(): void {

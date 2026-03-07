@@ -1,0 +1,72 @@
+@use '../../styles/variables' as v;
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: v.$color-bg-surface;
+  border-bottom: 1px solid v.$color-border;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-header__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: v.$color-text-primary;
+  text-decoration: none;
+
+  &:hover {
+    color: v.$color-text-secondary;
+  }
+}
+
+.app-header__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.app-header__nav-link {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: v.$color-text-secondary;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+
+  &:hover {
+    color: v.$color-text-primary;
+    background: v.$color-bg-surface-hover;
+  }
+
+  &.app-header__nav-link--active {
+    color: v.$color-text-primary;
+    font-weight: 500;
+    background: v.$color-bg-surface-hover;
+  }
+}
+
+.app-header__spacer {
+  flex: 1;
+}
+
+.app-header__logout {
+  margin-left: auto;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: v.$color-text-secondary;
+  background: v.$color-white;
+  border: 1px solid v.$color-border;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+
+  &:hover {
+    color: v.$color-text-primary;
+    border-color: v.$color-border-hover;
+    background: v.$color-bg-surface-hover;
+  }
+}

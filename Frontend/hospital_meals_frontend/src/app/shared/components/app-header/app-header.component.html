@@ -1,0 +1,12 @@
+<header class="app-header">
+  <a routerLink="/home" class="app-header__title">Hospital Meals</a>
+  <nav class="app-header__nav" aria-label="Main navigation">
+    @for (item of navItems(); track item.path) {
+      @if (item.visible) {
+        <a [routerLink]="item.path" routerLinkActive="app-header__nav-link--active" [routerLinkActiveOptions]="{ exact: item.path === '/home' }" class="app-header__nav-link">{{ item.label }}</a>
+      }
+    }
+  </nav>
+  <div class="app-header__spacer"></div>
+  <button type="button" class="app-header__logout" (click)="logout()">Sign out</button>
+</header>

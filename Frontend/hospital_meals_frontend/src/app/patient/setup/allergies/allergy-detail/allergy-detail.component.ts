@@ -2,17 +2,20 @@ import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { filter, switchMap, tap } from 'rxjs';
+import { AuthService } from '../../../../auth/services/auth.service';
+import { EditButtonComponent } from '../../../../shared/components/edit-button/edit-button.component';
 import { PatientService } from '../../../services/patient.service';
 import type { AllergyViewModel } from '../../../models';
 
 @Component({
   selector: 'app-allergy-detail',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, EditButtonComponent],
   templateUrl: './allergy-detail.component.html',
   styleUrl: './allergy-detail.component.scss',
 })
 export class AllergyDetailComponent {
+  readonly auth = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
   private readonly patientService = inject(PatientService);
 

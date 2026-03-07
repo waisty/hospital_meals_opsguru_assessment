@@ -2,13 +2,14 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { filter, switchMap, tap } from 'rxjs';
+import { EditButtonComponent } from '../../shared/components/edit-button/edit-button.component';
 import { PatientService } from '../services/patient.service';
 import type { PatientDetailViewModel, DietTypeViewModel } from '../models';
 
 @Component({
   selector: 'app-patient-detail',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, EditButtonComponent],
   templateUrl: './patient-detail.component.html',
   styleUrl: './patient-detail.component.scss',
 })

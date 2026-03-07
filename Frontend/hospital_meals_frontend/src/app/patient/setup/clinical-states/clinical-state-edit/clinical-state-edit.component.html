@@ -1,7 +1,7 @@
 <div class="ref-edit-view">
   @if (loading()) {
     <p class="loading">Loading…</p>
-  } @else if (error() && !detail()) {
+  } @else if (error() && !detail() && !isCreateMode()) {
     <p class="error">{{ error() }}</p>
     <a routerLink="/patient/setup/clinical-states" class="back-link">← Back to clinical states</a>
   } @else if (detail(); as d) {
@@ -9,6 +9,34 @@
       <button type="button" class="back-link" (click)="backToList()">← Back to clinical states</button>
       <h2>Edit clinical state</h2>
       <p class="subtitle">{{ d.name }}</p>
+    </header>
+
+    <section class="form-card">
+      <form (ngSubmit)="save()">
+        @if (error()) {
+          <p class="error">{{ error() }}</p>
+        }
+        <div class="form-group">
+          <label for="clinical-state-name">Name</label>
+          <input
+            id="clinical-state-name"
+            type="text"
+            class="form-input"
+            [ngModel]="formName()"
+            (ngModelChange)="formName.set($event)"
+            name="name"
+            required
+          />
+        </div>
+        <button type="submit" class="btn-save" [disabled]="saving()">
+          {{ saving() ? 'Saving…' : 'Save' }}
+        </button>
+      </form>
+    </section>
+  } @else if (isCreateMode()) {
+    <header class="page-header">
+      <button type="button" class="back-link" (click)="backToList()">← Back to clinical states</button>
+      <h2>Add clinical state</h2>
     </header>
 
     <section class="form-card">

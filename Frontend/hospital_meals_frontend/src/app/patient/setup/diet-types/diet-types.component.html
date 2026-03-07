@@ -1,5 +1,10 @@
 <div class="setup-view">
-  <h2>Diet Types</h2>
+  <header class="page-header">
+    <h2>Diet Types</h2>
+    @if (auth.isAdmin()) {
+      <app-add-button link="/patient/setup/diet-types/new" label="Add diet type" />
+    }
+  </header>
 
   @if (listError()) {
     <p class="error">{{ listError() }}</p>
@@ -12,7 +17,9 @@
           <tr>
             <th>ID</th>
             <th>Name</th>
-            <th class="col-actions"></th>
+            @if (auth.isAdmin()) {
+              <th class="col-actions"></th>
+            }
           </tr>
         </thead>
         <tbody>
@@ -20,13 +27,15 @@
             <tr class="clickable-row" (click)="navigateToDetail(d.id)">
               <td>{{ d.id }}</td>
               <td>{{ d.name }}</td>
-              <td class="col-actions">
-                <a [routerLink]="['/patient/setup/diet-types', d.id, 'edit']" class="btn-edit" title="Edit diet type" (click)="$event.stopPropagation()">Edit</a>
-              </td>
+              @if (auth.isAdmin()) {
+                <td class="col-actions">
+                  <app-edit-button [link]="['/patient/setup/diet-types', d.id, 'edit']" title="Edit diet type" [stopPropagation]="true" />
+                </td>
+              }
             </tr>
           } @empty {
             <tr>
-              <td colspan="3" class="empty">No diet types found.</td>
+              <td [attr.colspan]="auth.isAdmin() ? 3 : 2" class="empty">No diet types found.</td>
             </tr>
           }
         </tbody>

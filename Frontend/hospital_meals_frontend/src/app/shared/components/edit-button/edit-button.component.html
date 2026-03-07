@@ -1,0 +1,10 @@
+<a
+  [routerLink]="link()"
+  [attr.title]="title() || null"
+  class="edit-btn"
+  role="button"
+  (click)="onClick($event)"
+>
+  <i class="fas fa-edit" aria-hidden="true"></i>
+  Edit
+</a>

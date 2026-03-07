@@ -23,6 +23,9 @@ export class AuthService {
   readonly user = this.userSignal.asReadonly();
   readonly isLoggedIn = computed(() => this.tokenSignal() !== null);
 
+  /** True only for system-wide admins (e.g. can create/update allergies, clinical states, diet types). */
+  readonly isAdmin = computed(() => this.userSignal()?.admin === true);
+
   /** Whether the user can access the Patient dashboard (admin or patientAdmin). */
   readonly canAccessPatient = computed(() => {
     const u = this.userSignal();

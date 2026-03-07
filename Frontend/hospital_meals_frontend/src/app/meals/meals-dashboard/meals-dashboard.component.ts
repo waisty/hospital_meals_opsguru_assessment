@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-meals-dashboard',
   standalone: true,
-  imports: [RouterLink],
+  imports: [],
   templateUrl: './meals-dashboard.component.html',
   styleUrl: './meals-dashboard.component.scss',
 })

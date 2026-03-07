@@ -9,7 +9,9 @@
       <a routerLink="/patient/setup/clinical-states" class="back-link">← Back to clinical states</a>
       <div class="header-row">
         <h2>Clinical state details</h2>
-        <a [routerLink]="['/patient/setup/clinical-states', d.id, 'edit']" class="btn-edit" role="button">Edit</a>
+        @if (auth.isAdmin()) {
+          <app-edit-button [link]="['/patient/setup/clinical-states', d.id, 'edit']" />
+        }
       </div>
       <p class="subtitle">{{ d.name }}</p>
     </header>

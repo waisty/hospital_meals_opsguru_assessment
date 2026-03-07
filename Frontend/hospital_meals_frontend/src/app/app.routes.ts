@@ -21,6 +21,7 @@ import {
   initialRedirectGuard,
   redirectIfLoggedInGuard,
   authGuard,
+  adminGuard,
   homeRedirectGuard,
 } from './auth/guards';
 
@@ -50,14 +51,17 @@ export const routes: Routes = [
       { path: 'patients/:id', component: PatientDetailComponent },
       { path: 'patients/:id/edit', component: PatientEditComponent },
       { path: 'setup/allergies', component: AllergiesComponent },
+      { path: 'setup/allergies/new', component: AllergyEditComponent, canActivate: [adminGuard] },
       { path: 'setup/allergies/:id', component: AllergyDetailComponent },
-      { path: 'setup/allergies/:id/edit', component: AllergyEditComponent },
+      { path: 'setup/allergies/:id/edit', component: AllergyEditComponent, canActivate: [adminGuard] },
       { path: 'setup/clinical-states', component: ClinicalStatesComponent },
+      { path: 'setup/clinical-states/new', component: ClinicalStateEditComponent, canActivate: [adminGuard] },
       { path: 'setup/clinical-states/:id', component: ClinicalStateDetailComponent },
-      { path: 'setup/clinical-states/:id/edit', component: ClinicalStateEditComponent },
+      { path: 'setup/clinical-states/:id/edit', component: ClinicalStateEditComponent, canActivate: [adminGuard] },
       { path: 'setup/diet-types', component: DietTypesComponent },
+      { path: 'setup/diet-types/new', component: DietTypeEditComponent, canActivate: [adminGuard] },
       { path: 'setup/diet-types/:id', component: DietTypeDetailComponent },
-      { path: 'setup/diet-types/:id/edit', component: DietTypeEditComponent },
+      { path: 'setup/diet-types/:id/edit', component: DietTypeEditComponent, canActivate: [adminGuard] },
     ],
   },
   {

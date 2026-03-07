@@ -7,40 +7,6 @@
   background: v.$color-bg-page;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.5rem;
-  background: v.$color-bg-surface;
-  border-bottom: 1px solid v.$color-border;
-
-  h1 {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: v.$color-text-primary;
-  }
-
-  .logout {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    color: v.$color-text-secondary;
-    background: v.$color-white;
-    border: 1px solid v.$color-border;
-    border-radius: 6px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: color 0.2s, border-color 0.2s, background 0.2s;
-
-    &:hover {
-      color: v.$color-text-primary;
-      border-color: v.$color-border-hover;
-      background: v.$color-bg-surface-hover;
-    }
-  }
-}
-
 .main {
   flex: 1;
   padding: 2rem 1.5rem;

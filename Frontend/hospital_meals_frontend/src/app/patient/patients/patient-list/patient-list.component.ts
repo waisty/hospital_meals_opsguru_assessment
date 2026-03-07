@@ -1,16 +1,17 @@
 import { Component, Injector, computed, inject, input, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { catchError, debounceTime, forkJoin, map, of, startWith, switchMap, tap } from 'rxjs';
 import type { PatientWithDietTypeNameViewModel } from '../../models';
 import { PatientService } from '../../services/patient.service';
 import type { PagedResult } from '../../../shared/models';
+import { EditButtonComponent } from '../../../shared/components/edit-button/edit-button.component';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-patient-list',
   standalone: true,
-  imports: [RouterLink, PaginationComponent],
+  imports: [PaginationComponent, EditButtonComponent],
   templateUrl: './patient-list.component.html',
   styleUrl: './patient-list.component.scss',
 })
@@ -21,6 +22,18 @@ export class PatientListComponent {
 
   readonly showEditButton = input<boolean>(true);
   readonly clickToNavigateEnabled = input<boolean>(true);
+
+  /**
+   * When true, the list is not loaded until the user has entered a search term (at least 2 characters).
+   * While suspended, a hint is shown instead of loading or empty table.
+   */
+  readonly suspendLoadUntilSearch = input<boolean>(false);
+
+  /**
+   * When set, at most this many records are fetched (single page, page 1) and pagination controls are hidden.
+   * When not set, normal pagination applies.
+   */
+  readonly maxRecords = input<number | undefined>();
 
   readonly page = signal(1);
   readonly pageSize = signal(10);
@@ -35,26 +48,36 @@ export class PatientListComponent {
     { initialValue: '' }
   );
 
+  /** True when loading is suspended because suspendLoadUntilSearch is set and search has fewer than 2 characters. */
+  readonly isLoadSuspended = computed(
+    () => this.suspendLoadUntilSearch() && (this.debouncedSearch()?.length ?? 0) < 2
+  );
+
   private readonly params$ = toObservable(
     computed(() => {
       const search = this.debouncedSearch();
+      const suspended = this.suspendLoadUntilSearch() && (search?.length ?? 0) < 2;
+      const max = this.maxRecords();
       return {
-        page: this.page(),
-        pageSize: this.pageSize(),
-        search: search.length >= 2 ? search : '',
+        suspended,
+        page: max != null ? 1 : this.page(),
+        pageSize: max != null ? max : this.pageSize(),
+        search: (search?.length ?? 0) >= 2 ? search : '',
       };
     }),
     { injector: this.injector }
   ).pipe(
     tap(() => this.listError.set(null)),
-    switchMap(({ page, pageSize, search }) =>
-      this.patientService.listPatients(page, pageSize, search).pipe(
-        catchError((err) => {
-          console.error('Failed to load patients', err);
-          this.listError.set('Failed to load patients.');
-          return of(null);
-        })
-      )
+    switchMap(({ suspended, page, pageSize, search }) =>
+      suspended
+        ? of(null)
+        : this.patientService.listPatients(page, pageSize, search).pipe(
+            catchError((err) => {
+              console.error('Failed to load patients', err);
+              this.listError.set('Failed to load patients.');
+              return of(null);
+            })
+          )
     )
   );
   readonly result = toSignal<PagedResult<PatientWithDietTypeNameViewModel> | null>(this.params$, {
@@ -67,6 +90,9 @@ export class PatientListComponent {
   get totalCount(): number {
     return this.result()?.totalCount ?? 0;
   }
+
+  /** When true, pagination is shown; when false (e.g. maxRecords is set), it is hidden. */
+  readonly showPagination = computed(() => this.maxRecords() == null);
 
   private readonly items$ = toObservable(
     computed(() => this.result()?.items ?? []),
