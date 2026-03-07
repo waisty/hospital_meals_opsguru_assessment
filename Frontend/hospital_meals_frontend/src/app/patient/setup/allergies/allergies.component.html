@@ -2,7 +2,9 @@
   <h2>Allergies</h2>
   <p class="subtitle">Manage allergy reference data.</p>
 
-  @if (loading()) {
+  @if (listError()) {
+    <p class="error">{{ listError() }}</p>
+  } @else if (loading()) {
     <p class="loading">Loading…</p>
   } @else {
     <div class="table-wrap">

@@ -2,7 +2,9 @@
   <h2>Clinical States</h2>
   <p class="subtitle">Manage clinical state reference data.</p>
 
-  @if (loading()) {
+  @if (listError()) {
+    <p class="error">{{ listError() }}</p>
+  } @else if (loading()) {
     <p class="loading">Loading…</p>
   } @else {
     <div class="table-wrap">

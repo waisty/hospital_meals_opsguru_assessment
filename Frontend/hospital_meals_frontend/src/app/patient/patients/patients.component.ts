@@ -32,7 +32,8 @@ export class PatientsComponent {
     switchMap(({ page, pageSize }) =>
       this.patientService.listPatients(page, pageSize).pipe(
         catchError((err) => {
-          this.listError.set(err?.message ?? 'Failed to load patients.');
+          console.error('Failed to load patients', err);
+          this.listError.set('Failed to load patients.');
           return of(null);
         })
       )

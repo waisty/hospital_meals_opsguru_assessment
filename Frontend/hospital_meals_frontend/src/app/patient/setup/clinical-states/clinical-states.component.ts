@@ -17,6 +17,7 @@ export class ClinicalStatesComponent {
   readonly pageSize = signal(10);
   readonly allItems = signal<ClinicalStateViewModel[]>([]);
   readonly loading = signal(true);
+  readonly listError = signal<string | null>(null);
 
   readonly totalCount = computed(() => this.allItems().length);
   readonly pagedItems = computed(() => {
@@ -31,9 +32,14 @@ export class ClinicalStatesComponent {
     this.patientService.listClinicalStates().subscribe({
       next: (list) => {
         this.allItems.set(list);
+        this.listError.set(null);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: (err) => {
+        console.error('Failed to load clinical states', err);
+        this.listError.set('Failed to load clinical states.');
+        this.loading.set(false);
+      },
     });
   }
 

@@ -17,6 +17,7 @@ export class AllergiesComponent {
   readonly pageSize = signal(10);
   readonly allItems = signal<AllergyViewModel[]>([]);
   readonly loading = signal(true);
+  readonly listError = signal<string | null>(null);
 
   readonly totalCount = computed(() => this.allItems().length);
   readonly pagedItems = computed(() => {
@@ -31,9 +32,14 @@ export class AllergiesComponent {
     this.patientService.listAllergies().subscribe({
       next: (list) => {
         this.allItems.set(list);
+        this.listError.set(null);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: (err) => {
+        console.error('Failed to load allergies', err);
+        this.listError.set('Failed to load allergies.');
+        this.loading.set(false);
+      },
     });
   }
 
