@@ -1,0 +1,30 @@
+<div class="ref-detail-view">
+  @if (loading()) {
+    <p class="loading">Loading…</p>
+  } @else if (error()) {
+    <p class="error">{{ error() }}</p>
+    <a routerLink="/patient/setup/diet-types" class="back-link">← Back to diet types</a>
+  } @else if (detail(); as d) {
+    <header class="page-header">
+      <a routerLink="/patient/setup/diet-types" class="back-link">← Back to diet types</a>
+      <div class="header-row">
+        <h2>Diet type details</h2>
+        <a [routerLink]="['/patient/setup/diet-types', d.id, 'edit']" class="btn-edit" role="button">Edit</a>
+      </div>
+      <p class="subtitle">{{ d.name }}</p>
+    </header>
+
+    <section class="info-card">
+      <h3>Details</h3>
+      <dl class="info-list">
+        <dt>ID</dt>
+        <dd>{{ d.id }}</dd>
+        <dt>Name</dt>
+        <dd>{{ d.name }}</dd>
+      </dl>
+    </section>
+  } @else {
+    <p class="error">Diet type not found.</p>
+    <a routerLink="/patient/setup/diet-types" class="back-link">← Back to diet types</a>
+  }
+</div>

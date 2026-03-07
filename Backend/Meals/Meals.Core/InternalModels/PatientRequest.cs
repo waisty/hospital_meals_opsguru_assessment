@@ -10,6 +10,9 @@ namespace Hospital.Meals.Core.InternalModels
         public Guid Id { get; set; }
         public string PatientId { get; set; } = "";
         public string PatientName { get; set; } = "";
+        public string FirstName { get; set; } = "";
+        public string MiddleName { get; set; } = "";
+        public string LastName { get; set; } = "";
         public string RecipeId { get; set; } = "";
         public DateTime RequestedDateTime { get; set; }
         public MealRequestAppprovalStatus ApprovalStatus { get; set; }
@@ -27,6 +30,9 @@ namespace Hospital.Meals.Core.InternalModels
                 .HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.PatientId).HasColumnName("patient_id").HasMaxLength(256).IsRequired();
             entity.Property(e => e.PatientName).HasColumnName("patient_name").HasMaxLength(256);
+            entity.Property(e => e.FirstName).HasColumnName("first_name").HasMaxLength(256);
+            entity.Property(e => e.MiddleName).HasColumnName("middle_name").HasMaxLength(256);
+            entity.Property(e => e.LastName).HasColumnName("last_name").HasMaxLength(256);
             entity.Property(e => e.RecipeId).HasColumnName("recipe_id").HasMaxLength(256).IsRequired();
             entity.Property(e => e.RequestedDateTime).HasColumnName("requested_date_time");
             entity.Property(e => e.ApprovalStatus).HasColumnName("approval_status").HasConversion<int>();

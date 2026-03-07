@@ -9,6 +9,7 @@ namespace Hospital.Patient.Core.InternalModels
     {
         public Guid Id { get; set; }
         public string FirstName { get; set; } = "";
+        public string MiddleName { get; set; } = "";
         public string LastName { get; set; } = "";
         public string MobileNumber { get; set; } = "";
         public string DietTypeId { get; set; } = "";
@@ -18,6 +19,7 @@ namespace Hospital.Patient.Core.InternalModels
         {
             Id = Id.ToString(),
             FirstName = FirstName,
+            MiddleName = MiddleName,
             LastName = LastName,
             MobileNumber = MobileNumber,
             DietTypeId = DietTypeId,
@@ -28,6 +30,7 @@ namespace Hospital.Patient.Core.InternalModels
         {
             Id = Id,
             FirstName = FirstName,
+            MiddleName = MiddleName,
             LastName = LastName,
             MobileNumber = MobileNumber,
             DietTypeId = DietTypeId,
@@ -39,6 +42,7 @@ namespace Hospital.Patient.Core.InternalModels
         {
             Id = Id.ToString(),
             FirstName = FirstName,
+            MiddleName = MiddleName,
             LastName = LastName,
             MobileNumber = MobileNumber,
             DietTypeId = DietTypeId,
@@ -50,6 +54,7 @@ namespace Hospital.Patient.Core.InternalModels
         {
             Id = Id.ToString(),
             FirstName = FirstName,
+            MiddleName = MiddleName,
             LastName = LastName,
             MobileNumber = MobileNumber,
             DietTypeId = DietTypeId,
@@ -62,6 +67,7 @@ namespace Hospital.Patient.Core.InternalModels
         {
             Id = Id.ToString(),
             FirstName = FirstName,
+            MiddleName = MiddleName,
             LastName = LastName,
             MobileNumber = MobileNumber,
             DietTypeId = DietTypeId,
@@ -79,8 +85,10 @@ namespace Hospital.Patient.Core.InternalModels
                 .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.FirstName).HasColumnName("first_name").HasMaxLength(256).IsRequired();
+            entity.Property(e => e.MiddleName).HasColumnName("middle_name").HasMaxLength(256).IsRequired();
             entity.Property(e => e.LastName).HasColumnName("last_name").HasMaxLength(256).IsRequired();
             entity.HasIndex(e => e.FirstName);
+            entity.HasIndex(e => e.MiddleName);
             entity.HasIndex(e => e.LastName);
             entity.Property(e => e.MobileNumber).HasColumnName("mobile_number").HasMaxLength(32).IsRequired();
             entity.HasIndex(e => e.MobileNumber).IsUnique();

@@ -21,7 +21,7 @@
         <tbody>
           @for (p of items; track p.id) {
             <tr class="clickable-row" (click)="navigateToDetail(p.id)">
-              <td>{{ p.firstName }} {{ p.lastName }}</td>
+              <td>{{ p.firstName }} {{ p.middleName }} {{ p.lastName }}</td>
               <td>{{ p.mobileNumber }}</td>
               <td>{{ p.dietTypeName }}</td>
               <td class="col-allergies">

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hospital.Kitchen.Core.Migrations
 {
     [DbContext(typeof(KitchenDBContext))]
-    [Migration("20260307024843_AddTrayReceivedAndLastUpdateDateTime")]
-    partial class AddTrayReceivedAndLastUpdateDateTime
+    [Migration("20260307104933_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,9 +34,27 @@ namespace Hospital.Kitchen.Core.Migrations
                         .HasColumnName("id")
                         .HasDefaultValueSql("gen_random_uuid()");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("first_name");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("last_name");
+
                     b.Property<DateTime?>("LastUpdateDateTime")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("last_update_date_time");
+
+                    b.Property<string>("MiddleName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("middle_name");
 
                     b.Property<string>("PatientId")
                         .IsRequired()
@@ -47,12 +65,6 @@ namespace Hospital.Kitchen.Core.Migrations
                     b.Property<Guid>("PatientMealRequestId")
                         .HasColumnType("uuid")
                         .HasColumnName("patient_meal_request_id");
-
-                    b.Property<string>("PatientName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
-                        .HasColumnName("patient_name");
 
                     b.Property<DateTime>("ReceivedDateTime")
                         .HasColumnType("timestamp with time zone")
@@ -69,6 +81,12 @@ namespace Hospital.Kitchen.Core.Migrations
                         .HasColumnName("state");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FirstName");
+
+                    b.HasIndex("LastName");
+
+                    b.HasIndex("MiddleName");
 
                     b.HasIndex("PatientMealRequestId")
                         .IsUnique();

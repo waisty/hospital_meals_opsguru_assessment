@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hospital.Auth.Core.Migrations
 {
     [DbContext(typeof(AuthDBContext))]
-    [Migration("20260306130134_UniqueNameIndexes")]
-    partial class UniqueNameIndexes
+    [Migration("20260307104929_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

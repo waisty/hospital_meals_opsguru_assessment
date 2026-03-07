@@ -1,17 +1,18 @@
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Hospital.Auth.Core.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialAuthUsers : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("CREATE SCHEMA IF NOT EXISTS dbo;");
-            migrationBuilder.Sql("CREATE EXTENSION IF NOT EXISTS pgcrypto;");
+            migrationBuilder.EnsureSchema(
+                name: "dbo");
+
             migrationBuilder.CreateTable(
                 name: "users",
                 schema: "dbo",
@@ -30,6 +31,13 @@ namespace Hospital.Auth.Core.Migrations
                 {
                     table.PrimaryKey("PK_users", x => x.username);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_users_name",
+                schema: "dbo",
+                table: "users",
+                column: "name",
+                unique: true);
         }
 
         /// <inheritdoc />

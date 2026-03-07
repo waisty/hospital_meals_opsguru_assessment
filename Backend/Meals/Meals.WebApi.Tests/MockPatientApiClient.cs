@@ -9,12 +9,13 @@ internal sealed class MockPatientApiClient : IPatientApiClient
 
     public void Clear() => _patients.Clear();
 
-    public void SeedPatient(string id, string firstName, string lastName, IReadOnlyList<string>? allergyIds = null, IReadOnlyList<string>? clinicalStateIds = null, string? dietTypeId = null)
+    public void SeedPatient(string id, string firstName, string middleName, string lastName, IReadOnlyList<string>? allergyIds = null, IReadOnlyList<string>? clinicalStateIds = null, string? dietTypeId = null)
     {
         _patients[id] = new PatientDetailViewModel
         {
             Id = id,
             FirstName = firstName,
+            MiddleName = middleName,
             LastName = lastName,
             AllergyIds = allergyIds ?? [],
             ClinicalStateIds = clinicalStateIds ?? [],

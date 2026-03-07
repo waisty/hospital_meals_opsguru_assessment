@@ -37,6 +37,7 @@ export class PatientEditComponent {
 
   /** Editable patient fields (synced from detail when loaded). */
   readonly formFirstName = signal('');
+  readonly formMiddleName = signal('');
   readonly formLastName = signal('');
   readonly formMobile = signal('');
   readonly formDietTypeId = signal('');
@@ -77,6 +78,7 @@ export class PatientEditComponent {
                 this.detail.set(d);
                 if (d) {
                   this.formFirstName.set(d.firstName);
+                  this.formMiddleName.set(d.middleName ?? '');
                   this.formLastName.set(d.lastName);
                   this.formMobile.set(d.mobileNumber);
                   this.formDietTypeId.set(d.dietTypeId);
@@ -236,6 +238,7 @@ export class PatientEditComponent {
     const d = this.detail();
     if (!d || this.savingPatient()) return;
     const firstName = this.formFirstName().trim();
+    const middleName = this.formMiddleName().trim();
     const lastName = this.formLastName().trim();
     const mobile = this.formMobile().trim();
     if (!firstName || !mobile) {
@@ -247,6 +250,7 @@ export class PatientEditComponent {
     this.patientService
       .updatePatient(d.id, {
         firstName,
+        middleName: middleName,
         lastName: lastName.trim(),
         mobileNumber: mobile,
         dietTypeId: this.formDietTypeId(),
@@ -259,6 +263,7 @@ export class PatientEditComponent {
               ? {
                   ...prev,
                   firstName,
+                  middleName: middleName,
                   lastName: lastName.trim(),
                   mobileNumber: mobile,
                   dietTypeId: this.formDietTypeId(),

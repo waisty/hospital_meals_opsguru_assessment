@@ -13,17 +13,22 @@
           <tr>
             <th>ID</th>
             <th>Name</th>
+            <th class="col-actions"></th>
           </tr>
         </thead>
         <tbody>
           @for (a of pagedItems(); track a.id) {
-            <tr>
+            <tr class="clickable-row" (click)="navigateToDetail(a.id)">
               <td>{{ a.id }}</td>
               <td>{{ a.name }}</td>
+              <td class="col-actions">
+                <a [routerLink]="['/patient/setup/allergies', a.id]" class="btn-view" title="View details" (click)="$event.stopPropagation()">View</a>
+                <a [routerLink]="['/patient/setup/allergies', a.id, 'edit']" class="btn-edit" title="Edit allergy" (click)="$event.stopPropagation()">Edit</a>
+              </td>
             </tr>
           } @empty {
             <tr>
-              <td colspan="2" class="empty">No allergies found.</td>
+              <td colspan="3" class="empty">No allergies found.</td>
             </tr>
           }
         </tbody>

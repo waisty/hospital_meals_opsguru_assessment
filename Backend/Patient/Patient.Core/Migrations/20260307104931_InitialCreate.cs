@@ -1,3 +1,4 @@
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -5,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Hospital.Patient.Core.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialPatientTables : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -57,8 +58,11 @@ namespace Hospital.Patient.Core.Migrations
                 schema: "dbo",
                 columns: table => new
                 {
-                    id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    first_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    middle_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    last_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    mobile_number = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
                     diet_type_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     notes = table.Column<string>(type: "text", nullable: false)
                 },
@@ -79,7 +83,7 @@ namespace Hospital.Patient.Core.Migrations
                 schema: "dbo",
                 columns: table => new
                 {
-                    patient_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    patient_id = table.Column<Guid>(type: "uuid", nullable: false),
                     allergy_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false)
                 },
                 constraints: table =>
@@ -106,7 +110,7 @@ namespace Hospital.Patient.Core.Migrations
                 schema: "dbo",
                 columns: table => new
                 {
-                    patient_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    patient_id = table.Column<Guid>(type: "uuid", nullable: false),
                     clinical_state_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false)
                 },
                 constraints: table =>
@@ -129,6 +133,27 @@ namespace Hospital.Patient.Core.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_allergies_name",
+                schema: "dbo",
+                table: "allergies",
+                column: "name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_clinical_states_name",
+                schema: "dbo",
+                table: "clinical_states",
+                column: "name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_diet_types_name",
+                schema: "dbo",
+                table: "diet_types",
+                column: "name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_patient_allergies_allergy_id",
                 schema: "dbo",
                 table: "patient_allergies",
@@ -145,6 +170,31 @@ namespace Hospital.Patient.Core.Migrations
                 schema: "dbo",
                 table: "patients",
                 column: "diet_type_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_patients_first_name",
+                schema: "dbo",
+                table: "patients",
+                column: "first_name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_patients_last_name",
+                schema: "dbo",
+                table: "patients",
+                column: "last_name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_patients_middle_name",
+                schema: "dbo",
+                table: "patients",
+                column: "middle_name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_patients_mobile_number",
+                schema: "dbo",
+                table: "patients",
+                column: "mobile_number",
+                unique: true);
         }
 
         /// <inheritdoc />

@@ -32,7 +32,7 @@ public sealed class PatientEndpointTests : IClassFixture<PatientWebApiFixture>
     public async Task CreatePatient_WithAdminClaim_Returns201()
     {
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.patientAdminClaim);
-        var request = new PatientCreateRequest { FirstName = "Jane", LastName = "Doe", MobileNumber = "555-1234", DietTypeId = "regular" };
+        var request = new PatientCreateRequest { FirstName = "Jane", MiddleName = "", LastName = "Doe", MobileNumber = "555-1234", DietTypeId = "regular" };
 
         var response = await client.PostAsJsonAsync("/api/v1/patients", request);
 
@@ -46,7 +46,7 @@ public sealed class PatientEndpointTests : IClassFixture<PatientWebApiFixture>
     public async Task CreatePatient_WithoutAuth_Returns401()
     {
         using var client = _fixture.CreateClient();
-        var request = new PatientCreateRequest { FirstName = "Jane", LastName = "Doe", MobileNumber = "555-1234" };
+        var request = new PatientCreateRequest { FirstName = "Jane", MiddleName = "", LastName = "Doe", MobileNumber = "555-1234" };
         var response = await client.PostAsJsonAsync("/api/v1/patients", request);
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -55,7 +55,7 @@ public sealed class PatientEndpointTests : IClassFixture<PatientWebApiFixture>
     public async Task CreatePatient_WithWrongClaim_Returns403()
     {
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsServiceClaim);
-        var request = new PatientCreateRequest { FirstName = "Jane", LastName = "", MobileNumber = "555-1234" };
+        var request = new PatientCreateRequest { FirstName = "Jane", MiddleName = "", LastName = "", MobileNumber = "555-1234" };
         var response = await client.PostAsJsonAsync("/api/v1/patients", request);
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
@@ -66,7 +66,7 @@ public sealed class PatientEndpointTests : IClassFixture<PatientWebApiFixture>
     public async Task GetPatient_Existing_ReturnsOk()
     {
         var id = Guid.NewGuid();
-        _fixture.MockHandler.SeedPatient(id, "John", "", "555-0000", "regular");
+        _fixture.MockHandler.SeedPatient(id, "John", "", "", "555-0000", "regular");
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.patientAdminClaim);
         var response = await client.GetAsync($"/api/v1/patients/{id}");
@@ -100,7 +100,7 @@ public sealed class PatientEndpointTests : IClassFixture<PatientWebApiFixture>
     public async Task GetPatientDetail_WithPatientAdminClaim_ReturnsOk()
     {
         var id = Guid.NewGuid();
-        _fixture.MockHandler.SeedPatient(id, "Detail", "Patient", "555-9999", "vegan");
+        _fixture.MockHandler.SeedPatient(id, "Detail", "", "Patient", "555-9999", "vegan");
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.patientAdminClaim);
         var response = await client.GetAsync($"/api/v1/patients/{id}/detail");
@@ -116,7 +116,7 @@ public sealed class PatientEndpointTests : IClassFixture<PatientWebApiFixture>
     public async Task GetPatientServiceDetail_WithMealsServiceClaim_ReturnsOk()
     {
         var id = Guid.NewGuid();
-        _fixture.MockHandler.SeedPatient(id, "Service", "Patient", "555-8888", "regular");
+        _fixture.MockHandler.SeedPatient(id, "Service", "", "Patient", "555-8888", "regular");
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsServiceClaim);
         var response = await client.GetAsync($"/api/v1/patients/{id}/service-detail");
@@ -137,8 +137,8 @@ public sealed class PatientEndpointTests : IClassFixture<PatientWebApiFixture>
     [Fact]
     public async Task ListPatients_ReturnsPagedResult()
     {
-        _fixture.MockHandler.SeedPatient(Guid.NewGuid(), "A", "", "1", "r");
-        _fixture.MockHandler.SeedPatient(Guid.NewGuid(), "B", "", "2", "r");
+        _fixture.MockHandler.SeedPatient(Guid.NewGuid(), "A", "", "", "1", "r");
+        _fixture.MockHandler.SeedPatient(Guid.NewGuid(), "B", "", "", "2", "r");
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.patientAdminClaim);
         var response = await client.GetAsync("/api/v1/patients?page=1&pageSize=10");

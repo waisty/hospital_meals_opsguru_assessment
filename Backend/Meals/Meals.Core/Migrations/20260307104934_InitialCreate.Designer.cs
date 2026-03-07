@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hospital.Meals.Core.Migrations
 {
     [DbContext(typeof(MealsDBContext))]
-    [Migration("20260307045433_RemoveDietTypeIdFromRecipe")]
-    partial class RemoveDietTypeIdFromRecipe
+    [Migration("20260307104934_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -226,6 +226,24 @@ namespace Hospital.Meals.Core.Migrations
                     b.Property<DateTime?>("FinalizedDateTime")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("finalized_date_time");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("first_name");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("last_name");
+
+                    b.Property<string>("MiddleName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("middle_name");
 
                     b.Property<string>("PatientId")
                         .IsRequired()

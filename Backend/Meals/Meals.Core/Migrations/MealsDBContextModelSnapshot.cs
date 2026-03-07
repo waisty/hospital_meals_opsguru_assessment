@@ -224,6 +224,24 @@ namespace Hospital.Meals.Core.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("finalized_date_time");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("first_name");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("last_name");
+
+                    b.Property<string>("MiddleName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("middle_name");
+
                     b.Property<string>("PatientId")
                         .IsRequired()
                         .HasMaxLength(256)

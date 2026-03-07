@@ -23,9 +23,9 @@ public sealed class MockPatientHandler : IPatientHandler, IAllergyHandler, IClin
         _patientClinicalStates.Clear();
     }
 
-    public void SeedPatient(Guid id, string firstName, string lastName, string mobileNumber, string dietTypeId)
+    public void SeedPatient(Guid id, string firstName, string middleName, string lastName, string mobileNumber, string dietTypeId)
     {
-        _patients[id] = new PatientViewModel { Id = id.ToString(), FirstName = firstName, LastName = lastName, MobileNumber = mobileNumber, DietTypeId = dietTypeId };
+        _patients[id] = new PatientViewModel { Id = id.ToString(), FirstName = firstName, MiddleName = middleName, LastName = lastName, MobileNumber = mobileNumber, DietTypeId = dietTypeId };
     }
 
     public void SeedAllergy(string id, string name) => _allergies[id] = new AllergyViewModel { Id = id, Name = name };
@@ -37,7 +37,7 @@ public sealed class MockPatientHandler : IPatientHandler, IAllergyHandler, IClin
     public Task<Guid> AddPatientAsync(PatientCreateRequest request, CancellationToken cancellationToken = default)
     {
         var id = Guid.NewGuid();
-        _patients[id] = new PatientViewModel { Id = id.ToString(), FirstName = request.FirstName, LastName = request.LastName, MobileNumber = request.MobileNumber, DietTypeId = request.DietTypeId };
+        _patients[id] = new PatientViewModel { Id = id.ToString(), FirstName = request.FirstName, MiddleName = request.MiddleName ?? "", LastName = request.LastName, MobileNumber = request.MobileNumber, DietTypeId = request.DietTypeId };
         return Task.FromResult(id);
     }
 
@@ -57,6 +57,7 @@ public sealed class MockPatientHandler : IPatientHandler, IAllergyHandler, IClin
             {
                 Id = p.Id,
                 FirstName = p.FirstName,
+                MiddleName = p.MiddleName,
                 LastName = p.LastName,
                 MobileNumber = p.MobileNumber,
                 DietTypeId = p.DietTypeId,
@@ -75,7 +76,7 @@ public sealed class MockPatientHandler : IPatientHandler, IAllergyHandler, IClin
 
         return Task.FromResult<PatientDetailViewModel?>(new PatientDetailViewModel
         {
-            Id = p.Id, FirstName = p.FirstName, LastName = p.LastName, MobileNumber = p.MobileNumber, DietTypeId = p.DietTypeId,
+            Id = p.Id, FirstName = p.FirstName, MiddleName = p.MiddleName, LastName = p.LastName, MobileNumber = p.MobileNumber, DietTypeId = p.DietTypeId,
             Allergies = (allergyIds ?? []).Select(id => new PatientAllergyViewModel { AllergyId = id, AllergyName = id }).ToList(),
             ClinicalStates = (csIds ?? []).Select(id => new PatientClinicalStateViewModel { ClinicalStateId = id, ClinicalStateName = id }).ToList()
         });
@@ -91,7 +92,7 @@ public sealed class MockPatientHandler : IPatientHandler, IAllergyHandler, IClin
 
         return Task.FromResult<PatientServiceDetailViewModel?>(new PatientServiceDetailViewModel
         {
-            Id = p.Id, FirstName = p.FirstName, LastName = p.LastName, MobileNumber = p.MobileNumber, DietTypeId = p.DietTypeId,
+            Id = p.Id, FirstName = p.FirstName, MiddleName = p.MiddleName, LastName = p.LastName, MobileNumber = p.MobileNumber, DietTypeId = p.DietTypeId,
             AllergyIds = allergyIds ?? [], ClinicalStateIds = csIds ?? []
         });
     }
@@ -104,6 +105,7 @@ public sealed class MockPatientHandler : IPatientHandler, IAllergyHandler, IClin
         {
             Id = existing.Id,
             FirstName = request.FirstName,
+            MiddleName = request.MiddleName ?? "",
             LastName = request.LastName,
             MobileNumber = request.MobileNumber,
             DietTypeId = request.DietTypeId,

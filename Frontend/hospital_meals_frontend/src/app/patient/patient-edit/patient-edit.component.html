@@ -8,7 +8,7 @@
     <header class="page-header">
       <button type="button" class="back-link" (click)="backToList()">← Back to patients</button>
       <h2>Edit patient</h2>
-      <p class="subtitle">{{ d.firstName }} {{ d.lastName }}</p>
+      <p class="subtitle">{{ d.firstName }} {{ d.middleName }} {{ d.lastName }}</p>
     </header>
 
     <div class="edit-layout">
@@ -25,6 +25,17 @@
               (ngModelChange)="formFirstName.set($event)"
               name="firstName"
               required
+            />
+          </div>
+          <div class="form-group">
+            <label for="patient-middle-name">Middle name</label>
+            <input
+              id="patient-middle-name"
+              type="text"
+              class="form-input"
+              [ngModel]="formMiddleName()"
+              (ngModelChange)="formMiddleName.set($event)"
+              name="middleName"
             />
           </div>
           <div class="form-group">

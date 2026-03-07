@@ -75,19 +75,11 @@ namespace Hospital.Meals.Core.Migrations
                     id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     description = table.Column<string>(type: "text", nullable: true),
-                    diet_type_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     disabled = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_recipes", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_recipes_diet_types_diet_type_id",
-                        column: x => x.diet_type_id,
-                        principalSchema: "dbo",
-                        principalTable: "diet_types",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -209,11 +201,15 @@ namespace Hospital.Meals.Core.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     patient_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     patient_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    first_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    middle_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    last_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     recipe_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    requested_for_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    requested_date_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     approval_status = table.Column<int>(type: "integer", nullable: false),
                     status_reason = table.Column<string>(type: "text", nullable: true),
-                    unsafe_ingredient_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true)
+                    unsafe_ingredient_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    finalized_date_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -334,12 +330,6 @@ namespace Hospital.Meals.Core.Migrations
                 column: "ingredient_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_recipes_diet_type_id",
-                schema: "dbo",
-                table: "recipes",
-                column: "diet_type_id");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_recipes_name",
                 schema: "dbo",
                 table: "recipes",
@@ -383,15 +373,15 @@ namespace Hospital.Meals.Core.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
+                name: "diet_types",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
                 name: "ingredients",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
                 name: "recipes",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "diet_types",
                 schema: "dbo");
         }
     }

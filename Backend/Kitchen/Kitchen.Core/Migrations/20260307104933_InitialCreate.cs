@@ -22,9 +22,13 @@ namespace Hospital.Kitchen.Core.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     patient_meal_request_id = table.Column<Guid>(type: "uuid", nullable: false),
                     patient_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    patient_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    first_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    middle_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    last_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     recipe_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    state = table.Column<int>(type: "integer", nullable: false)
+                    state = table.Column<int>(type: "integer", nullable: false),
+                    received_date_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    last_update_date_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -80,6 +84,24 @@ namespace Hospital.Kitchen.Core.Migrations
                 schema: "dbo",
                 table: "tray_status_history",
                 column: "tray_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_trays_first_name",
+                schema: "dbo",
+                table: "trays",
+                column: "first_name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_trays_last_name",
+                schema: "dbo",
+                table: "trays",
+                column: "last_name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_trays_middle_name",
+                schema: "dbo",
+                table: "trays",
+                column: "middle_name");
 
             migrationBuilder.CreateIndex(
                 name: "IX_trays_patient_meal_request_id",

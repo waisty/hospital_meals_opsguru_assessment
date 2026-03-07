@@ -4,6 +4,7 @@ namespace Hospital.Patient.ViewModels
     {
         [NonBlank]
         public string FirstName { get; set; } = "";
+        public string MiddleName { get; set; } = "";
         [NonBlank]
         public string LastName { get; set; } = "";
         [NonBlank]

@@ -13,7 +13,9 @@ namespace Hospital.Kitchen.ServiceViewModels
     {
         public Guid PatientMealRequestId { get; set; }
         public string PatientId { get; set; } = "";
-        public string PatientName { get; set; } = "";
+        public string FirstName { get; set; } = "";
+        public string MiddleName { get; set; } = "";
+        public string LastName { get; set; } = "";
         public string RecipeName { get; set; } = "";
         public TrayState State { get; set; } = TrayState.Pending;
         public IReadOnlyList<TrayIngredientItem> Ingredients { get; set; } = [];

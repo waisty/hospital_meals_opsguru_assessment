@@ -8,7 +8,9 @@ public sealed class KitchenPublishTrayRequest
 {
     public Guid PatientMealRequestId { get; set; }
     public string PatientId { get; set; } = "";
-    public string PatientName { get; set; } = "";
+    public string FirstName { get; set; } = "";
+    public string MiddleName { get; set; } = "";
+    public string LastName { get; set; } = "";
     public string RecipeName { get; set; } = "";
     public IReadOnlyList<KitchenPublishTrayIngredientItem> Ingredients { get; set; } = [];
 }

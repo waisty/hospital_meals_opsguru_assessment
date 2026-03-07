@@ -10,7 +10,9 @@ namespace Hospital.Kitchen.Core.InternalModels
         public Guid Id { get; set; }
         public Guid PatientMealRequestId { get; set; }
         public string PatientId { get; set; } = "";
-        public string PatientName { get; set; } = "";
+        public string FirstName { get; set; } = "";
+        public string MiddleName { get; set; } = "";
+        public string LastName { get; set; } = "";
         public string RecipeName { get; set; } = "";
         public Enums.TrayState State { get; set; }
         public DateTime ReceivedDateTime { get; set; }
@@ -29,7 +31,12 @@ namespace Hospital.Kitchen.Core.InternalModels
             entity.Property(e => e.PatientMealRequestId).HasColumnName("patient_meal_request_id");
             entity.HasIndex(e => e.PatientMealRequestId).IsUnique();
             entity.Property(e => e.PatientId).HasColumnName("patient_id").HasMaxLength(256).IsRequired();
-            entity.Property(e => e.PatientName).HasColumnName("patient_name").HasMaxLength(256);
+            entity.Property(e => e.FirstName).HasColumnName("first_name").HasMaxLength(256).IsRequired();
+            entity.Property(e => e.MiddleName).HasColumnName("middle_name").HasMaxLength(256).IsRequired();
+            entity.Property(e => e.LastName).HasColumnName("last_name").HasMaxLength(256).IsRequired();
+            entity.HasIndex(e => e.FirstName);
+            entity.HasIndex(e => e.MiddleName);
+            entity.HasIndex(e => e.LastName);
             entity.Property(e => e.RecipeName).HasColumnName("recipe_name").HasMaxLength(256).IsRequired();
             entity.Property(e => e.State).HasColumnName("state").HasConversion<int>().IsRequired();
             entity.Property(e => e.ReceivedDateTime).HasColumnName("received_date_time").IsRequired();

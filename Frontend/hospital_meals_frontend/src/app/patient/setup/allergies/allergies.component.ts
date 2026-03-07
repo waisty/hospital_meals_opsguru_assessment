@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { PatientService } from '../../services/patient.service';
 import type { AllergyViewModel } from '../../models';
@@ -6,12 +7,13 @@ import type { AllergyViewModel } from '../../models';
 @Component({
   selector: 'app-allergies',
   standalone: true,
-  imports: [PaginationComponent],
+  imports: [RouterLink, PaginationComponent],
   templateUrl: './allergies.component.html',
   styleUrl: './allergies.component.scss',
 })
 export class AllergiesComponent {
   private readonly patientService = inject(PatientService);
+  private readonly router = inject(Router);
 
   readonly page = signal(1);
   readonly pageSize = signal(10);
@@ -49,5 +51,9 @@ export class AllergiesComponent {
   onPageSizeChange(size: number): void {
     this.pageSize.set(size);
     this.page.set(1);
+  }
+
+  navigateToDetail(id: string): void {
+    this.router.navigate(['/patient/setup/allergies', id]);
   }
 }

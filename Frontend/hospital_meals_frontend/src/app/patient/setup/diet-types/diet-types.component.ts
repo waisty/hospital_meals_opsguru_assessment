@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { PatientService } from '../../services/patient.service';
 import type { DietTypeViewModel } from '../../models';
@@ -6,12 +7,13 @@ import type { DietTypeViewModel } from '../../models';
 @Component({
   selector: 'app-diet-types',
   standalone: true,
-  imports: [PaginationComponent],
+  imports: [RouterLink, PaginationComponent],
   templateUrl: './diet-types.component.html',
   styleUrl: './diet-types.component.scss',
 })
 export class DietTypesComponent {
   private readonly patientService = inject(PatientService);
+  private readonly router = inject(Router);
 
   readonly page = signal(1);
   readonly pageSize = signal(10);
@@ -49,5 +51,9 @@ export class DietTypesComponent {
   onPageSizeChange(size: number): void {
     this.pageSize.set(size);
     this.page.set(1);
+  }
+
+  navigateToDetail(id: string): void {
+    this.router.navigate(['/patient/setup/diet-types', id]);
   }
 }

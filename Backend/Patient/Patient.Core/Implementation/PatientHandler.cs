@@ -20,6 +20,7 @@ namespace Hospital.Patient.Core.Implementation
             var patient = new PatientEntity
             {
                 FirstName = request.FirstName,
+                MiddleName = request.MiddleName ?? "",
                 LastName = request.LastName,
                 MobileNumber = request.MobileNumber,
                 DietTypeId = request.DietTypeId,
@@ -149,6 +150,7 @@ namespace Hospital.Patient.Core.Implementation
             if (patient is null)
                 return false;
             patient.FirstName = request.FirstName;
+            patient.MiddleName = request.MiddleName ?? "";
             patient.LastName = request.LastName;
             patient.MobileNumber = request.MobileNumber;
             patient.DietTypeId = request.DietTypeId;

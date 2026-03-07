@@ -103,7 +103,9 @@ namespace Hospital.Meals.Core.Implementation
             return new KitchenPublishTrayRequest()
             {
                 PatientId = patientRequest.PatientId,
-                PatientName = patientRequest.PatientName,
+                FirstName = patientRequest.FirstName,
+                MiddleName = patientRequest.MiddleName,
+                LastName = patientRequest.LastName,
                 PatientMealRequestId = patientRequest.Id,
                 RecipeName = recipe.Name,
                 Ingredients = [.. recipeIngredients.Select(x => x.ToKitchenPublishTrayIngredientItem())]

@@ -11,10 +11,47 @@ namespace Hospital.Patient.Core.Implementation
     /// <summary>
     /// Seeds initial reference data (diet types, allergies, clinical states) and sample patients
     /// when the database is empty or when SeedData:Enabled is true.
+    /// Uses deterministic GUIDs for seeded patients so Meals/Kitchen can reference the same IDs.
     /// Duplicate or failed inserts are logged as warnings and do not stop seeding.
     /// </summary>
     internal sealed class PatientSeedDataHostedService : IHostedService
     {
+        /// <summary>Deterministic patient count; same constant used by Meals seed for matching PatientRequests.</summary>
+        internal const int SeedPatientCount = 1000;
+
+        private static readonly string[] FirstNames =
+        {
+            "James", "Mary", "John", "Patricia", "Robert", "Jennifer", "Michael", "Linda", "William", "Elizabeth",
+            "David", "Barbara", "Richard", "Susan", "Joseph", "Jessica", "Thomas", "Sarah", "Charles", "Karen",
+            "Christopher", "Nancy", "Daniel", "Lisa", "Matthew", "Betty", "Anthony", "Margaret", "Mark", "Sandra",
+            "Donald", "Ashley", "Steven", "Kimberly", "Paul", "Emily", "Andrew", "Donna", "Joshua", "Michelle",
+            "Kenneth", "Dorothy", "Kevin", "Carol", "Brian", "Amanda", "George", "Melissa", "Timothy", "Deborah",
+        };
+
+        private static readonly string[] LastNames =
+        {
+            "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez",
+            "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin",
+            "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson",
+            "Walker", "Young", "Allen", "King", "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores",
+            "Green", "Adams", "Nelson", "Baker", "Hall", "Rivera", "Campbell", "Mitchell", "Carter", "Roberts",
+        };
+
+        private static readonly string[] DietTypeIds = { "REGULAR", "VEGETARIAN", "DIABETIC", "LOW-SODIUM" };
+        private static readonly string[] AllergyIds = { "NUTS", "DAIRY", "GLUTEN", "SHELLFISH" };
+        private static readonly string[] ClinicalStateIds = { "DIABETIC", "HYPERTENSION", "CARDIAC", "RENAL" };
+
+        /// <summary>Creates a deterministic GUID for seed patient index so Meals/Kitchen can reference the same IDs.</summary>
+        internal static Guid CreateSeedPatientId(int index)
+        {
+            var bytes = new byte[16];
+            bytes[15] = (byte)(index & 0xFF);
+            bytes[14] = (byte)((index >> 8) & 0xFF);
+            bytes[13] = (byte)((index >> 16) & 0xFF);
+            bytes[12] = (byte)((index >> 24) & 0xFF);
+            return new Guid(bytes);
+        }
+
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IConfiguration _configuration;
         private readonly ILogger<PatientSeedDataHostedService> _logger;
@@ -141,77 +178,79 @@ namespace Hospital.Patient.Core.Implementation
 
         private async Task SeedPatientsAsync(PatientDBContext db, CancellationToken cancellationToken)
         {
-            var seedPatients = new[]
+            const int batchSize = 100;
+            for (var batchStart = 0; batchStart < SeedPatientCount; batchStart += batchSize)
             {
-                (FirstName: "John", LastName: "Doe", MobileNumber: "+15551234001", DietTypeId: "REGULAR", Notes: "Sample patient 1"),
-                (FirstName: "Jane", LastName: "Smith", MobileNumber: "+15551234002", DietTypeId: "VEGETARIAN", Notes: "Sample patient 2"),
-            };
-
-            foreach (var (firstName, lastName, mobileNumber, dietTypeId, notes) in seedPatients)
-            {
-                try
+                var batchEnd = Math.Min(batchStart + batchSize, SeedPatientCount);
+                for (var i = batchStart; i < batchEnd; i++)
                 {
+                    var patientId = CreateSeedPatientId(i);
+                    var firstName = FirstNames[i % FirstNames.Length];
+                    var lastName = LastNames[i % LastNames.Length];
+                    var middleIndex = (i / FirstNames.Length) % LastNames.Length;
+                    var middleName = middleIndex == 0 ? "" : LastNames[middleIndex];
+                    var dietTypeId = DietTypeIds[i % DietTypeIds.Length];
+                    var mobileNumber = $"+1555{i + 1000000:D7}";
                     var patient = new PatientEntity
                     {
+                        Id = patientId,
                         FirstName = firstName,
+                        MiddleName = middleName ?? "",
                         LastName = lastName,
                         MobileNumber = mobileNumber,
                         DietTypeId = dietTypeId,
-                        Notes = notes ?? ""
+                        Notes = $"Seed patient {i + 1}"
                     };
                     db.Patients.Add(patient);
-                    await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-                    _logger.LogInformation("Seed patient added: {FirstName} {LastName} (Id: {Id})", firstName, lastName, patient.Id);
-
-                    // Link first patient to some allergies and clinical states
-                    if (firstName == "John" && lastName == "Doe")
-                    {
-                        await SeedPatientAllergiesAsync(db, patient.Id, new[] { "NUTS" }, cancellationToken).ConfigureAwait(false);
-                        await SeedPatientClinicalStatesAsync(db, patient.Id, new[] { "HYPERTENSION" }, cancellationToken).ConfigureAwait(false);
-                    }
-                    else if (firstName == "Jane" && lastName == "Smith")
-                    {
-                        await SeedPatientAllergiesAsync(db, patient.Id, new[] { "DAIRY", "GLUTEN" }, cancellationToken).ConfigureAwait(false);
-                        await SeedPatientClinicalStatesAsync(db, patient.Id, new[] { "DIABETIC" }, cancellationToken).ConfigureAwait(false);
-                    }
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex, "Seed insert failed for patient {FirstName} {LastName}; continuing with next.", firstName, lastName);
-                }
-            }
-        }
 
-        private async Task SeedPatientAllergiesAsync(PatientDBContext db, Guid patientId, string[] allergyIds, CancellationToken cancellationToken)
-        {
-            foreach (var allergyId in allergyIds)
-            {
                 try
                 {
-                    db.PatientAllergies.Add(new PatientAllergy { PatientId = patientId, AllergyId = allergyId });
                     await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                    _logger.LogInformation("Seed patients added: batch {Start}-{End} of {Total}", batchStart + 1, batchEnd, SeedPatientCount);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex, "Seed patient_allergy failed for patient {PatientId}, allergy {AllergyId}.", patientId, allergyId);
+                    _logger.LogWarning(ex, "Seed patient batch {Start}-{End} failed; continuing.", batchStart + 1, batchEnd);
+                    continue;
                 }
-            }
-        }
 
-        private async Task SeedPatientClinicalStatesAsync(PatientDBContext db, Guid patientId, string[] clinicalStateIds, CancellationToken cancellationToken)
-        {
-            foreach (var clinicalStateId in clinicalStateIds)
-            {
-                try
+                for (var i = batchStart; i < batchEnd; i++)
                 {
-                    db.PatientClinicalStates.Add(new PatientClinicalState { PatientId = patientId, ClinicalStateId = clinicalStateId });
-                    await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex, "Seed patient_clinical_state failed for patient {PatientId}, clinical state {ClinicalStateId}.", patientId, clinicalStateId);
+                    var patientId = CreateSeedPatientId(i);
+                    var allergyCount = i % 3;
+                    for (var a = 0; a < allergyCount; a++)
+                    {
+                        var allergyId = AllergyIds[(i + a) % AllergyIds.Length];
+                        try
+                        {
+                            db.PatientAllergies.Add(new PatientAllergy { PatientId = patientId, AllergyId = allergyId });
+                            await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogWarning(ex, "Seed patient_allergy failed for patient index {Index}, allergy {AllergyId}.", i, allergyId);
+                        }
+                    }
+
+                    var clinicalStateCount = (i + 1) % 3;
+                    for (var c = 0; c < clinicalStateCount; c++)
+                    {
+                        var clinicalStateId = ClinicalStateIds[(i + c) % ClinicalStateIds.Length];
+                        try
+                        {
+                            db.PatientClinicalStates.Add(new PatientClinicalState { PatientId = patientId, ClinicalStateId = clinicalStateId });
+                            await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogWarning(ex, "Seed patient_clinical_state failed for patient index {Index}, clinical state {ClinicalStateId}.", i, clinicalStateId);
+                        }
+                    }
                 }
             }
+
+            _logger.LogInformation("Seed patients completed: {Count} patients with associated allergies and clinical states.", SeedPatientCount);
         }
     }
 }

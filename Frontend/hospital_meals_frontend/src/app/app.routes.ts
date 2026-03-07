@@ -7,8 +7,14 @@ import { PatientsComponent } from './patient/patients/patients.component';
 import { PatientDetailComponent } from './patient/patient-detail/patient-detail.component';
 import { PatientEditComponent } from './patient/patient-edit/patient-edit.component';
 import { AllergiesComponent } from './patient/setup/allergies/allergies.component';
+import { AllergyDetailComponent } from './patient/setup/allergies/allergy-detail/allergy-detail.component';
+import { AllergyEditComponent } from './patient/setup/allergies/allergy-edit/allergy-edit.component';
 import { ClinicalStatesComponent } from './patient/setup/clinical-states/clinical-states.component';
+import { ClinicalStateDetailComponent } from './patient/setup/clinical-states/clinical-state-detail/clinical-state-detail.component';
+import { ClinicalStateEditComponent } from './patient/setup/clinical-states/clinical-state-edit/clinical-state-edit.component';
 import { DietTypesComponent } from './patient/setup/diet-types/diet-types.component';
+import { DietTypeDetailComponent } from './patient/setup/diet-types/diet-type-detail/diet-type-detail.component';
+import { DietTypeEditComponent } from './patient/setup/diet-types/diet-type-edit/diet-type-edit.component';
 import { MealsDashboardComponent } from './meals/meals-dashboard/meals-dashboard.component';
 import { KitchenDashboardComponent } from './kitchen/kitchen-dashboard/kitchen-dashboard.component';
 import {
@@ -44,8 +50,14 @@ export const routes: Routes = [
       { path: 'patients/:id', component: PatientDetailComponent },
       { path: 'patients/:id/edit', component: PatientEditComponent },
       { path: 'setup/allergies', component: AllergiesComponent },
+      { path: 'setup/allergies/:id', component: AllergyDetailComponent },
+      { path: 'setup/allergies/:id/edit', component: AllergyEditComponent },
       { path: 'setup/clinical-states', component: ClinicalStatesComponent },
+      { path: 'setup/clinical-states/:id', component: ClinicalStateDetailComponent },
+      { path: 'setup/clinical-states/:id/edit', component: ClinicalStateEditComponent },
       { path: 'setup/diet-types', component: DietTypesComponent },
+      { path: 'setup/diet-types/:id', component: DietTypeDetailComponent },
+      { path: 'setup/diet-types/:id/edit', component: DietTypeEditComponent },
     ],
   },
   {

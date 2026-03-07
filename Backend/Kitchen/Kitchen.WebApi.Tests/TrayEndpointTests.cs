@@ -42,7 +42,9 @@ public sealed class TrayEndpointTests : IClassFixture<KitchenWebApiFixture>
         {
             PatientMealRequestId = Guid.NewGuid(),
             PatientId = "patient-1",
-            PatientName = "John Doe",
+            FirstName = "John",
+            MiddleName = "",
+            LastName = "Doe",
             RecipeName = "Chicken Soup",
             State = Enums.TrayState.Pending,
             Ingredients =
@@ -66,7 +68,9 @@ public sealed class TrayEndpointTests : IClassFixture<KitchenWebApiFixture>
         {
             PatientMealRequestId = Guid.NewGuid(),
             PatientId = "p1",
-            PatientName = "Test",
+            FirstName = "Test",
+            MiddleName = "",
+            LastName = "",
             RecipeName = "Test Recipe"
         };
 
@@ -83,7 +87,9 @@ public sealed class TrayEndpointTests : IClassFixture<KitchenWebApiFixture>
         {
             PatientMealRequestId = Guid.NewGuid(),
             PatientId = "p1",
-            PatientName = "Test",
+            FirstName = "Test",
+            MiddleName = "",
+            LastName = "",
             RecipeName = "Test Recipe"
         };
 
@@ -100,7 +106,9 @@ public sealed class TrayEndpointTests : IClassFixture<KitchenWebApiFixture>
         {
             PatientMealRequestId = Guid.NewGuid(),
             PatientId = "p1",
-            PatientName = "Test",
+            FirstName = "Test",
+            MiddleName = "",
+            LastName = "",
             RecipeName = "Test Recipe",
             Ingredients = []
         };
