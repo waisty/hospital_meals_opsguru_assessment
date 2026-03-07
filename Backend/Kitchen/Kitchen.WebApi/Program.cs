@@ -5,6 +5,18 @@ using Hospital.Kitchen.WebApi.EndpointMappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var allowedOrigins = builder.Configuration["AllowedOrigins"]?.Split(';', StringSplitOptions.RemoveEmptyEntries) ?? [];
+if (allowedOrigins.Length > 0)
+{
+    builder.Services.AddCors(options =>
+    {
+        options.AddDefaultPolicy(policy =>
+        {
+            policy.WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader();
+        });
+    });
+}
+
 if (!builder.Environment.IsEnvironment("Testing"))
 {
     builder.Services.AddKitchenServices(builder.Configuration);
@@ -13,6 +25,8 @@ if (!builder.Environment.IsEnvironment("Testing"))
 
 var app = builder.Build();
 
+if (allowedOrigins.Length > 0)
+    app.UseCors();
 app.UseJwtAuthentication();
 
 app.MapGet("/", () => Results.Ok(new { service = "Hospital.Kitchen.WebApi", status = "running" }));

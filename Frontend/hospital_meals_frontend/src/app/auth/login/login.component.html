@@ -1,0 +1,41 @@
+<div class="login-page">
+  <div class="login-card">
+    <h1>Hospital Meals</h1>
+    <p class="subtitle">Sign in to continue</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
+      @if (error(); as err) {
+        <div class="error" role="alert">{{ err }}</div>
+      }
+      <div class="field">
+        <label for="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          autocomplete="username"
+          placeholder="Enter username"
+        />
+        @if (form.controls.username.touched && form.controls.username.invalid) {
+          <span class="field-error">Username is required</span>
+        }
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          autocomplete="current-password"
+          placeholder="Enter password"
+        />
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <span class="field-error">Password is required</span>
+        }
+      </div>
+      <button type="submit" class="btn-primary" [disabled]="loading()">
+        {{ loading() ? 'Signing in…' : 'Sign in' }}
+      </button>
+    </form>
+  </div>
+</div>

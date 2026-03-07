@@ -1,0 +1,18 @@
+<div class="home-page">
+  <header class="header">
+    <h1>Hospital Meals</h1>
+    <button type="button" class="logout" (click)="logout()">Sign out</button>
+  </header>
+  <main class="main">
+    <h2>Dashboards</h2>
+    <p class="intro">Choose an area to manage.</p>
+    <nav class="dashboard-links" aria-label="Dashboard links">
+      @for (link of dashboardLinks(); track link.path) {
+        <a [routerLink]="link.path" class="dashboard-card" [attr.data-area]="link.area">
+          <span class="card-label">{{ link.label }}</span>
+          <span class="card-arrow" aria-hidden="true">→</span>
+        </a>
+      }
+    </nav>
+  </main>
+</div>

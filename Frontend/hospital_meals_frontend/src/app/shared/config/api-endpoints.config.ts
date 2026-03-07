@@ -11,9 +11,9 @@ export interface ApiEndpoints {
 export const API_ENDPOINTS = new InjectionToken<ApiEndpoints>('API_ENDPOINTS', {
   providedIn: 'root',
   factory: () => ({
-    auth: 'http://localhost:8080',
-    patient: 'http://localhost:8081',
-    meals: 'http://localhost:8082',
-    kitchen: 'http://localhost:8083',
+    auth: 'http://localhost:9080',
+    patient: 'http://localhost:9081',
+    meals: 'http://localhost:9082',
+    kitchen: 'http://localhost:9083',
   }),
 });
