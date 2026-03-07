@@ -40,10 +40,18 @@ public sealed class MealsWebApiFixture : WebApplicationFactory<Program>
             services.AddSingleton<MockPatientApiClient>();
             services.AddSingleton<MockKitchenApiClient>();
 
-            services.AddScoped<IMealsRepo>(sp => sp.GetRequiredService<MockMealsRepo>());
+            services.AddScoped<IMealRepo>(sp => sp.GetRequiredService<MockMealsRepo>());
+            services.AddScoped<IRecipeRepo>(sp => sp.GetRequiredService<MockMealsRepo>());
+            services.AddScoped<IIngredientRepo>(sp => sp.GetRequiredService<MockMealsRepo>());
+            services.AddScoped<IPatientRequestRepo>(sp => sp.GetRequiredService<MockMealsRepo>());
+            services.AddScoped<IReferenceDataRepo>(sp => sp.GetRequiredService<MockMealsRepo>());
             services.AddScoped<IPatientApiClient>(sp => sp.GetRequiredService<MockPatientApiClient>());
             services.AddScoped<IKitchenApiClient>(sp => sp.GetRequiredService<MockKitchenApiClient>());
-            services.AddScoped<IMealsHandler, MealsHandler>();
+            services.AddScoped<IMealHandler, MealHandler>();
+            services.AddScoped<IRecipeHandler, RecipeHandler>();
+            services.AddScoped<IIngredientHandler, IngredientHandler>();
+            services.AddScoped<IPatientRequestHandler, PatientRequestHandler>();
+            services.AddScoped<IReferenceDataHandler, ReferenceDataHandler>();
         });
 
         return base.CreateHost(builder);

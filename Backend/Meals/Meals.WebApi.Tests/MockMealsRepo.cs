@@ -4,7 +4,7 @@ using Hospital.Meals.ViewModels;
 
 namespace Hospital.Meals.WebApi.Tests;
 
-internal sealed class MockMealsRepo : IMealsRepo
+internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, IPatientRequestRepo, IReferenceDataRepo
 {
     private readonly Dictionary<string, Meal> _meals = new();
     private readonly Dictionary<string, Recipe> _recipes = new();

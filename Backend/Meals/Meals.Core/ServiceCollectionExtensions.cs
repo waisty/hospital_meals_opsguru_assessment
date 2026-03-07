@@ -21,8 +21,16 @@ namespace Hospital.Meals.Core
         public static IServiceCollection AddMealsServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<MealsDBContext>();
-            services.AddScoped<IMealsRepo, MealsRepo>();
-            services.AddScoped<IMealsHandler, MealsHandler>();
+            services.AddScoped<IMealRepo, MealRepo>();
+            services.AddScoped<IRecipeRepo, RecipeRepo>();
+            services.AddScoped<IIngredientRepo, IngredientRepo>();
+            services.AddScoped<IPatientRequestRepo, PatientRequestRepo>();
+            services.AddScoped<IReferenceDataRepo, ReferenceDataRepo>();
+            services.AddScoped<IMealHandler, MealHandler>();
+            services.AddScoped<IRecipeHandler, RecipeHandler>();
+            services.AddScoped<IIngredientHandler, IngredientHandler>();
+            services.AddScoped<IPatientRequestHandler, PatientRequestHandler>();
+            services.AddScoped<IReferenceDataHandler, ReferenceDataHandler>();
             services.AddSingleton<DelegatingHandler, MealsServiceTokenHandler>();
             services.AddHttpClient<IPatientApiClient, PatientApiClient>(client =>
             {
