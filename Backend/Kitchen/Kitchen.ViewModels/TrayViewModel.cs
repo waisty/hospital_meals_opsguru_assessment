@@ -14,5 +14,6 @@ namespace Hospital.Kitchen.ViewModels
         public int State { get; set; }
         public DateTime ReceivedDateTime { get; set; }
         public DateTime? LastUpdateDateTime { get; set; }
+        public string StateName { get; set; } = "";
     }
 }

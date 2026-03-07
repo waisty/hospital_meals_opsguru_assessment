@@ -58,6 +58,7 @@ namespace Hospital.Kitchen.Core.Implementation
                     PatientName = t.PatientName,
                     RecipeName = t.RecipeName,
                     State = (int)t.State,
+                    StateName = t.State.ToString(),
                     ReceivedDateTime = t.ReceivedDateTime,
                     LastUpdateDateTime = t.LastUpdateDateTime
                 }).ToList(),
