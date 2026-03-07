@@ -4,7 +4,7 @@ import { switchMap } from 'rxjs';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
 import type { PagedResult } from '../../shared/models';
 import { PatientService } from '../services/patient.service';
-import type { PatientViewModel } from '../models';
+import type { PatientWithDietTypeNameViewModel } from '../models';
 
 @Component({
   selector: 'app-patients',
@@ -28,11 +28,11 @@ export class PatientsComponent {
       this.patientService.listPatients(page, pageSize)
     )
   );
-  readonly result = toSignal<PagedResult<PatientViewModel> | null>(this.params$, {
+  readonly result = toSignal<PagedResult<PatientWithDietTypeNameViewModel> | null>(this.params$, {
     initialValue: null,
   });
 
-  get items(): PatientViewModel[] {
+  get items(): PatientWithDietTypeNameViewModel[] {
     return this.result()?.items ?? [];
   }
   get totalCount(): number {

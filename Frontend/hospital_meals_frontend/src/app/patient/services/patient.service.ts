@@ -5,6 +5,7 @@ import { API_ENDPOINTS } from '../../shared/config/api-endpoints.config';
 import type { PagedResult } from '../../shared/models';
 import type {
   PatientViewModel,
+  PatientWithDietTypeNameViewModel,
   PatientDetailViewModel,
   PatientCreateRequest,
   PatientCreateResponse,
@@ -35,9 +36,9 @@ export class PatientService {
   }
 
   // --- Patients ---
-  listPatients(page: number, pageSize: number): Observable<PagedResult<PatientViewModel>> {
+  listPatients(page: number, pageSize: number): Observable<PagedResult<PatientWithDietTypeNameViewModel>> {
     const params = new HttpParams().set('page', page).set('pageSize', pageSize);
-    return this.http.get<PagedResult<PatientViewModel>>(`${this.base}/patients`, { params });
+    return this.http.get<PagedResult<PatientWithDietTypeNameViewModel>>(`${this.base}/patients`, { params });
   }
 
   getPatientById(id: string): Observable<PatientViewModel | null> {

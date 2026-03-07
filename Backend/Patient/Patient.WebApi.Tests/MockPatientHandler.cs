@@ -25,6 +25,7 @@ public sealed class MockPatientHandler : IPatientHandler, IAllergyHandler, IClin
 
     public void SeedPatient(Guid id, string name, string mobileNumber, string dietTypeId)
     {
+        var dietTypeName = _dietTypes.TryGetValue(dietTypeId, out var dt) ? dt.Name : "";
         _patients[id] = new PatientViewModel { Id = id.ToString(), Name = name, MobileNumber = mobileNumber, DietTypeId = dietTypeId };
     }
 
@@ -37,6 +38,7 @@ public sealed class MockPatientHandler : IPatientHandler, IAllergyHandler, IClin
     public Task<Guid> AddPatientAsync(PatientCreateRequest request, CancellationToken cancellationToken = default)
     {
         var id = Guid.NewGuid();
+        var dietTypeName = _dietTypes.TryGetValue(request.DietTypeId, out var dt) ? dt.Name : "";
         _patients[id] = new PatientViewModel { Id = id.ToString(), Name = request.Name, MobileNumber = request.MobileNumber, DietTypeId = request.DietTypeId };
         return Task.FromResult(id);
     }
@@ -48,10 +50,20 @@ public sealed class MockPatientHandler : IPatientHandler, IAllergyHandler, IClin
         return Task.FromResult(vm);
     }
 
-    public Task<PagedResult<PatientViewModel>> ListPatientsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+    public Task<PagedResult<PatientWithDietTypeNameViewModel>> ListPatientsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
-        var items = _patients.Values.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-        return Task.FromResult(new PagedResult<PatientViewModel> { Items = items, TotalCount = _patients.Count, Page = page, PageSize = pageSize });
+        var items = _patients.Values
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(p => new PatientWithDietTypeNameViewModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                MobileNumber = p.MobileNumber,
+                DietTypeId = p.DietTypeId,
+                DietTypeName = _dietTypes.TryGetValue(p.DietTypeId, out var dt) ? dt.Name : "-"
+            }).ToList();
+        return Task.FromResult(new PagedResult<PatientWithDietTypeNameViewModel> { Items = items, TotalCount = _patients.Count, Page = page, PageSize = pageSize });
     }
 
     public Task<PatientDetailViewModel?> GetPatientDetailByIdAsync(string id, CancellationToken cancellationToken = default)

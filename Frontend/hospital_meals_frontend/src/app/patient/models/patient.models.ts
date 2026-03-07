@@ -6,6 +6,11 @@ export interface PatientViewModel {
   notes: string | null;
 }
 
+/** Patient with diet type name (from join); returned by list patients endpoint. */
+export interface PatientWithDietTypeNameViewModel extends PatientViewModel {
+  dietTypeName: string;
+}
+
 export interface PatientAllergyViewModel {
   allergyId: string;
   allergyName: string;

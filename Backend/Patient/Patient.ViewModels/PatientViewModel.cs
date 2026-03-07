@@ -6,6 +6,13 @@ namespace Hospital.Patient.ViewModels
         public string Name { get; set; } = "";
         public string MobileNumber { get; set; } = "";
         public string DietTypeId { get; set; } = "";
+        /// <summary>Diet type name (from join when listing patients).</summary>
+        
         public string? Notes { get; set; }
+    }
+
+    public class PatientWithDietTypeNameViewModel : PatientViewModel
+    {
+        public string DietTypeName { get; set; } = "";
     }
 }

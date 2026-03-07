@@ -13,12 +13,32 @@ namespace Hospital.Patient.Core.InternalModels
         public string DietTypeId { get; set; } = "";
         public string Notes { get; set; } = "";
 
-        public PatientViewModel ToPatientViewModel() => new()
+        public virtual PatientViewModel ToPatientViewModel() => new()
         {
             Id = Id.ToString(),
             Name = Name,
             MobileNumber = MobileNumber,
             DietTypeId = DietTypeId,
+            Notes = Notes
+        };
+
+        public PatientWithDietTypeName ToPatientWithDietTypeName(string dietTypeName) => new()
+        {
+            Id = Id,
+            Name = Name,
+            MobileNumber = MobileNumber,
+            DietTypeId = DietTypeId,
+            DietTypeName = dietTypeName,
+            Notes = Notes
+        };
+
+        public PatientWithDietTypeNameViewModel ToPatientWithDietTypeNameViewModel(string dietTypeName) => new()
+        {
+            Id = Id.ToString(),
+            Name = Name,
+            MobileNumber = MobileNumber,
+            DietTypeId = DietTypeId,
+            DietTypeName = dietTypeName,
             Notes = Notes
         };
 

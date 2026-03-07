@@ -26,16 +26,20 @@ namespace Hospital.Patient.Core.Implementation
                 .ConfigureAwait(false);
         }
 
-        public async Task<PagedResult<InternalModels.Patient>> ListPatientsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<PagedResult<InternalModels.PatientWithDietTypeName>> ListPatientsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
         {
             var totalCount = await _context.Patients.CountAsync(cancellationToken).ConfigureAwait(false);
-            var items = await _context.Patients
-                .OrderBy(p => p.Name)
+            var query = from p in _context.Patients
+                        join dt in _context.DietTypes on p.DietTypeId equals dt.Id
+                        orderby p.Name
+                        select new { p, dietTypeName = dt.Name };
+            var list = await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
-            return new PagedResult<InternalModels.Patient>
+            var items = list.Select(x => x.p.ToPatientWithDietTypeName(x.dietTypeName)).ToList();
+            return new PagedResult<InternalModels.PatientWithDietTypeName>
             {
                 Items = items,
                 TotalCount = totalCount,

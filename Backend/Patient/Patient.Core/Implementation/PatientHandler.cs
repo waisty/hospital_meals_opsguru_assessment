@@ -36,12 +36,12 @@ namespace Hospital.Patient.Core.Implementation
             return patient == null ? null : patient.ToPatientViewModel();
         }
 
-        public async Task<PagedResult<PatientViewModel>> ListPatientsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<PagedResult<PatientWithDietTypeNameViewModel>> ListPatientsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
         {
             var paged = await _repo.ListPatientsAsync(page, pageSize, cancellationToken).ConfigureAwait(false);
-            return new PagedResult<PatientViewModel>
+            return new PagedResult<PatientWithDietTypeNameViewModel>
             {
-                Items = paged.Items.Select(p => p.ToPatientViewModel()).ToList(),
+                Items = paged.Items.Select(x => x.ToPatientWithDietTypeNameViewModel(x.DietTypeName)).ToList(),
                 TotalCount = paged.TotalCount,
                 Page = paged.Page,
                 PageSize = paged.PageSize
