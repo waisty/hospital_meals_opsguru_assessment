@@ -8,7 +8,7 @@ namespace Hospital.Meals.Core.InternalModels
     {
         public string Id { get; set; } = "";
         public string Name { get; set; } = "";
-        public string RecipeId { get; set; } = "";
+        public string? Description { get; set; }
         public bool Disabled { get; set; }
         public NpgsqlTsVector SearchVector { get; set; } = null!;
 
@@ -19,7 +19,7 @@ namespace Hospital.Meals.Core.InternalModels
             entity.Property(e => e.Id).HasColumnName("id").HasMaxLength(256);
             entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(256).IsRequired();
             entity.HasIndex(e => e.Name).IsUnique();
-            entity.Property(e => e.RecipeId).HasColumnName("recipe_id").HasMaxLength(256).IsRequired();
+            entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.Disabled).HasColumnName("disabled");
 
             entity.HasGeneratedTsVectorColumn(
@@ -29,11 +29,6 @@ namespace Hospital.Meals.Core.InternalModels
                 .HasIndex(e => e.SearchVector)
                 .HasMethod("GIN");
             entity.Property(e => e.SearchVector).HasColumnName("search_vector");
-
-            entity.HasOne<Recipe>()
-                .WithMany()
-                .HasForeignKey(e => e.RecipeId)
-                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

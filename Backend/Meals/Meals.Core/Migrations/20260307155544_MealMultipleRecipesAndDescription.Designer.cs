@@ -3,6 +3,7 @@ using System;
 using Hospital.Meals.Core.Implementation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Hospital.Meals.Core.Migrations
 {
     [DbContext(typeof(MealsDBContext))]
-    partial class MealsDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260307155544_MealMultipleRecipesAndDescription")]
+    partial class MealMultipleRecipesAndDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

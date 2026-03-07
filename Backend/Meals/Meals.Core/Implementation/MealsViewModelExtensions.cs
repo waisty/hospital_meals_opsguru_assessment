@@ -7,12 +7,37 @@ namespace Hospital.Meals.Core.Implementation
 {
     internal static class MealsViewModelExtensions
     {
-        public static MealViewModel ToMealViewModel(this Meal meal) => new()
+        public static MealViewModel ToMealViewModel(this Meal meal, IReadOnlyList<MealRecipe>? mealRecipes = null, IReadOnlyDictionary<string, string>? recipeNamesById = null)
+        {
+            IReadOnlyList<MealRecipeViewModel> recipes = Array.Empty<MealRecipeViewModel>();
+            if (mealRecipes != null && mealRecipes.Count > 0 && recipeNamesById != null)
+            {
+                recipes = mealRecipes.Select(mr => new MealRecipeViewModel
+                {
+                    RecipeId = mr.RecipeId,
+                    RecipeName = recipeNamesById.TryGetValue(mr.RecipeId, out var name) ? name : mr.RecipeId,
+                    Disabled = mr.Disabled
+                }).ToList();
+            }
+            return new MealViewModel
+            {
+                Id = meal.Id,
+                Name = meal.Name,
+                Description = meal.Description,
+                Disabled = meal.Disabled,
+                Recipes = recipes,
+                RecipeCount = mealRecipes?.Count ?? 0
+            };
+        }
+
+        public static MealViewModel ToMealViewModelWithRecipeCount(this Meal meal, int recipeCount) => new()
         {
             Id = meal.Id,
             Name = meal.Name,
-            RecipeId = meal.RecipeId,
-            Disabled = meal.Disabled
+            Description = meal.Description,
+            Disabled = meal.Disabled,
+            Recipes = Array.Empty<MealRecipeViewModel>(),
+            RecipeCount = recipeCount
         };
 
         public static RecipeViewModel ToRecipeViewModel(this Recipe recipe) => new()

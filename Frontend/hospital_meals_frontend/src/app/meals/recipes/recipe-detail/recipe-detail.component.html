@@ -9,7 +9,12 @@
       <a routerLink="/meals/setup/recipes" class="back-link">← Back to recipes</a>
       <div class="header-row">
         <h2>Recipe details</h2>
-        <app-edit-button [link]="['/meals/setup/recipes', d.id, 'edit']" title="Edit recipe" />
+        <div class="header-actions">
+          @if (canAddToMeal()) {
+            <button type="button" class="btn-secondary" (click)="openAddToMealModal()">Add to meal</button>
+          }
+          <app-edit-button [link]="['/meals/setup/recipes', d.id, 'edit']" title="Edit recipe" />
+        </div>
       </div>
       <p class="subtitle">{{ d.name }}</p>
     </header>
@@ -49,3 +54,22 @@
     <a routerLink="/meals/setup/recipes" class="back-link">← Back to recipes</a>
   }
 </div>
+
+@if (showAddToMealModal()) {
+  <div class="modal-overlay" (click)="closeAddToMealModal()">
+    <div class="modal-dialog modal-dialog-lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Add recipe to meal</h3>
+        <button type="button" class="modal-close" (click)="closeAddToMealModal()" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <app-meal-list
+          [selectionMode]="true"
+          [suspendLoadUntilSearch]="false"
+          [addingMealId]="addingMealId()"
+          (mealSelected)="onMealSelected($event)"
+        />
+      </div>
+    </div>
+  </div>
+}

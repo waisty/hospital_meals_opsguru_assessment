@@ -106,4 +106,231 @@
       cursor: not-allowed;
     }
   }
+
+  .btn-secondary {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #374151;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background: #e5e7eb;
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    &.btn-sm {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+  }
+
+  .btn-link {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.875rem;
+    color: #2563eb;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &.btn-link-danger {
+      color: #b91c1c;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .form-textarea {
+    min-height: 4rem;
+    resize: vertical;
+  }
+
+  .muted {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    font-style: italic;
+    margin: 0.5rem 0;
+  }
+
+  .recipes-section {
+    margin-top: 0.5rem;
+  }
+
+  .recipes-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+
+    label {
+      margin: 0;
+    }
+  }
+
+  .recipes-table {
+    width: 100%;
+    font-size: 0.875rem;
+    border-collapse: collapse;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.25rem;
+    overflow: hidden;
+
+    th,
+    td {
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .disabled-row {
+      opacity: 0.7;
+    }
+
+    .pending-row .badge.unsaved {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.4rem;
+      background: #fef9c3;
+      color: #854d0e;
+      border-radius: 0.25rem;
+      margin-left: 0.5rem;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 0.25rem;
+
+      &.disabled {
+        background: #fef2f2;
+        color: #b91c1c;
+      }
+
+      &.active {
+        background: #f0fdf4;
+        color: #15803d;
+      }
+    }
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-dialog {
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  max-width: 36rem;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &.modal-dialog-lg {
+    max-width: 42rem;
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+
+  h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #0f172a;
+  }
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.25rem;
+
+  &:hover {
+    color: #0f172a;
+  }
+}
+
+.modal-body {
+  padding: 1.25rem;
+  overflow-y: auto;
+  max-height: 60vh;
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .modal-recipes-table {
+    width: 100%;
+    font-size: 0.875rem;
+    border-collapse: collapse;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.25rem;
+    overflow: hidden;
+
+    th,
+    td {
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .muted {
+      margin: 0;
+      font-size: 0.8125rem;
+    }
+  }
 }

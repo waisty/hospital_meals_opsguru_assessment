@@ -7,6 +7,7 @@ namespace Hospital.Meals.WebApi.Tests;
 internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, IPatientRequestRepo, IReferenceDataRepo
 {
     private readonly Dictionary<string, Meal> _meals = new();
+    private readonly List<MealRecipe> _mealRecipes = new();
     private readonly Dictionary<string, Recipe> _recipes = new();
     private readonly Dictionary<string, Ingredient> _ingredients = new();
     private readonly List<RecipeIngredient> _recipeIngredients = new();
@@ -21,6 +22,7 @@ internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, I
     public void Clear()
     {
         _meals.Clear();
+        _mealRecipes.Clear();
         _recipes.Clear();
         _ingredients.Clear();
         _recipeIngredients.Clear();
@@ -35,8 +37,11 @@ internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, I
 
     // ── Seed helpers ─────────────────────────────────────────────────
 
-    public void SeedMeal(string id, string name, string recipeId) =>
-        _meals[id] = new Meal { Id = id, Name = name, RecipeId = recipeId };
+    public void SeedMeal(string id, string name, string recipeId)
+    {
+        _meals[id] = new Meal { Id = id, Name = name, Description = null };
+        _mealRecipes.Add(new MealRecipe { MealId = id, RecipeId = recipeId, Disabled = false });
+    }
 
     public void SeedRecipe(string id, string name, string? description = null) =>
         _recipes[id] = new Recipe { Id = id, Name = name, Description = description };
@@ -79,18 +84,56 @@ internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, I
         return Task.FromResult(meal);
     }
 
-    public Task<PagedResult<Meal>> ListMealsAsync(int page, int pageSize, CancellationToken ct = default)
+    public Task<IReadOnlyList<MealRecipe>> GetMealRecipesByMealIdAsync(string mealId, CancellationToken ct = default)
     {
-        var all = _meals.Values.OrderBy(m => m.Name).ToList();
+        var list = _mealRecipes.Where(mr => mr.MealId == mealId).OrderBy(mr => mr.RecipeId).ToList();
+        return Task.FromResult<IReadOnlyList<MealRecipe>>(list);
+    }
+
+    public Task<IReadOnlyDictionary<string, int>> GetRecipeCountByMealIdsAsync(IEnumerable<string> mealIds, CancellationToken ct = default)
+    {
+        var idSet = mealIds.ToHashSet();
+        var counts = _mealRecipes
+            .Where(mr => idSet.Contains(mr.MealId))
+            .GroupBy(mr => mr.MealId)
+            .ToDictionary(g => g.Key, g => g.Count());
+        return Task.FromResult<IReadOnlyDictionary<string, int>>(counts);
+    }
+
+    public Task<PagedResult<Meal>> ListMealsAsync(int page, int pageSize, string? search = null, CancellationToken ct = default)
+    {
+        var query = _meals.Values.AsEnumerable();
+        if (!string.IsNullOrWhiteSpace(search) && search.Trim().Length >= 2)
+        {
+            var term = search!.Trim();
+            query = query.Where(m => m.Name.Contains(term, StringComparison.OrdinalIgnoreCase));
+        }
+        var all = query.OrderBy(m => m.Name).ToList();
         var items = all.Skip((page - 1) * pageSize).Take(pageSize).ToList();
         return Task.FromResult(new PagedResult<Meal> { Items = items, TotalCount = all.Count, Page = page, PageSize = pageSize });
     }
 
-    public Task<bool> UpdateMealAsync(string id, string name, string recipeId, CancellationToken ct = default)
+    public Task<bool> UpdateMealAsync(string id, string name, string? description, CancellationToken ct = default)
     {
         if (!_meals.TryGetValue(id, out var meal)) return Task.FromResult(false);
         meal.Name = name;
-        meal.RecipeId = recipeId;
+        meal.Description = description;
+        return Task.FromResult(true);
+    }
+
+    public Task<bool> AddRecipeToMealAsync(string mealId, string recipeId, CancellationToken ct = default)
+    {
+        if (_mealRecipes.Any(mr => mr.MealId == mealId && mr.RecipeId == recipeId))
+            return Task.FromResult(false);
+        _mealRecipes.Add(new MealRecipe { MealId = mealId, RecipeId = recipeId, Disabled = false });
+        return Task.FromResult(true);
+    }
+
+    public Task<bool> SetMealRecipeDisabledAsync(string mealId, string recipeId, bool disabled, CancellationToken ct = default)
+    {
+        var mr = _mealRecipes.FirstOrDefault(m => m.MealId == mealId && m.RecipeId == recipeId);
+        if (mr == null) return Task.FromResult(false);
+        mr.Disabled = disabled;
         return Task.FromResult(true);
     }
 
@@ -116,9 +159,17 @@ internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, I
         return Task.FromResult(recipe);
     }
 
-    public Task<PagedResult<Recipe>> ListRecipesAsync(int page, int pageSize, CancellationToken ct = default)
+    public Task<PagedResult<Recipe>> ListRecipesAsync(int page, int pageSize, string? search = null, CancellationToken ct = default)
     {
-        var all = _recipes.Values.OrderBy(r => r.Name).ToList();
+        var query = _recipes.Values.AsEnumerable();
+        if (!string.IsNullOrWhiteSpace(search) && search.Trim().Length >= 2)
+        {
+            var term = search!.Trim();
+            query = query.Where(r =>
+                (r.Name?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (r.Description?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false));
+        }
+        var all = query.OrderBy(r => r.Name).ToList();
         var items = all.Skip((page - 1) * pageSize).Take(pageSize).ToList();
         return Task.FromResult(new PagedResult<Recipe> { Items = items, TotalCount = all.Count, Page = page, PageSize = pageSize });
     }

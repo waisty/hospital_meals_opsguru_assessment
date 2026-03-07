@@ -35,6 +35,24 @@ public static class MealEndpointMappings
             return updated ? Results.NoContent() : Results.NotFound();
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
 
+        group.MapGet("/meals/{id}/recipes", async (string id, IMealHandler handler, CancellationToken ct) =>
+        {
+            var recipes = await handler.GetMealRecipesAsync(id, ct);
+            return Results.Ok(recipes);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
+
+        group.MapPost("/meals/{id}/recipes", async (string id, AddRecipeToMealRequest request, IMealHandler handler, CancellationToken ct) =>
+        {
+            var added = await handler.AddRecipeToMealAsync(id, request.RecipeId, ct);
+            return added ? Results.NoContent() : Results.Conflict();
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+
+        group.MapPut("/meals/{mealId}/recipes/{recipeId}/disabled", async (string mealId, string recipeId, SetMealRecipeDisabledRequest request, IMealHandler handler, CancellationToken ct) =>
+        {
+            var updated = await handler.SetMealRecipeDisabledAsync(mealId, recipeId, request.Disabled, ct);
+            return updated ? Results.NoContent() : Results.NotFound();
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+
         return group;
     }
 }

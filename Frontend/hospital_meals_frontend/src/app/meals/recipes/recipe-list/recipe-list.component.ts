@@ -1,4 +1,4 @@
-import { Component, Injector, computed, inject, input, signal } from '@angular/core';
+import { Component, Injector, computed, inject, input, output, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { catchError, debounceTime, of, startWith, switchMap, tap } from 'rxjs';
@@ -24,6 +24,14 @@ export class RecipeListComponent {
   readonly showEditButton = input<boolean>(false);
   readonly clickToNavigateEnabled = input<boolean>(true);
   readonly suspendLoadUntilSearch = input<boolean>(false);
+
+  /** When true, show a Select column and emit recipeSelected instead of navigating. */
+  readonly selectionMode = input<boolean>(false);
+  /** Recipe IDs that are already selected (e.g. already added to meal); show "Already added" and no Select button. */
+  readonly alreadySelectedIds = input<string[]>([]);
+  /** When set, the recipe with this ID shows "Adding…" and Select is disabled. */
+  readonly addingRecipeId = input<string | null>(null);
+  readonly recipeSelected = output<RecipeViewModel>();
 
   readonly page = signal(1);
   readonly pageSize = signal(10);
@@ -85,9 +93,19 @@ export class RecipeListComponent {
   }
 
   onRowClick(recipeId: string): void {
+    if (this.selectionMode()) return;
     if (this.clickToNavigateEnabled()) {
       this.navigateToDetail(recipeId);
     }
+  }
+
+  isAlreadySelected(recipeId: string): boolean {
+    return this.alreadySelectedIds().includes(recipeId);
+  }
+
+  onSelectRecipe(recipe: RecipeViewModel): void {
+    if (this.isAlreadySelected(recipe.id) || this.addingRecipeId() !== null) return;
+    this.recipeSelected.emit(recipe);
   }
 
   onSearchInput(value: string): void {

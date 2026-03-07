@@ -7,10 +7,17 @@
   } @else if (detail(); as d) {
     <header class="page-header">
       <button type="button" class="back-link" (click)="backToList()">← Back to recipes</button>
-      <h2>{{ isCreateMode() ? 'Add recipe' : 'Edit recipe' }}</h2>
-      @if (!isCreateMode()) {
-        <p class="subtitle">{{ d.name }}</p>
-      }
+      <div class="header-row">
+        <div>
+          <h2>{{ isCreateMode() ? 'Add recipe' : 'Edit recipe' }}</h2>
+          @if (!isCreateMode()) {
+            <p class="subtitle">{{ d.name }}</p>
+          }
+        </div>
+        @if (!isCreateMode() && canAddToMeal()) {
+          <button type="button" class="btn-secondary" (click)="openAddToMealModal()">Add to meal</button>
+        }
+      </div>
     </header>
 
     <div class="edit-layout">
@@ -120,3 +127,22 @@
     <a routerLink="/meals/setup/recipes" class="back-link">← Back to recipes</a>
   }
 </div>
+
+@if (showAddToMealModal()) {
+  <div class="modal-overlay" (click)="closeAddToMealModal()">
+    <div class="modal-dialog modal-dialog-lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Add recipe to meal</h3>
+        <button type="button" class="modal-close" (click)="closeAddToMealModal()" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <app-meal-list
+          [selectionMode]="true"
+          [suspendLoadUntilSearch]="false"
+          [addingMealId]="addingMealId()"
+          (mealSelected)="onMealSelected($event)"
+        />
+      </div>
+    </div>
+  </div>
+}

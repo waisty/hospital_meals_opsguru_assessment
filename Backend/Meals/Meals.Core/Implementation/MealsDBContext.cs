@@ -21,6 +21,7 @@ namespace Hospital.Meals.Core.Implementation
         public DbSet<IngredientClinicalStateExclusions> IngredientClinicalStateExclusions { get; set; }
         public DbSet<IngredientDietTypeExclusions> IngredientDietTypeExclusions { get; set; }
         public DbSet<Meal> Meals { get; set; }
+        public DbSet<MealRecipe> MealRecipes { get; set; }
         public DbSet<PatientRequest> PatientRequests { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<RecipeIngredient> RecipeIngredients { get; set; }
@@ -42,6 +43,7 @@ namespace Hospital.Meals.Core.Implementation
             modelBuilder.Entity<InternalModels.IngredientClinicalStateExclusions>(InternalModels.IngredientClinicalStateExclusions.Configure);
             modelBuilder.Entity<InternalModels.IngredientDietTypeExclusions>(InternalModels.IngredientDietTypeExclusions.Configure);
             modelBuilder.Entity<InternalModels.Meal>(InternalModels.Meal.Configure);
+            modelBuilder.Entity<InternalModels.MealRecipe>(InternalModels.MealRecipe.Configure);
             modelBuilder.Entity<InternalModels.PatientRequest>(InternalModels.PatientRequest.Configure);
             modelBuilder.Entity<InternalModels.Recipe>(InternalModels.Recipe.Configure);
             modelBuilder.Entity<InternalModels.RecipeIngredient>(InternalModels.RecipeIngredient.Configure);

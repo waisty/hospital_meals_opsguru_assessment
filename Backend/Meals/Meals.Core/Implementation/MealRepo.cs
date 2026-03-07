@@ -76,12 +76,57 @@ namespace Hospital.Meals.Core.Implementation
             };
         }
 
-        public async Task<bool> UpdateMealAsync(string id, string name, string recipeId, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyDictionary<string, int>> GetRecipeCountByMealIdsAsync(IEnumerable<string> mealIds, CancellationToken cancellationToken = default)
+        {
+            var idList = mealIds.Distinct().ToList();
+            if (idList.Count == 0)
+                return new Dictionary<string, int>();
+            var counts = await _context.MealRecipes
+                .Where(mr => idList.Contains(mr.MealId))
+                .GroupBy(mr => mr.MealId)
+                .Select(g => new { MealId = g.Key, Count = g.Count() })
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+            return counts.ToDictionary(x => x.MealId, x => x.Count);
+        }
+
+        public async Task<IReadOnlyList<MealRecipe>> GetMealRecipesByMealIdAsync(string mealId, CancellationToken cancellationToken = default)
+        {
+            return await _context.MealRecipes
+                .Where(mr => mr.MealId == mealId)
+                .OrderBy(mr => mr.RecipeId)
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        public async Task<bool> UpdateMealAsync(string id, string name, string? description, CancellationToken cancellationToken = default)
         {
             var meal = await _context.Meals.FirstOrDefaultAsync(m => m.Id == id, cancellationToken).ConfigureAwait(false);
             if (meal == null) return false;
             meal.Name = name;
-            meal.RecipeId = recipeId;
+            meal.Description = description;
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            return true;
+        }
+
+        public async Task<bool> AddRecipeToMealAsync(string mealId, string recipeId, CancellationToken cancellationToken = default)
+        {
+            var exists = await _context.MealRecipes
+                .AnyAsync(mr => mr.MealId == mealId && mr.RecipeId == recipeId, cancellationToken)
+                .ConfigureAwait(false);
+            if (exists) return false;
+            _context.MealRecipes.Add(new MealRecipe { MealId = mealId, RecipeId = recipeId, Disabled = false });
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            return true;
+        }
+
+        public async Task<bool> SetMealRecipeDisabledAsync(string mealId, string recipeId, bool disabled, CancellationToken cancellationToken = default)
+        {
+            var mr = await _context.MealRecipes
+                .FirstOrDefaultAsync(m => m.MealId == mealId && m.RecipeId == recipeId, cancellationToken)
+                .ConfigureAwait(false);
+            if (mr == null) return false;
+            mr.Disabled = disabled;
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             return true;
         }

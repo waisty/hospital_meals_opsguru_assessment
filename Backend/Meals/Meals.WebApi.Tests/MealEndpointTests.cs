@@ -32,7 +32,7 @@ public sealed class MealEndpointTests : IClassFixture<MealsWebApiFixture>
         _fixture.MockRepo.SeedRecipe("recipe-1", "Chicken Soup Recipe");
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsAdminClaim);
-        var request = new MealCreateRequest { Id = "meal-1", Name = "Chicken Soup", RecipeId = "recipe-1" };
+        var request = new MealCreateRequest { Id = "meal-1", Name = "Chicken Soup" };
 
         var response = await client.PostAsJsonAsync("/api/v1/meals", request);
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -42,7 +42,7 @@ public sealed class MealEndpointTests : IClassFixture<MealsWebApiFixture>
     public async Task CreateMeal_WithMealsUserClaim_Returns403()
     {
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
-        var request = new MealCreateRequest { Id = "m1", Name = "Test", RecipeId = "r1" };
+        var request = new MealCreateRequest { Id = "m1", Name = "Test" };
 
         var response = await client.PostAsJsonAsync("/api/v1/meals", request);
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
@@ -52,7 +52,7 @@ public sealed class MealEndpointTests : IClassFixture<MealsWebApiFixture>
     public async Task CreateMeal_WithoutAuth_Returns401()
     {
         using var client = _fixture.CreateClient();
-        var request = new MealCreateRequest { Id = "m1", Name = "Test", RecipeId = "r1" };
+        var request = new MealCreateRequest { Id = "m1", Name = "Test" };
         var response = await client.PostAsJsonAsync("/api/v1/meals", request);
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }

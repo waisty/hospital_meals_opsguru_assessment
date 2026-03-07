@@ -21,9 +21,12 @@ export type {
 } from './recipe.models';
 
 export type {
+  MealRecipeViewModel,
   MealViewModel,
   MealCreateRequest,
   MealUpdateRequest,
+  AddRecipeToMealRequest,
+  SetMealRecipeDisabledRequest,
 } from './meal.models';
 
 export { MealRequestApprovalStatus } from './patient-request.models';

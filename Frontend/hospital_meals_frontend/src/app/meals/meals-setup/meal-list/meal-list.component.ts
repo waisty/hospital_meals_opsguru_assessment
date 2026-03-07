@@ -1,4 +1,4 @@
-import { Component, Injector, computed, inject, input, signal } from '@angular/core';
+import { Component, Injector, computed, inject, input, output, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { catchError, debounceTime, map, of, startWith, switchMap, tap } from 'rxjs';
@@ -26,6 +26,12 @@ export class MealListComponent {
   readonly showEditButton = input<boolean>(false);
   readonly clickToNavigateEnabled = input<boolean>(true);
   readonly suspendLoadUntilSearch = input<boolean>(false);
+
+  /** When true, show a Select column and emit mealSelected instead of navigating. */
+  readonly selectionMode = input<boolean>(false);
+  /** When set, the meal with this ID shows "Adding…" and Select is disabled. */
+  readonly addingMealId = input<string | null>(null);
+  readonly mealSelected = output<MealViewModel>();
 
   readonly page = signal(1);
   readonly pageSize = signal(10);
@@ -87,8 +93,18 @@ export class MealListComponent {
     return this.result()?.totalCount ?? 0;
   }
 
-  getRecipeName(recipeId: string): string {
-    return this.recipes().find((r) => r.id === recipeId)?.name ?? recipeId;
+  getRecipesSummary(m: MealViewModel): string {
+    const count = m.recipeCount ?? (m.recipes?.length ?? 0);
+    if (count === 0) return '—';
+    const recipes = m.recipes ?? [];
+    if (recipes.length > 0) {
+      const active = recipes.filter((r) => !r.disabled);
+      const names = active.map((r) => r.recipeName);
+      if (names.length === 0) return `${count} recipe(s)`;
+      if (names.length <= 2) return names.join(', ');
+      return `${names[0]}, ${names[1]} (+${names.length - 2})`;
+    }
+    return `${count} recipe(s)`;
   }
 
   navigateToDetail(id: string): void {
@@ -96,9 +112,15 @@ export class MealListComponent {
   }
 
   onRowClick(mealId: string): void {
+    if (this.selectionMode()) return;
     if (this.clickToNavigateEnabled()) {
       this.navigateToDetail(mealId);
     }
+  }
+
+  onSelectMeal(meal: MealViewModel): void {
+    if (this.addingMealId() !== null) return;
+    this.mealSelected.emit(meal);
   }
 
   onSearchInput(value: string): void {

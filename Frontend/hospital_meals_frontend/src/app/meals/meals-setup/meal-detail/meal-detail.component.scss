@@ -79,5 +79,31 @@
       margin: 0.25rem 0 0;
       color: #0f172a;
     }
+
+    .muted {
+      color: #94a3b8;
+      font-style: italic;
+    }
+
+    .recipe-list {
+      margin: 0;
+      padding-left: 1.25rem;
+      list-style: disc;
+
+      li {
+        margin: 0.25rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .badge.disabled {
+        font-size: 0.7rem;
+        padding: 0.15rem 0.4rem;
+        background: #fef2f2;
+        color: #b91c1c;
+        border-radius: 0.25rem;
+      }
+    }
   }
 }

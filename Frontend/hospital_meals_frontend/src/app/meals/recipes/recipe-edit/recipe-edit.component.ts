@@ -5,16 +5,20 @@ import { FormsModule } from '@angular/forms';
 import { filter, map, of, switchMap, tap } from 'rxjs';
 import { RecipeService } from '../../services/recipe.service';
 import { IngredientService } from '../../services/ingredient.service';
+import { MealService } from '../../services/meal.service';
+import { AuthService } from '../../../auth/services/auth.service';
 import type {
   RecipeDetailViewModel,
   RecipeIngredientViewModel,
   IngredientViewModel,
 } from '../../models';
+import type { MealViewModel } from '../../models';
+import { MealListComponent } from '../../meals-setup/meal-list/meal-list.component';
 
 @Component({
   selector: 'app-recipe-edit',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, MealListComponent],
   templateUrl: './recipe-edit.component.html',
   styleUrl: './recipe-edit.component.scss',
 })
@@ -23,6 +27,8 @@ export class RecipeEditComponent {
   private readonly router = inject(Router);
   private readonly recipeService = inject(RecipeService);
   private readonly ingredientService = inject(IngredientService);
+  private readonly mealService = inject(MealService);
+  private readonly auth = inject(AuthService);
 
   readonly detail = signal<RecipeDetailViewModel | null>(null);
   readonly allIngredients = signal<IngredientViewModel[]>([]);
@@ -34,6 +40,9 @@ export class RecipeEditComponent {
   readonly formDescription = signal<string | null>('');
 
   readonly isCreateMode = computed(() => this.route.snapshot.paramMap.get('id') === 'new');
+  readonly showAddToMealModal = signal(false);
+  readonly addingMealId = signal<string | null>(null);
+  readonly canAddToMeal = this.auth.canAccessMealsSetup;
 
   readonly availableIngredients = computed(() => {
     const d = this.detail();
@@ -248,5 +257,30 @@ export class RecipeEditComponent {
 
   backToList(): void {
     this.router.navigate(['/meals/setup/recipes']);
+  }
+
+  openAddToMealModal(): void {
+    this.showAddToMealModal.set(true);
+  }
+
+  closeAddToMealModal(): void {
+    this.showAddToMealModal.set(false);
+    this.addingMealId.set(null);
+  }
+
+  onMealSelected(meal: MealViewModel): void {
+    const d = this.detail();
+    if (!d?.id) return;
+    this.addingMealId.set(meal.id);
+    this.mealService.addRecipeToMeal(meal.id, { recipeId: d.id }).subscribe({
+      next: () => {
+        this.addingMealId.set(null);
+        this.closeAddToMealModal();
+      },
+      error: () => {
+        this.addingMealId.set(null);
+        this.error.set('Failed to add recipe to meal.');
+      },
+    });
   }
 }

@@ -304,22 +304,24 @@ namespace Hospital.Meals.Core.Implementation
         {
             var seed = new[]
             {
-                new Meal { Id = "MEAL-BREAKFAST", Name = "Breakfast Scramble", RecipeId = "REGULAR-BREAKFAST" },
-                new Meal { Id = "MEAL-SALAD", Name = "Garden Salad Bowl", RecipeId = "VEGETARIAN-LUNCH" },
-                new Meal { Id = "MEAL-CHICKEN-RICE", Name = "Grilled Chicken & Rice", RecipeId = "DIABETIC-DINNER" },
-                new Meal { Id = "MEAL-VEG-SOUP", Name = "Vegetable Soup", RecipeId = "LOW-SODIUM-SOUP" },
+                (Meal: new Meal { Id = "MEAL-BREAKFAST", Name = "Breakfast Scramble", Description = "Classic breakfast with eggs and toast" }, RecipeId: "REGULAR-BREAKFAST"),
+                (Meal: new Meal { Id = "MEAL-SALAD", Name = "Garden Salad Bowl", Description = "Mixed greens with beans" }, RecipeId: "VEGETARIAN-LUNCH"),
+                (Meal: new Meal { Id = "MEAL-CHICKEN-RICE", Name = "Grilled Chicken & Rice", Description = "Lean protein with rice" }, RecipeId: "DIABETIC-DINNER"),
+                (Meal: new Meal { Id = "MEAL-VEG-SOUP", Name = "Vegetable Soup", Description = "Low-sodium vegetable soup" }, RecipeId: "LOW-SODIUM-SOUP"),
             };
-            foreach (var entity in seed)
+            foreach (var (meal, recipeId) in seed)
             {
                 try
                 {
-                    db.Meals.Add(entity);
+                    db.Meals.Add(meal);
                     await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-                    _logger.LogInformation("Seed meal added: {Id} ({Name})", entity.Id, entity.Name);
+                    _logger.LogInformation("Seed meal added: {Id} ({Name})", meal.Id, meal.Name);
+                    db.MealRecipes.Add(new MealRecipe { MealId = meal.Id, RecipeId = recipeId, Disabled = false });
+                    await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex, "Seed insert failed for meal {Id}; continuing.", entity.Id);
+                    _logger.LogWarning(ex, "Seed insert failed for meal {Id}; continuing.", meal.Id);
                 }
             }
         }

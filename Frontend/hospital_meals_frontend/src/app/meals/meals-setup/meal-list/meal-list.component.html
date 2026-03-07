@@ -23,18 +23,31 @@
         <thead>
           <tr>
             <th>Name</th>
-            <th>Recipe</th>
-            @if (showEditButton()) {
+            <th>Recipes</th>
+            @if (selectionMode()) {
+              <th class="col-actions"></th>
+            } @else if (showEditButton()) {
               <th class="col-actions"></th>
             }
           </tr>
         </thead>
         <tbody>
           @for (m of items; track m.id) {
-            <tr [class.clickable-row]="clickToNavigateEnabled()" (click)="onRowClick(m.id)">
+            <tr [class.clickable-row]="clickToNavigateEnabled() && !selectionMode()" (click)="onRowClick(m.id)">
               <td>{{ m.name }}</td>
-              <td>{{ getRecipeName(m.recipeId) }}</td>
-              @if (showEditButton()) {
+              <td>{{ getRecipesSummary(m) }}</td>
+              @if (selectionMode()) {
+                <td class="col-actions">
+                  <button
+                    type="button"
+                    class="btn-select"
+                    [disabled]="addingMealId() === m.id"
+                    (click)="onSelectMeal(m); $event.stopPropagation()"
+                  >
+                    {{ addingMealId() === m.id ? 'Adding…' : 'Select' }}
+                  </button>
+                </td>
+              } @else if (showEditButton()) {
                 <td class="col-actions">
                   <app-edit-button [link]="['/meals/setup/meals', m.id, 'edit']" title="Edit meal" [stopPropagation]="true" />
                 </td>
@@ -42,7 +55,7 @@
             </tr>
           } @empty {
             <tr>
-              <td [attr.colspan]="showEditButton() ? 3 : 2" class="empty">No meals found.</td>
+              <td [attr.colspan]="selectionMode() || showEditButton() ? 3 : 2" class="empty">No meals found.</td>
             </tr>
           }
         </tbody>

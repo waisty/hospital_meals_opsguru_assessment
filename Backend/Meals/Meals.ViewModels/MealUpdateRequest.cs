@@ -4,6 +4,6 @@ namespace Hospital.Meals.ViewModels
     {
         [NonBlank]
         public string Name { get; set; } = "";
-        public string RecipeId { get; set; } = "";
+        public string? Description { get; set; }
     }
 }

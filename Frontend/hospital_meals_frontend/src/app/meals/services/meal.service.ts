@@ -4,7 +4,14 @@ import { Observable } from 'rxjs';
 import { API_ENDPOINTS } from '../../shared/config/api-endpoints.config';
 import { isSearchLongEnough } from '../../shared/constants/search.constants';
 import type { PagedResult } from '../../shared/models';
-import type { MealViewModel, MealCreateRequest, MealUpdateRequest } from '../models';
+import type {
+  MealViewModel,
+  MealRecipeViewModel,
+  MealCreateRequest,
+  MealUpdateRequest,
+  AddRecipeToMealRequest,
+  SetMealRecipeDisabledRequest,
+} from '../models';
 
 const API = '/api/v1';
 
@@ -40,5 +47,24 @@ export class MealService {
 
   updateMeal(id: string, request: MealUpdateRequest): Observable<void> {
     return this.http.put<void>(`${this.base}/meals/${id}`, request);
+  }
+
+  getMealRecipes(mealId: string): Observable<MealRecipeViewModel[]> {
+    return this.http.get<MealRecipeViewModel[]>(`${this.base}/meals/${mealId}/recipes`);
+  }
+
+  addRecipeToMeal(mealId: string, request: AddRecipeToMealRequest): Observable<void> {
+    return this.http.post<void>(`${this.base}/meals/${mealId}/recipes`, request);
+  }
+
+  setMealRecipeDisabled(
+    mealId: string,
+    recipeId: string,
+    request: SetMealRecipeDisabledRequest
+  ): Observable<void> {
+    return this.http.put<void>(
+      `${this.base}/meals/${mealId}/recipes/${encodeURIComponent(recipeId)}/disabled`,
+      request
+    );
   }
 }

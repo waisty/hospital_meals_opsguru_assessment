@@ -20,8 +20,27 @@
         <dl class="info-list">
           <dt>Name</dt>
           <dd>{{ d.name }}</dd>
-          <dt>Recipe</dt>
-          <dd>{{ getRecipeName(d.recipeId) }}</dd>
+          @if (d.description) {
+            <dt>Description</dt>
+            <dd>{{ d.description }}</dd>
+          }
+          <dt>Recipes</dt>
+          <dd>
+            @if (d.recipes.length === 0) {
+              <span class="muted">No recipes assigned</span>
+            } @else {
+              <ul class="recipe-list">
+                @for (r of d.recipes; track r.recipeId) {
+                  <li>
+                    {{ r.recipeName }}
+                    @if (r.disabled) {
+                      <span class="badge disabled">Disabled</span>
+                    }
+                  </li>
+                }
+              </ul>
+            }
+          </dd>
         </dl>
       </section>
     </div>
