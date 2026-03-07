@@ -1,4 +1,16 @@
 <div class="meal-request-list">
+  <div class="search-bar">
+    <label for="meal-request-search">Search</label>
+    <input
+      id="meal-request-search"
+      type="search"
+      placeholder="Patient first or last name…"
+      [value]="searchTerm()"
+      (input)="onSearchInput($any($event.target).value)"
+      autocomplete="off"
+    />
+  </div>
+
   @if (listError()) {
     <p class="error">{{ listError() }}</p>
   } @else if (result() === null) {

@@ -6,13 +6,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using NpgsqlTypes;
 
 #nullable disable
 
 namespace Hospital.Meals.Core.Migrations
 {
     [DbContext(typeof(MealsDBContext))]
-    [Migration("20260307115107_InitialCreate")]
+    [Migration("20260307142455_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -267,6 +268,14 @@ namespace Hospital.Meals.Core.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("requested_date_time");
 
+                    b.Property<NpgsqlTsVector>("SearchVector")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasColumnName("search_vector")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "simple")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "FirstName", "LastName" });
+
                     b.Property<string>("StatusReason")
                         .HasColumnType("text")
                         .HasColumnName("status_reason");
@@ -279,6 +288,10 @@ namespace Hospital.Meals.Core.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("RecipeId");
+
+                    b.HasIndex("SearchVector");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
 
                     b.ToTable("patient_requests", "dbo");
                 });

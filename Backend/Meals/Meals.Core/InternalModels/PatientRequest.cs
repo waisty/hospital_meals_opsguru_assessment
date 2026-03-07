@@ -1,6 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NpgsqlTypes;
 using static Hospital.Meals.Core.Contracts.Enums;
 
 namespace Hospital.Meals.Core.InternalModels
@@ -19,6 +20,7 @@ namespace Hospital.Meals.Core.InternalModels
         public string? StatusReason { get; set; }
         public string? UnsafeIngredientId { get; set; }
         public DateTime? FinalizedDateTime { get; set; }
+        public NpgsqlTsVector SearchVector { get; set; } = null!;
 
         public static void Configure(EntityTypeBuilder<PatientRequest> entity)
         {
@@ -43,6 +45,14 @@ namespace Hospital.Meals.Core.InternalModels
                 .WithMany()
                 .HasForeignKey(e => e.RecipeId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasGeneratedTsVectorColumn(
+                    e => e.SearchVector,
+                    "simple",
+                    e => new { e.FirstName, e.LastName })
+                .HasIndex(e => e.SearchVector)
+                .HasMethod("GIN");
+            entity.Property(e => e.SearchVector).HasColumnName("search_vector");
         }
     }
 }

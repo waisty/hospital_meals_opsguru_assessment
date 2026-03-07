@@ -15,6 +15,12 @@ public static class IngredientEndpointMappings
             return Results.Created($"/api/v1/ingredients/{request.Id}", null);
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
 
+        group.MapPost("/ingredients/exclusion-names-by-ids", async (IngredientExclusionNamesRequest request, IIngredientHandler handler, CancellationToken ct) =>
+        {
+            var result = await handler.GetExclusionNamesByIngredientIdsAsync(request, ct);
+            return Results.Ok(result);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
+
         group.MapGet("/ingredients/{id}", async (string id, IIngredientHandler handler, CancellationToken ct) =>
         {
             var ingredient = await handler.GetIngredientByIdAsync(id, ct);
@@ -27,11 +33,11 @@ public static class IngredientEndpointMappings
             return detail is null ? Results.NotFound() : Results.Ok(detail);
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
-        group.MapGet("/ingredients", async (int page, int pageSize, IIngredientHandler handler, CancellationToken ct) =>
+        group.MapGet("/ingredients", async (int page, int pageSize, string? search, IIngredientHandler handler, CancellationToken ct) =>
         {
             if (page < 1) page = 1;
             if (pageSize < 1 || pageSize > 100) pageSize = 10;
-            var result = await handler.ListIngredientsAsync(page, pageSize, ct);
+            var result = await handler.ListIngredientsAsync(page, pageSize, search, ct);
             return Results.Ok(result);
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 

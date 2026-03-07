@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_ENDPOINTS } from '../../shared/config/api-endpoints.config';
+import { isSearchLongEnough } from '../../shared/constants/search.constants';
 import type { PagedResult } from '../../shared/models';
 import type {
   PatientViewModel,
@@ -43,8 +44,8 @@ export class PatientService {
   // --- Patients ---
   listPatients(page: number, pageSize: number, search?: string | null): Observable<PagedResult<PatientWithDietTypeNameViewModel>> {
     let params = new HttpParams().set('page', page).set('pageSize', pageSize);
-    if (search != null && search.trim() !== '') {
-      params = params.set('search', search.trim());
+    if (isSearchLongEnough(search)) {
+      params = params.set('search', search!.trim());
     }
     return this.http.get<PagedResult<PatientWithDietTypeNameViewModel>>(`${this.base}/patients`, { params });
   }

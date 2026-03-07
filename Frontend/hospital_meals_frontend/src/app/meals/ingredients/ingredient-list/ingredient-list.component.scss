@@ -1,0 +1,148 @@
+// Exclusion tags: different shades of red to indicate exclusions (vs patient list which uses yellow/blue for assigned).
+$tag-exclusion-allergy-bg: #fecaca;
+$tag-exclusion-allergy-border: #f87171;
+$tag-exclusion-clinical-bg: #fca5a5;
+$tag-exclusion-clinical-border: #ef4444;
+$tag-exclusion-diet-bg: #dc2626;
+$tag-exclusion-diet-border: #b91c1c;
+
+.ingredient-list-with-search {
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+
+    label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #475569;
+    }
+
+    input {
+      flex: 1;
+      max-width: 20rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.375rem;
+      color: #0f172a;
+
+      &::placeholder {
+        color: #94a3b8;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+      }
+    }
+  }
+
+  .loading {
+    margin: 1rem 0;
+    color: #64748b;
+  }
+
+  .hint {
+    margin: 1rem 0;
+    color: #64748b;
+  }
+
+  .error {
+    margin: 1rem 0;
+    color: #b91c1c;
+  }
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+
+  th,
+  td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  th {
+    font-weight: 600;
+    color: #0f172a;
+    background: #f8fafc;
+  }
+
+  td {
+    color: #475569;
+  }
+
+  .empty {
+    color: #94a3b8;
+    font-style: italic;
+    text-align: center;
+    padding: 1.5rem;
+  }
+
+  .col-exclusions {
+    max-width: 18rem;
+
+    .tag-list {
+      max-width: 400px;
+    }
+  }
+
+  .tag-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.75rem;
+    border-radius: 0.25rem;
+    color: #0f172a;
+  }
+
+  .tag-exclusion-allergy {
+    background: $tag-exclusion-allergy-bg;
+    border: 1px solid $tag-exclusion-allergy-border;
+  }
+
+  .tag-exclusion-clinical-state {
+    background: $tag-exclusion-clinical-bg;
+    border: 1px solid $tag-exclusion-clinical-border;
+  }
+
+  .tag-exclusion-diet-type {
+    background: $tag-exclusion-diet-bg;
+    border: 1px solid $tag-exclusion-diet-border;
+    color: #fff;
+  }
+
+  .no-exclusions {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .clickable-row {
+    cursor: pointer;
+
+    &:hover {
+      background: #f8fafc;
+    }
+  }
+}

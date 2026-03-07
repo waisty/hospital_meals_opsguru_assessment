@@ -27,11 +27,30 @@ namespace Hospital.Meals.Core.Implementation
                 .ConfigureAwait(false);
         }
 
-        public async Task<PagedResult<Ingredient>> ListIngredientsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<PagedResult<Ingredient>> ListIngredientsAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default)
         {
-            var totalCount = await _context.Ingredients.CountAsync(cancellationToken).ConfigureAwait(false);
-            var items = await _context.Ingredients
-                .OrderBy(i => i.Name)
+            // Full-text search only runs when search is at least 2 characters
+            if (!string.IsNullOrWhiteSpace(search) && search.Trim().Length < 2)
+                search = null;
+
+            var query = _context.Ingredients.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var words = search.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var word in words)
+                {
+                    var pattern = $"%{word}%";
+                    query = query.Where(i =>
+                        Microsoft.EntityFrameworkCore.EF.Functions.ILike(i.Name, pattern) ||
+                        (i.Description != null && Microsoft.EntityFrameworkCore.EF.Functions.ILike(i.Description, pattern)));
+                }
+            }
+
+            query = query.OrderBy(i => i.Name);
+
+            var totalCount = await query.CountAsync(cancellationToken).ConfigureAwait(false);
+            var items = await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken)
@@ -109,6 +128,51 @@ namespace Hospital.Meals.Core.Implementation
                 _context.IngredientDietTypeExclusions.Add(new IngredientDietTypeExclusions { IngredientId = ingredientId, DietTypeId = dietTypeId });
             }
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<IReadOnlyDictionary<string, IReadOnlyList<string>>> GetAllergyExclusionIdsByIngredientIdsAsync(IEnumerable<string> ingredientIds, CancellationToken cancellationToken = default)
+        {
+            var idList = ingredientIds.Distinct().ToList();
+            if (idList.Count == 0) return new Dictionary<string, IReadOnlyList<string>>();
+
+            var pairs = await _context.IngredientAllergyExclusions
+                .Where(iae => idList.Contains(iae.IngredientId))
+                .Select(iae => new { iae.IngredientId, iae.AllergyId })
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+            return pairs
+                .GroupBy(x => x.IngredientId)
+                .ToDictionary(g => g.Key, g => (IReadOnlyList<string>)g.Select(x => x.AllergyId).ToList());
+        }
+
+        public async Task<IReadOnlyDictionary<string, IReadOnlyList<string>>> GetClinicalStateExclusionIdsByIngredientIdsAsync(IEnumerable<string> ingredientIds, CancellationToken cancellationToken = default)
+        {
+            var idList = ingredientIds.Distinct().ToList();
+            if (idList.Count == 0) return new Dictionary<string, IReadOnlyList<string>>();
+
+            var pairs = await _context.IngredientClinicalStateExclusions
+                .Where(ice => idList.Contains(ice.IngredientId))
+                .Select(ice => new { ice.IngredientId, ice.ClinicalStateId })
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+            return pairs
+                .GroupBy(x => x.IngredientId)
+                .ToDictionary(g => g.Key, g => (IReadOnlyList<string>)g.Select(x => x.ClinicalStateId).ToList());
+        }
+
+        public async Task<IReadOnlyDictionary<string, IReadOnlyList<string>>> GetDietTypeExclusionIdsByIngredientIdsAsync(IEnumerable<string> ingredientIds, CancellationToken cancellationToken = default)
+        {
+            var idList = ingredientIds.Distinct().ToList();
+            if (idList.Count == 0) return new Dictionary<string, IReadOnlyList<string>>();
+
+            var pairs = await _context.IngredientDietTypeExclusions
+                .Where(idte => idList.Contains(idte.IngredientId))
+                .Select(idte => new { idte.IngredientId, idte.DietTypeId })
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+            return pairs
+                .GroupBy(x => x.IngredientId)
+                .ToDictionary(g => g.Key, g => (IReadOnlyList<string>)g.Select(x => x.DietTypeId).ToList());
         }
     }
 }

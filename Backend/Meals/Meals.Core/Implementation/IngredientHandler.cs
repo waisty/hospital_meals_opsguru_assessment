@@ -7,10 +7,12 @@ namespace Hospital.Meals.Core.Implementation
     internal sealed class IngredientHandler : IIngredientHandler
     {
         private readonly IIngredientRepo _repo;
+        private readonly IReferenceDataHandler _referenceData;
 
-        public IngredientHandler(IIngredientRepo repo)
+        public IngredientHandler(IIngredientRepo repo, IReferenceDataHandler referenceData)
         {
             _repo = repo;
+            _referenceData = referenceData;
         }
 
         public async Task AddIngredientAsync(IngredientCreateRequest request, CancellationToken cancellationToken = default)
@@ -42,9 +44,9 @@ namespace Hospital.Meals.Core.Implementation
             return ingredient.ToIngredientDetailViewModel(allergyIds, clinicalStateIds, dietTypeIds);
         }
 
-        public async Task<PagedResult<IngredientViewModel>> ListIngredientsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<PagedResult<IngredientViewModel>> ListIngredientsAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default)
         {
-            var paged = await _repo.ListIngredientsAsync(page, pageSize, cancellationToken).ConfigureAwait(false);
+            var paged = await _repo.ListIngredientsAsync(page, pageSize, search, cancellationToken).ConfigureAwait(false);
             return new PagedResult<IngredientViewModel>
             {
                 Items = paged.Items.Select(i => i.ToIngredientViewModel()).ToList(),
@@ -82,6 +84,41 @@ namespace Hospital.Meals.Core.Implementation
         public async Task SetDietTypeExclusionsForIngredientAsync(string ingredientId, SetIngredientDietTypeExclusionsRequest request, CancellationToken cancellationToken = default)
         {
             await _repo.SetDietTypeExclusionsForIngredientAsync(ingredientId, request.DietTypeIds ?? [], cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<IngredientExclusionNamesResponse> GetExclusionNamesByIngredientIdsAsync(IngredientExclusionNamesRequest request, CancellationToken cancellationToken = default)
+        {
+            var ingredientIds = request.IngredientIds ?? [];
+            if (ingredientIds.Count == 0)
+                return new IngredientExclusionNamesResponse { Items = [] };
+
+            var allergyIdsByIngredient = await _repo.GetAllergyExclusionIdsByIngredientIdsAsync(ingredientIds, cancellationToken).ConfigureAwait(false);
+            var clinicalStateIdsByIngredient = await _repo.GetClinicalStateExclusionIdsByIngredientIdsAsync(ingredientIds, cancellationToken).ConfigureAwait(false);
+            var dietTypeIdsByIngredient = await _repo.GetDietTypeExclusionIdsByIngredientIdsAsync(ingredientIds, cancellationToken).ConfigureAwait(false);
+
+            var allergies = await _referenceData.ListAllergiesAsync(cancellationToken).ConfigureAwait(false);
+            var clinicalStates = await _referenceData.ListClinicalStatesAsync(cancellationToken).ConfigureAwait(false);
+            var dietTypes = await _referenceData.ListDietTypesAsync(cancellationToken).ConfigureAwait(false);
+
+            var allergyNameById = allergies.ToDictionary(a => a.Id, a => a.Name);
+            var clinicalStateNameById = clinicalStates.ToDictionary(c => c.Id, c => c.Name);
+            var dietTypeNameById = dietTypes.ToDictionary(d => d.Id, d => d.Name);
+
+            var items = ingredientIds.Distinct().Select(id =>
+            {
+                allergyIdsByIngredient.TryGetValue(id, out var aIds);
+                clinicalStateIdsByIngredient.TryGetValue(id, out var cIds);
+                dietTypeIdsByIngredient.TryGetValue(id, out var dIds);
+                return new IngredientExclusionNamesItem
+                {
+                    IngredientId = id,
+                    AllergyNames = (aIds ?? []).Select(aid => allergyNameById.GetValueOrDefault(aid, aid)).ToList(),
+                    ClinicalStateNames = (cIds ?? []).Select(cid => clinicalStateNameById.GetValueOrDefault(cid, cid)).ToList(),
+                    DietTypeNames = (dIds ?? []).Select(did => dietTypeNameById.GetValueOrDefault(did, did)).ToList(),
+                };
+            }).ToList();
+
+            return new IngredientExclusionNamesResponse { Items = items };
         }
     }
 }

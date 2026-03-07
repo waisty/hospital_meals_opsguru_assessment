@@ -13,7 +13,7 @@ using NpgsqlTypes;
 namespace Hospital.Patient.Core.Migrations
 {
     [DbContext(typeof(PatientDBContext))]
-    [Migration("20260307115103_InitialCreate")]
+    [Migration("20260307142454_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

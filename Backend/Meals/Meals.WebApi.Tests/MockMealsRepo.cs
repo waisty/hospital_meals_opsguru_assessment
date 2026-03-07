@@ -121,9 +121,21 @@ internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, I
         return Task.FromResult(ingredient);
     }
 
-    public Task<PagedResult<Ingredient>> ListIngredientsAsync(int page, int pageSize, CancellationToken ct = default)
+    public Task<PagedResult<Ingredient>> ListIngredientsAsync(int page, int pageSize, string? search = null, CancellationToken ct = default)
     {
-        var all = _ingredients.Values.OrderBy(i => i.Name).ToList();
+        var query = _ingredients.Values.AsEnumerable();
+        if (!string.IsNullOrWhiteSpace(search) && search.Length >= 2)
+        {
+            var words = search.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            foreach (var word in words)
+            {
+                var w = word;
+                query = query.Where(i =>
+                    (i.Name?.Contains(w, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (i.Description?.Contains(w, StringComparison.OrdinalIgnoreCase) ?? false));
+            }
+        }
+        var all = query.OrderBy(i => i.Name).ToList();
         var items = all.Skip((page - 1) * pageSize).Take(pageSize).ToList();
         return Task.FromResult(new PagedResult<Ingredient> { Items = items, TotalCount = all.Count, Page = page, PageSize = pageSize });
     }
@@ -180,9 +192,16 @@ internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, I
         return Task.FromResult(pr);
     }
 
-    public Task<PagedResult<PatientRequest>> ListPatientRequestsAsync(int page, int pageSize, CancellationToken ct = default)
+    public Task<PagedResult<PatientRequest>> ListPatientRequestsAsync(int page, int pageSize, string? search = null, CancellationToken ct = default)
     {
         var all = _patientRequests.Values.OrderBy(r => r.RequestedDateTime).ThenBy(r => r.PatientId).ToList();
+        if (!string.IsNullOrWhiteSpace(search) && search.Trim().Length >= 2)
+        {
+            var terms = search!.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            all = all.Where(r =>
+                terms.All(t => r.FirstName.Contains(t, StringComparison.OrdinalIgnoreCase) || r.LastName.Contains(t, StringComparison.OrdinalIgnoreCase))
+            ).ToList();
+        }
         var items = all.Skip((page - 1) * pageSize).Take(pageSize).ToList();
         return Task.FromResult(new PagedResult<PatientRequest> { Items = items, TotalCount = all.Count, Page = page, PageSize = pageSize });
     }
@@ -290,5 +309,35 @@ internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, I
         foreach (var did in dietTypeIds)
             _ingredientDietTypeExclusions.Add((ingredientId, did));
         return Task.CompletedTask;
+    }
+
+    public Task<IReadOnlyDictionary<string, IReadOnlyList<string>>> GetAllergyExclusionIdsByIngredientIdsAsync(IEnumerable<string> ingredientIds, CancellationToken ct = default)
+    {
+        var idSet = ingredientIds.Distinct().ToHashSet();
+        var dict = _ingredientAllergyExclusions
+            .Where(x => idSet.Contains(x.IngredientId))
+            .GroupBy(x => x.IngredientId)
+            .ToDictionary(g => g.Key, g => (IReadOnlyList<string>)g.Select(x => x.AllergyId).ToList());
+        return Task.FromResult<IReadOnlyDictionary<string, IReadOnlyList<string>>>(dict);
+    }
+
+    public Task<IReadOnlyDictionary<string, IReadOnlyList<string>>> GetClinicalStateExclusionIdsByIngredientIdsAsync(IEnumerable<string> ingredientIds, CancellationToken ct = default)
+    {
+        var idSet = ingredientIds.Distinct().ToHashSet();
+        var dict = _ingredientClinicalStateExclusions
+            .Where(x => idSet.Contains(x.IngredientId))
+            .GroupBy(x => x.IngredientId)
+            .ToDictionary(g => g.Key, g => (IReadOnlyList<string>)g.Select(x => x.ClinicalStateId).ToList());
+        return Task.FromResult<IReadOnlyDictionary<string, IReadOnlyList<string>>>(dict);
+    }
+
+    public Task<IReadOnlyDictionary<string, IReadOnlyList<string>>> GetDietTypeExclusionIdsByIngredientIdsAsync(IEnumerable<string> ingredientIds, CancellationToken ct = default)
+    {
+        var idSet = ingredientIds.Distinct().ToHashSet();
+        var dict = _ingredientDietTypeExclusions
+            .Where(x => idSet.Contains(x.IngredientId))
+            .GroupBy(x => x.IngredientId)
+            .ToDictionary(g => g.Key, g => (IReadOnlyList<string>)g.Select(x => x.DietTypeId).ToList());
+        return Task.FromResult<IReadOnlyDictionary<string, IReadOnlyList<string>>>(dict);
     }
 }

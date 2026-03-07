@@ -15,14 +15,7 @@ export class MealsDashboardComponent {
     {
       label: 'Setup',
       children: [
-        {
-          label: 'Ingredients',
-          children: [
-            { path: '/meals/setup/ingredients/allergy-exclusions', label: 'Allergy Exclusions' },
-            { path: '/meals/setup/ingredients/clinical-state-exclusions', label: 'Clinical State Exclusions' },
-            { path: '/meals/setup/ingredients/diet-type-exclusions', label: 'Diet Type Exclusions' },
-          ],
-        },
+        { path: '/meals/setup/ingredients', label: 'Ingredients', exact: true },
         { path: '/meals/setup/recipes', label: 'Recipes' },
         { path: '/meals/setup/meals', label: 'Meals' },
       ],

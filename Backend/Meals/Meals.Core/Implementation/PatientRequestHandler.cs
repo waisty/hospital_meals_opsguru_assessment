@@ -136,9 +136,9 @@ namespace Hospital.Meals.Core.Implementation
             return request == null ? null : request.ToPatientRequestViewModel();
         }
 
-        public async Task<PagedResult<PatientRequestViewModel>> ListPatientRequestsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<PagedResult<PatientRequestViewModel>> ListPatientRequestsAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default)
         {
-            var paged = await _patientRequestRepo.ListPatientRequestsAsync(page, pageSize, cancellationToken).ConfigureAwait(false);
+            var paged = await _patientRequestRepo.ListPatientRequestsAsync(page, pageSize, search, cancellationToken).ConfigureAwait(false);
             return new PagedResult<PatientRequestViewModel>
             {
                 Items = paged.Items.Select(r => r.ToPatientRequestViewModel()).ToList(),

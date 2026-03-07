@@ -18,6 +18,8 @@ import { DietTypeEditComponent } from './patient/setup/diet-types/diet-type-edit
 import { SetupDashboardComponent } from './setup/setup-dashboard/setup-dashboard.component';
 import { MealsDashboardComponent } from './meals/meals-dashboard/meals-dashboard.component';
 import { MealRequestsComponent } from './meals/meal-requests/meal-requests.component';
+import { IngredientsComponent } from './meals/ingredients/ingredients.component';
+import { IngredientDetailComponent } from './meals/ingredients/ingredient-detail/ingredient-detail.component';
 import { SetupPlaceholderComponent } from './meals/setup/setup-placeholder.component';
 import { KitchenDashboardComponent } from './kitchen/kitchen-dashboard/kitchen-dashboard.component';
 import {
@@ -83,9 +85,8 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'meal-requests', pathMatch: 'full' },
       { path: 'meal-requests', component: MealRequestsComponent },
-      { path: 'setup/ingredients/allergy-exclusions', component: SetupPlaceholderComponent, data: { title: 'Allergy Exclusions' } },
-      { path: 'setup/ingredients/clinical-state-exclusions', component: SetupPlaceholderComponent, data: { title: 'Clinical State Exclusions' } },
-      { path: 'setup/ingredients/diet-type-exclusions', component: SetupPlaceholderComponent, data: { title: 'Diet Type Exclusions' } },
+      { path: 'setup/ingredients', component: IngredientsComponent },
+      { path: 'setup/ingredients/:id', component: IngredientDetailComponent },
       { path: 'setup/recipes', component: SetupPlaceholderComponent, data: { title: 'Recipes' } },
       { path: 'setup/meals', component: SetupPlaceholderComponent, data: { title: 'Meals' } },
     ],

@@ -24,8 +24,9 @@ namespace Hospital.Auth.Core.Implementation
             _logger.LogInformation("Applying auth database migrations...");
             await using var scope = _scopeFactory.CreateAsyncScope();
             var db = scope.ServiceProvider.GetRequiredService<AuthDBContext>();
-            await db.Database.ExecuteSqlRawAsync("CREATE EXTENSION IF NOT EXISTS pgcrypto;", cancellationToken).ConfigureAwait(false);
+            
             await db.Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
+            await db.Database.ExecuteSqlRawAsync("CREATE EXTENSION IF NOT EXISTS pgcrypto;", cancellationToken).ConfigureAwait(false);
             _logger.LogInformation("Auth database migrations applied.");
         }
 

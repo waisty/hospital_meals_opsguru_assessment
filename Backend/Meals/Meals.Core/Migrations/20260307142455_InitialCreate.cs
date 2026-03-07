@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using NpgsqlTypes;
 
 #nullable disable
 
@@ -209,7 +210,10 @@ namespace Hospital.Meals.Core.Migrations
                     approval_status = table.Column<int>(type: "integer", nullable: false),
                     status_reason = table.Column<string>(type: "text", nullable: true),
                     unsafe_ingredient_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    finalized_date_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    finalized_date_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    search_vector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
+                        .Annotation("Npgsql:TsVectorConfig", "simple")
+                        .Annotation("Npgsql:TsVectorProperties", new[] { "first_name", "last_name" })
                 },
                 constraints: table =>
                 {
@@ -322,6 +326,13 @@ namespace Hospital.Meals.Core.Migrations
                 schema: "dbo",
                 table: "patient_requests",
                 column: "recipe_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_patient_requests_search_vector",
+                schema: "dbo",
+                table: "patient_requests",
+                column: "search_vector")
+                .Annotation("Npgsql:IndexMethod", "GIN");
 
             migrationBuilder.CreateIndex(
                 name: "IX_recipe_ingredients_ingredient_id",

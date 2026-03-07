@@ -2,11 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_ENDPOINTS } from '../../shared/config/api-endpoints.config';
+import { isSearchLongEnough } from '../../shared/constants/search.constants';
 import type { PagedResult } from '../../shared/models';
 import type {
   IngredientViewModel,
   IngredientDetailViewModel,
   IngredientCreateRequest,
+  IngredientExclusionNamesRequest,
+  IngredientExclusionNamesResponse,
   SetIngredientAllergyExclusionsRequest,
   SetIngredientClinicalStateExclusionsRequest,
   SetIngredientDietTypeExclusionsRequest,
@@ -24,12 +27,23 @@ export class IngredientService {
 
   listIngredients(
     page: number,
-    pageSize: number
+    pageSize: number,
+    search?: string | null
   ): Observable<PagedResult<IngredientViewModel>> {
-    const params = new HttpParams().set('page', page).set('pageSize', pageSize);
+    let params = new HttpParams().set('page', page).set('pageSize', pageSize);
+    if (isSearchLongEnough(search)) {
+      params = params.set('search', search!.trim());
+    }
     return this.http.get<PagedResult<IngredientViewModel>>(
       `${this.base}/ingredients`,
       { params }
+    );
+  }
+
+  getExclusionNamesByIngredientIds(ingredientIds: string[]): Observable<IngredientExclusionNamesResponse> {
+    return this.http.post<IngredientExclusionNamesResponse>(
+      `${this.base}/ingredients/exclusion-names-by-ids`,
+      { ingredientIds } as IngredientExclusionNamesRequest
     );
   }
 

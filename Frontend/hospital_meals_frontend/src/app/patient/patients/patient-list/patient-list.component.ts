@@ -5,6 +5,7 @@ import { catchError, debounceTime, forkJoin, map, of, startWith, switchMap, tap 
 import type { PatientWithDietTypeNameViewModel } from '../../models';
 import { PatientService } from '../../services/patient.service';
 import type { PagedResult } from '../../../shared/models';
+import { isSearchLongEnough } from '../../../shared/constants/search.constants';
 import { EditButtonComponent } from '../../../shared/components/edit-button/edit-button.component';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 
@@ -50,19 +51,19 @@ export class PatientListComponent {
 
   /** True when loading is suspended because suspendLoadUntilSearch is set and search has fewer than 2 characters. */
   readonly isLoadSuspended = computed(
-    () => this.suspendLoadUntilSearch() && (this.debouncedSearch()?.length ?? 0) < 2
+    () => this.suspendLoadUntilSearch() && !isSearchLongEnough(this.debouncedSearch())
   );
 
   private readonly params$ = toObservable(
     computed(() => {
       const search = this.debouncedSearch();
-      const suspended = this.suspendLoadUntilSearch() && (search?.length ?? 0) < 2;
+      const suspended = this.suspendLoadUntilSearch() && !isSearchLongEnough(search);
       const max = this.maxRecords();
       return {
         suspended,
         page: max != null ? 1 : this.page(),
         pageSize: max != null ? max : this.pageSize(),
-        search: (search?.length ?? 0) >= 2 ? search : '',
+        search: isSearchLongEnough(search) ? search ?? '' : '',
       };
     }),
     { injector: this.injector }

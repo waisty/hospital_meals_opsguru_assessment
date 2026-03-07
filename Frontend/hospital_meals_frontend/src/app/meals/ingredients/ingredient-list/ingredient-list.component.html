@@ -1,0 +1,68 @@
+<div class="ingredient-list-with-search">
+  <div class="search-bar">
+    <label for="ingredient-search">Search</label>
+    <input
+      id="ingredient-search"
+      type="search"
+      placeholder="Name or description…"
+      [value]="searchTerm()"
+      (input)="onSearchInput($any($event.target).value)"
+      autocomplete="off"
+    />
+  </div>
+
+  @if (listError()) {
+    <p class="error">{{ listError() }}</p>
+  } @else if (isLoadSuspended()) {
+    <p class="hint">Enter at least 2 characters to search.</p>
+  } @else if (result() === null) {
+    <p class="loading">Loading…</p>
+  } @else {
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Exclusions (allergies / clinical states / diet types)</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (i of items; track i.id) {
+            <tr class="clickable-row" (click)="onRowClick(i.id)">
+              <td>{{ i.name }}</td>
+              <td>{{ i.description ?? '—' }}</td>
+              <td class="col-exclusions">
+                <ul class="tag-list">
+                  @for (name of getAllergyNames(i.id); track name) {
+                    <li class="tag tag-exclusion-allergy">{{ name }}</li>
+                  }
+                  @for (name of getClinicalStateNames(i.id); track name) {
+                    <li class="tag tag-exclusion-clinical-state">{{ name }}</li>
+                  }
+                  @for (name of getDietTypeNames(i.id); track name) {
+                    <li class="tag tag-exclusion-diet-type">{{ name }}</li>
+                  }
+                  @if (getAllergyNames(i.id).length === 0 && getClinicalStateNames(i.id).length === 0 && getDietTypeNames(i.id).length === 0) {
+                    <li class="no-exclusions">—</li>
+                  }
+                </ul>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="3" class="empty">No ingredients found.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <app-pagination
+      [page]="page()"
+      [pageSize]="pageSize()"
+      [totalCount]="totalCount"
+      (pageChange)="onPageChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)"
+    />
+  }
+</div>

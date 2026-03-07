@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hospital.Auth.Core.Migrations
 {
     [DbContext(typeof(AuthDBContext))]
-    [Migration("20260307115103_InitialCreate")]
+    [Migration("20260307142453_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

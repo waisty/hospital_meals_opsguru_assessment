@@ -158,7 +158,7 @@ public sealed class IngredientEndpointTests : IClassFixture<MealsWebApiFixture>
     }
 
     [Fact]
-    public async Task SetIngredientDietTypeExclusions_WithMealsUserClaim_Returns204()
+    public async Task SetIngredientDietTypeExclusions_WithMealsUserClaim_Returns403()
     {
         _fixture.MockRepo.SeedIngredient("chicken", "Chicken");
 
@@ -166,6 +166,30 @@ public sealed class IngredientEndpointTests : IClassFixture<MealsWebApiFixture>
         var request = new SetIngredientDietTypeExclusionsRequest { DietTypeIds = ["vegan"] };
 
         var response = await client.PutAsJsonAsync("/api/v1/ingredients/chicken/diet-types", request);
-        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task SetIngredientDietTypeExclusions_WithMealsAdminClaim_Returns204_AndPersists()
+    {
+        _fixture.MockRepo.SeedIngredient("chicken", "Chicken");
+
+        using (var adminClient = _fixture.CreateAuthenticatedClient(ClaimIds.mealsAdminClaim))
+        {
+            var request = new SetIngredientDietTypeExclusionsRequest { DietTypeIds = ["vegan", "vegetarian"] };
+            var putResponse = await adminClient.PutAsJsonAsync("/api/v1/ingredients/chicken/diet-types", request);
+            Assert.Equal(HttpStatusCode.NoContent, putResponse.StatusCode);
+        }
+
+        using (var userClient = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim))
+        {
+            var getResponse = await userClient.GetAsync("/api/v1/ingredients/chicken/diet-types");
+            Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+            var body = await getResponse.Content.ReadFromJsonAsync<List<string>>();
+            Assert.NotNull(body);
+            Assert.Equal(2, body.Count);
+            Assert.Contains("vegan", body);
+            Assert.Contains("vegetarian", body);
+        }
     }
 }

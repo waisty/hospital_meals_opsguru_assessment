@@ -33,12 +33,43 @@ namespace Hospital.Meals.Core.Implementation
                 .ConfigureAwait(false);
         }
 
-        public async Task<PagedResult<PatientRequest>> ListPatientRequestsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<PagedResult<PatientRequest>> ListPatientRequestsAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default)
         {
-            var totalCount = await _context.PatientRequests.CountAsync(cancellationToken).ConfigureAwait(false);
-            var items = await _context.PatientRequests
-                .OrderBy(r => r.RequestedDateTime)
-                .ThenBy(r => r.PatientId)
+            // Full-text search only runs when search is at least 2 characters (same as patients table)
+            if (!string.IsNullOrWhiteSpace(search) && search.Trim().Length < 2)
+                search = null;
+
+            var query = _context.PatientRequests.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var term = string.Join(" & ", search!
+                    .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(word => $"{word}:*"));
+
+                var matchingIds = await _context.Database
+                    .SqlQueryRaw<Guid>(
+                        "SELECT id FROM dbo.patient_requests WHERE search_vector @@ to_tsquery('simple', {0})",
+                        term)
+                    .ToListAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                if (matchingIds.Count == 0)
+                {
+                    return new PagedResult<PatientRequest>
+                    {
+                        Items = new List<PatientRequest>(),
+                        TotalCount = 0,
+                        Page = page,
+                        PageSize = pageSize
+                    };
+                }
+                query = query.Where(r => matchingIds.Contains(r.Id));
+            }
+
+            query = query.OrderBy(r => r.RequestedDateTime).ThenBy(r => r.PatientId);
+
+            var totalCount = await query.CountAsync(cancellationToken).ConfigureAwait(false);
+            var items = await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken)

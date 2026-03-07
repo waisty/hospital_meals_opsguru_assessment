@@ -1,0 +1,162 @@
+<div class="ingredient-detail-view">
+  @if (loading()) {
+    <p class="loading">Loading…</p>
+  } @else if (error()) {
+    <p class="error">{{ error() }}</p>
+    <a routerLink="/meals/setup/ingredients" class="back-link">← Back to ingredients</a>
+  } @else if (detail(); as d) {
+    <header class="page-header">
+      <a routerLink="/meals/setup/ingredients" class="back-link">← Back to ingredients</a>
+      <h2>Ingredient details</h2>
+      <p class="subtitle">{{ d.name }}</p>
+    </header>
+
+    <div class="detail-layout">
+      <section class="ingredient-info">
+        <h3>Ingredient</h3>
+        <dl class="info-list">
+          <dt>Name</dt>
+          <dd>{{ d.name }}</dd>
+          <dt>Description</dt>
+          <dd>{{ d.description ?? '—' }}</dd>
+        </dl>
+      </section>
+
+      <aside class="right-side">
+        <section class="section-card allergies-card">
+          <h3>Allergy exclusions</h3>
+          <p class="card-hint">Ingredients that contain these allergens are excluded for patients with the selected allergies.</p>
+          @if (d.allergyExclusionIds.length > 0) {
+            <ul class="tag-list">
+              @for (id of d.allergyExclusionIds; track id) {
+                <li class="tag tag-exclusion-allergy">
+                  <span>{{ getAllergyName(id) }}</span>
+                  <button
+                    type="button"
+                    class="tag-remove"
+                    (click)="removeAllergyExclusion(id)"
+                    [disabled]="saving()"
+                    title="Remove exclusion"
+                  >
+                    ×
+                  </button>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="empty-hint">No allergy exclusions.</p>
+          }
+          @if (availableAllergies().length > 0) {
+            <div class="add-row">
+              <select
+                class="add-select"
+                (change)="onAllergySelect($event)"
+                [disabled]="saving()"
+                title="Add allergy exclusion"
+              >
+                <option value="">Add allergy exclusion…</option>
+                @for (a of availableAllergies(); track a.id) {
+                  <option [value]="a.id">{{ a.name }}</option>
+                }
+              </select>
+            </div>
+          }
+        </section>
+
+        <section class="section-card clinical-states-card">
+          <h3>Clinical state exclusions</h3>
+          <p class="card-hint">This ingredient is excluded for patients with the selected clinical states.</p>
+          @if (d.clinicalStateExclusionIds.length > 0) {
+            <ul class="tag-list">
+              @for (id of d.clinicalStateExclusionIds; track id) {
+                <li class="tag tag-exclusion-clinical-state">
+                  <span>{{ getClinicalStateName(id) }}</span>
+                  <button
+                    type="button"
+                    class="tag-remove"
+                    (click)="removeClinicalStateExclusion(id)"
+                    [disabled]="saving()"
+                    title="Remove exclusion"
+                  >
+                    ×
+                  </button>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="empty-hint">No clinical state exclusions.</p>
+          }
+          @if (availableClinicalStates().length > 0) {
+            <div class="add-row">
+              <select
+                class="add-select"
+                (change)="onClinicalStateSelect($event)"
+                [disabled]="saving()"
+                title="Add clinical state exclusion"
+              >
+                <option value="">Add clinical state exclusion…</option>
+                @for (c of availableClinicalStates(); track c.id) {
+                  <option [value]="c.id">{{ c.name }}</option>
+                }
+              </select>
+            </div>
+          }
+        </section>
+
+        <section class="section-card diet-types-card">
+          <h3>Diet type exclusions</h3>
+          <p class="card-hint">This ingredient is excluded for the selected diet types.</p>
+          @if (d.dietTypeExclusionIds.length > 0) {
+            <ul class="tag-list">
+              @for (id of d.dietTypeExclusionIds; track id) {
+                <li class="tag tag-exclusion-diet-type">
+                  <span>{{ getDietTypeName(id) }}</span>
+                  <button
+                    type="button"
+                    class="tag-remove"
+                    (click)="removeDietTypeExclusion(id)"
+                    [disabled]="saving()"
+                    title="Remove exclusion"
+                  >
+                    ×
+                  </button>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="empty-hint">No diet type exclusions.</p>
+          }
+          @if (availableDietTypes().length > 0) {
+            <div class="add-row">
+              <select
+                class="add-select"
+                (change)="onDietTypeSelect($event)"
+                [disabled]="saving()"
+                title="Add diet type exclusion"
+              >
+                <option value="">Add diet type exclusion…</option>
+                @for (dt of availableDietTypes(); track dt.id) {
+                  <option [value]="dt.id">{{ dt.name }}</option>
+                }
+              </select>
+            </div>
+          }
+        </section>
+
+        <div class="save-row">
+          <button
+            type="button"
+            class="btn-save"
+            (click)="saveExclusions()"
+            [disabled]="saving()"
+          >
+            {{ saving() ? 'Saving…' : 'Save exclusions' }}
+          </button>
+        </div>
+      </aside>
+    </div>
+  } @else {
+    <p class="error">Ingredient not found.</p>
+    <a routerLink="/meals/setup/ingredients" class="back-link">← Back to ingredients</a>
+  }
+</div>

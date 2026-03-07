@@ -1,11 +1,12 @@
 import { Component, Injector, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { catchError, of, switchMap, tap } from 'rxjs';
+import { catchError, debounceTime, of, startWith, switchMap, tap } from 'rxjs';
 import type { PatientRequestViewModel } from '../../models';
 import { PatientRequestService } from '../../services/patient-request.service';
 import type { PagedResult } from '../../../shared/models';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { MealRequestApprovalStatus } from '../../models';
+import { isSearchLongEnough } from '../../../shared/constants/search.constants';
 
 @Component({
   selector: 'app-meal-request-list',
@@ -20,15 +21,28 @@ export class MealRequestListComponent {
 
   readonly page = signal(1);
   readonly pageSize = signal(10);
+  readonly searchTerm = signal('');
   readonly listError = signal<string | null>(null);
 
+  private readonly debouncedSearch = toSignal(
+    toObservable(computed(() => this.searchTerm()), { injector: this.injector }).pipe(
+      debounceTime(300),
+      startWith('')
+    ),
+    { initialValue: '' }
+  );
+
   private readonly params$ = toObservable(
-    computed(() => ({ page: this.page(), pageSize: this.pageSize() })),
+    computed(() => ({
+      page: this.page(),
+      pageSize: this.pageSize(),
+      search: isSearchLongEnough(this.debouncedSearch()) ? this.debouncedSearch() ?? '' : '',
+    })),
     { injector: this.injector }
   ).pipe(
     tap(() => this.listError.set(null)),
-    switchMap(({ page, pageSize }) =>
-      this.patientRequestService.listPatientRequests(page, pageSize).pipe(
+    switchMap(({ page, pageSize, search }) =>
+      this.patientRequestService.listPatientRequests(page, pageSize, search).pipe(
         catchError((err) => {
           console.error('Failed to load meal requests', err);
           this.listError.set('Failed to load meal requests.');
@@ -65,6 +79,11 @@ export class MealRequestListComponent {
     if (d == null) return '—';
     const date = typeof d === 'string' ? new Date(d) : d;
     return date.toLocaleString();
+  }
+
+  onSearchInput(value: string): void {
+    this.searchTerm.set(value);
+    this.page.set(1);
   }
 
   onPageChange(p: number): void {

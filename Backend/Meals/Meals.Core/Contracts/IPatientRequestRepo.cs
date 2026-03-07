@@ -8,6 +8,6 @@ namespace Hospital.Meals.Core.Contracts
         Task AddPatientRequestAsync(PatientRequest request, CancellationToken cancellationToken = default);
         Task UpdatePatientRequestAsync(PatientRequest request, CancellationToken cancellationToken = default);
         Task<PatientRequest?> GetPatientRequestByIdAsync(Guid id, CancellationToken cancellationToken = default);
-        Task<PagedResult<PatientRequest>> ListPatientRequestsAsync(int page, int pageSize, CancellationToken cancellationToken = default);
+        Task<PagedResult<PatientRequest>> ListPatientRequestsAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default);
     }
 }

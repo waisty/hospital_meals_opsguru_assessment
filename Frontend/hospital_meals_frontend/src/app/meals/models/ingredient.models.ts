@@ -30,3 +30,18 @@ export interface SetIngredientClinicalStateExclusionsRequest {
 export interface SetIngredientDietTypeExclusionsRequest {
   dietTypeIds: string[];
 }
+
+export interface IngredientExclusionNamesRequest {
+  ingredientIds: string[];
+}
+
+export interface IngredientExclusionNamesItem {
+  ingredientId: string;
+  allergyNames: string[];
+  clinicalStateNames: string[];
+  dietTypeNames: string[];
+}
+
+export interface IngredientExclusionNamesResponse {
+  items: IngredientExclusionNamesItem[];
+}

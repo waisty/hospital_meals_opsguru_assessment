@@ -21,9 +21,13 @@ export class PatientRequestService {
 
   listPatientRequests(
     page: number,
-    pageSize: number
+    pageSize: number,
+    search?: string | null
   ): Observable<PagedResult<PatientRequestViewModel>> {
-    const params = new HttpParams().set('page', page).set('pageSize', pageSize);
+    let params = new HttpParams().set('page', page).set('pageSize', pageSize);
+    if (search != null && search.trim().length >= 2) {
+      params = params.set('search', search.trim());
+    }
     return this.http.get<PagedResult<PatientRequestViewModel>>(
       `${this.base}/patient-requests`,
       { params }
