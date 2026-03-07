@@ -1,0 +1,54 @@
+---
+description: Docker and infrastructure conventions
+globs: **/Dockerfile,**/docker-compose*,docker/**
+alwaysApply: false
+---
+
+# Docker & Infrastructure
+
+## Docker Compose
+
+- `docker-compose.yml` at repo root defines local development services.
+- PostgreSQL 16 Alpine as the shared database server (each service uses a separate database).
+- Init scripts in `docker/postgres-init/` for creating additional databases on first run.
+
+## Service Ports (local dev)
+
+| Service | Container | Host Port |
+|---------|-----------|-----------|
+| PostgreSQL | hospitalmeals-postgres | 5433 |
+| Auth API | hospitalmeals-auth-api | 8080 |
+| Patient API | hospitalmeals-patient-api | 8081 |
+| Meals API | (to be added) | 8082 |
+| Kitchen API | (to be added) | 8083 |
+| Frontend | (to be added) | 4200 |
+
+## Dockerfile Pattern
+
+All backend services use multi-stage builds:
+
+```dockerfile
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base    # Runtime
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build       # Build + restore
+FROM build AS publish                                  # Publish
+FROM base AS final                                     # Copy published output
+```
+
+- Build context is the domain parent folder (e.g., `Backend/Meals/`).
+- Expose port 8080 via `ASPNETCORE_URLS=http://+:8080`.
+
+## Database
+
+- Each service has its own PostgreSQL database:
+  - `hospitalmeals_auth_db`
+  - `hospitalmeals_patient_db`
+  - `hospitalmeals_meals_db`
+  - `hospitalmeals_kitchen_db`
+- EF migrations run automatically on startup via `HostedService`.
+- Connection strings passed via environment variables in docker-compose.
+
+## Configuration
+
+- Sensitive config (JWT keys, connection strings) via environment variables — never commit to `appsettings.json`.
+- `appsettings.json` only contains non-sensitive defaults (logging, allowed hosts).
+- `appsettings.Development.json` for local dev overrides (gitignored).

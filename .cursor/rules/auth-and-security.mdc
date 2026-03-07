@@ -1,0 +1,50 @@
+---
+description: Authentication, authorization, and security patterns
+globs: Backend/**/Authentication/**,Backend/**/Auth/**,Frontend/**/auth/**
+alwaysApply: false
+---
+
+# Authentication & Security
+
+## JWT Architecture
+
+- Auth service issues JWT tokens via `POST /api/v1/login`.
+- All other services validate tokens using shared `Jwt:Key`, `Jwt:Issuer`, `Jwt:Audience` config.
+- Tokens use `HmacSha256` symmetric signing.
+- Token lifetime is configured per service; inter-service tokens use 6-hour expiry.
+
+## Claim-Based Authorization
+
+Claims defined in `ClaimIds`:
+- `username` — user identity
+- `admin` — system-wide admin
+- `mealsAdmin` — admin access to Meals domain
+- `mealsUser` — standard user access to Meals domain
+- `mealsService` — inter-service claim for Meals calling Kitchen
+- `patientsService` — inter-service claim for Patient calling Meals
+
+### Policy Mapping
+
+| Service | Policy | Required Claim |
+|---------|--------|---------------|
+| Patient | `Admin` | `admin` |
+| Patient | `PatientAdmin` | `admin` (patient-level) |
+| Patient | `PatientAdminOrMealsService` | `admin` OR `mealsService` |
+| Meals | `MealsAdmin` | `mealsAdmin` |
+| Meals | `MealsUser` | `mealsUser` |
+| Meals | `PatientService` | `patientsService` |
+| Kitchen | `MealsService` | `mealsService` |
+| Kitchen | `KitchenUser` | `kitchenUser` |
+
+## Inter-Service Auth
+
+- Meals service uses `MealsServiceTokenHandler` (a `DelegatingHandler`) that auto-generates a JWT with the appropriate service claim before making HTTP calls to Patient or Kitchen APIs.
+- Never hard-code tokens. Always generate via the token handler.
+
+## Frontend Auth
+
+- Store JWT in memory or secure storage (not localStorage for sensitive tokens)
+- Attach token via an `HttpInterceptor` on all API requests
+- Implement an `AuthGuard` to protect domain routes
+- Redirect to `/login` on 401 responses
+- Do NOT store secrets or JWT keys in the frontend

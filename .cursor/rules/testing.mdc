@@ -1,0 +1,31 @@
+---
+description: Testing conventions for backend (xUnit) and frontend (Vitest)
+globs: **/*.Tests/**,**/*.spec.ts,**/*.test.ts
+alwaysApply: false
+---
+
+# Testing Conventions
+
+## Backend (xUnit)
+
+- Use `xUnit` as the test framework.
+- Integration tests use `WebApplicationFactory<Program>` — each WebApi project exposes `public partial class Program { }` for this purpose.
+- Test project naming: `{Domain}.WebApi.Tests` (e.g., `Hospital.Auth.WebApi.Tests`).
+- Place test projects alongside the domain: `Backend/Auth/Auth.WebApi.Tests/`.
+- Use `Microsoft.AspNetCore.Mvc.Testing` for HTTP-level integration tests.
+- Prefer integration tests that exercise the full pipeline (endpoint → handler → repo → DB).
+- For unit tests of handlers, mock `IRepo` interfaces.
+
+## Frontend (Vitest)
+
+- Use `Vitest` (not Karma/Jasmine) — already configured in the project.
+- Test files: `*.spec.ts` colocated with the component/service they test.
+- Use `jsdom` as the test environment (already in devDependencies).
+- Test standalone components using Angular's `TestBed` with minimal imports.
+- Mock HTTP calls using Angular's `provideHttpClientTesting()`.
+
+## General Rules
+
+- Every new handler method should have at least one happy-path test.
+- Test error/edge cases: not-found, conflict/duplicate, validation failure.
+- Do not test framework internals (e.g., don't test that EF generates correct SQL).

@@ -1,0 +1,53 @@
+---
+description: Hospital Meals Management System - architecture, structure, and domain overview
+alwaysApply: true
+---
+
+# Hospital Meals Management System
+
+A hospital meal management platform with **strict domain segmentation** across three bounded contexts: **Patient**, **Meals**, and **Kitchen**. A shared **Auth** service handles authentication.
+
+## Repository Layout
+
+```
+Backend/
+  Auth/          → Auth.WebApi, Auth.Core, Auth.ViewModels, Auth.ServiceViewModels, Auth.WebApi.Tests
+  Patient/       → Patient.WebApi, Patient.Core, Patient.ViewModels, Patient.ServiceViewModels
+  Meals/         → Meals.WebApi, Meals.Core, Meals.ViewModels, Meals.ServiceViewModels
+  Kitchen/       → Kitchen.WebApi, Kitchen.Core, Kitchen.ViewModels, Kitchen.ServiceViewModels
+Frontend/
+  hospital_meals_frontend/   → Angular 21 SPA (standalone components, signals, SASS)
+docker-compose.yml           → PostgreSQL + service containers
+```
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Backend runtime | .NET 10, ASP.NET Core Minimal APIs |
+| ORM | Entity Framework Core 10 (PostgreSQL via Npgsql) |
+| Auth | JWT Bearer (symmetric key, claim-based policies) |
+| Testing | xUnit, Microsoft.AspNetCore.Mvc.Testing |
+| Frontend | Angular 21, TypeScript 5.9, SASS, RxJS, Vitest |
+| Infrastructure | Docker, PostgreSQL 16 |
+
+## Domain Responsibilities (STRICT SEGREGATION)
+
+1. **Patient** – Patient records, allergies, clinical states, diet types. Owns the patient profile. Publishes reference data changes to Meals via service-to-service calls.
+2. **Meals** – Recipes, ingredients, meals, patient meal requests, ingredient safety exclusions (allergy/clinical-state/diet-type). Orchestrates meal ordering: validates requests against patient profile, creates kitchen trays.
+3. **Kitchen** – Tray lifecycle (Pending → PreparationStarted → AccuracyValidated → EnRoute → Delivered → Retrieved). Receives tray creation from Meals service.
+4. **Auth** – User authentication, JWT token issuance.
+
+## Service Communication
+
+- Meals → Patient (HTTP client, service JWT token) for patient detail lookups.
+- Meals → Kitchen (HTTP client, service JWT token) for tray creation.
+- Patient → Meals (HTTP client, service JWT token) for publishing reference data (allergies, clinical states, diet types).
+- Frontend → Auth → obtains JWT → calls Patient / Meals / Kitchen APIs.
+
+## Key Architectural Rules
+
+- **Never cross domain boundaries at the database level.** Each service has its own database. Cross-service communication is only via HTTP APIs.
+- **Never place Patient logic in the Meals or Kitchen project** (and vice versa).
+- **ViewModels are the public API contract.** Internal EF models live in `*.Core/InternalModels/` and must stay `internal`.
+- **ServiceViewModels** are used when one service calls another service's API (inter-service DTOs).

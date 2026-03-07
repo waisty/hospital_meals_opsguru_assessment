@@ -1,0 +1,86 @@
+---
+description: .NET backend conventions for ASP.NET Core Minimal API services
+globs: Backend/**/*.cs
+alwaysApply: false
+---
+
+# Backend .NET Conventions
+
+## Framework & Targets
+- .NET 10, C# latest, `<Nullable>enable</Nullable>`, `<ImplicitUsings>enable</ImplicitUsings>`
+- ASP.NET Core **Minimal APIs** (no controllers). Endpoints are defined in `EndpointMapping.cs` via extension methods.
+- Entity Framework Core 10 with PostgreSQL (Npgsql). Connection string from `IConfiguration["ConnectionString"]`.
+
+## Project Structure (per domain)
+
+Each domain follows a consistent four-project layout:
+
+```
+{Domain}.WebApi/          → Minimal API host, endpoint mapping, auth config, validation filter, Dockerfile
+{Domain}.Core/            → Business logic, EF DbContext, repos, handlers, migrations, internal models, contracts
+{Domain}.ViewModels/      → Public request/response DTOs (shared with API consumers)
+{Domain}.ServiceViewModels/ → DTOs for inter-service HTTP communication
+```
+
+## Layered Architecture
+
+```
+EndpointMapping (WebApi)
+  → IHandler (Core/Contracts)
+    → IRepo (Core/Contracts)
+      → DbContext (Core/Implementation)
+```
+
+- **Handler** = business/orchestration logic. Implements `I{Domain}Handler`.
+- **Repo** = data access only. Implements `I{Domain}Repo`.
+- **Internal models** live in `Core/InternalModels/` and must be `internal`. They have a static `Configure(EntityTypeBuilder)` method for EF fluent config.
+- **ViewModels** are the public contract; map from internal models via extension methods in `*ViewModelExtensions.cs`.
+
+## Coding Patterns
+
+### Endpoint registration
+```csharp
+var api = app.MapGroup("/api/v1").AddEndpointFilter<ValidationEndpointFilter>();
+api.MapGet("/items/{id}", async (string id, IHandler handler, CancellationToken ct) =>
+{
+    var item = await handler.GetByIdAsync(id, ct);
+    return item is null ? Results.NotFound() : Results.Ok(item);
+}).RequireAuthorization(PolicyName);
+```
+
+### Async conventions
+- All I/O methods are async with `CancellationToken` parameter (default value in interface).
+- Use `.ConfigureAwait(false)` in Core library code.
+- Suffix async methods with `Async`.
+
+### Dependency injection
+- Register services in `ServiceCollectionExtensions.cs` using `AddScoped` for handlers/repos, `AddDbContext` for EF.
+- Handlers and repos are registered as interface → implementation.
+- Internal implementations are `internal sealed class`.
+
+### Validation
+- Use `System.ComponentModel.DataAnnotations` on ViewModel properties.
+- `ValidationEndpointFilter` auto-validates request bodies and returns `ValidationProblem`.
+- Custom attributes (e.g., `NonBlankAttribute`) for domain-specific rules.
+
+### Error handling
+- `GlobalExceptionHandler : IExceptionHandler` catches unhandled exceptions.
+- Return `ProblemDetails` for errors.
+- Use `Results.NotFound()`, `Results.Conflict()`, `Results.Created()`, `Results.NoContent()` etc.
+
+### Authentication & Authorization
+- JWT Bearer with symmetric key (configured via `Jwt:Key`, `Jwt:Issuer`, `Jwt:Audience`).
+- Claim-based policies: define in `JwtAuthenticationExtensions.cs`, apply with `.RequireAuthorization(policyName)`.
+- Inter-service auth: dedicated `DelegatingHandler` generates service-level JWT tokens.
+
+### Database conventions
+- Schema: `dbo`
+- Table names: snake_case (e.g., `patient_requests`)
+- Column names: snake_case (e.g., `patient_id`)
+- IDs: string-based (slugs) for reference data, `Guid` for transactional data (auto-generated via `gen_random_uuid()`)
+- Migrations managed via EF Core CLI; auto-applied on startup via `HostedService`.
+- Seed data via `HostedService` when DB is empty or `SeedData:Enabled` is true.
+
+### Testing
+- xUnit with `WebApplicationFactory<Program>` for integration tests.
+- `public partial class Program { }` in each WebApi project enables test factory access.

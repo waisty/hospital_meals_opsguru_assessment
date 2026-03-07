@@ -1,0 +1,100 @@
+---
+description: Angular 21 frontend conventions for the hospital meals SPA
+globs: Frontend/**/*.{ts,html,sass,scss,spec.ts}
+alwaysApply: false
+---
+
+# Frontend Angular Conventions
+
+## Framework
+- Angular 21 with standalone components (no NgModules)
+- TypeScript 5.9 with strict mode enabled
+- SASS for styles (not SCSS — the project uses `.sass` indented syntax)
+- Vitest for unit testing (not Karma/Jasmine)
+- RxJS 7.8 for reactive patterns
+
+## Project Root
+`Frontend/hospital_meals_frontend/`
+
+## Application Structure
+
+Organize by domain, mirroring backend segmentation:
+
+```
+src/app/
+  auth/
+    components/       → login, etc.
+    services/         → auth.service.ts, auth.guard.ts
+    models/           → auth request/response interfaces
+  patient/
+    components/       → patient-list, patient-detail, patient-form, etc.
+    services/         → patient.service.ts
+    models/           → patient.model.ts, allergy.model.ts, etc.
+  meals/
+    components/       → meal-list, recipe-detail, ingredient-form, patient-request, etc.
+    services/         → meals.service.ts
+    models/           → meal.model.ts, recipe.model.ts, ingredient.model.ts, etc.
+  kitchen/
+    components/       → tray-board, tray-detail, etc.
+    services/         → kitchen.service.ts
+    models/           → tray.model.ts
+  shared/
+    components/       → layout, navigation, page-header, pagination, etc.
+    services/         → api.service.ts (base HTTP helpers)
+    models/           → paged-result.model.ts, api-response types
+  app.ts              → Root component
+  app.routes.ts       → Top-level route config with lazy-loaded domain routes
+  app.config.ts       → Application providers (router, HTTP client, etc.)
+```
+
+## Component Conventions
+
+- Use **standalone components** (no NgModules): `@Component({ standalone: true, imports: [...] })`
+- Use **Angular signals** for local state (`signal()`, `computed()`, `effect()`)
+- Use `inject()` function for DI instead of constructor injection
+- Templates: separate `.html` files (referenced via `templateUrl`)
+- Styles: separate `.sass` files (referenced via `styleUrl`, singular)
+- Prefix selectors with `app-` (configured prefix)
+
+## Routing
+
+- Top-level routes in `app.routes.ts` with lazy loading per domain:
+```typescript
+export const routes: Routes = [
+  { path: 'patient', loadChildren: () => import('./patient/patient.routes').then(m => m.PATIENT_ROUTES) },
+  { path: 'meals', loadChildren: () => import('./meals/meals.routes').then(m => m.MEALS_ROUTES) },
+  { path: 'kitchen', loadChildren: () => import('./kitchen/kitchen.routes').then(m => m.KITCHEN_ROUTES) },
+  { path: 'login', loadComponent: () => import('./auth/components/login/login.component').then(m => m.LoginComponent) },
+  { path: '', redirectTo: 'meals', pathMatch: 'full' },
+];
+```
+
+## Services
+
+- One service per domain for API communication (e.g., `PatientService`, `MealsService`, `KitchenService`)
+- Use `HttpClient` via `inject(HttpClient)` — provide via `provideHttpClient()` in app config
+- Services return `Observable`s; components subscribe or use `async` pipe / `toSignal()`
+- API base URLs should come from `environment.ts` files
+
+## API Integration
+
+Backend APIs all follow `/api/v1/` prefix:
+- Auth: `POST /api/v1/login`
+- Patient: `GET|POST /api/v1/patients`, `GET|PUT /api/v1/allergies`, `GET|PUT /api/v1/clinical-states`, `GET|PUT /api/v1/diet-types`
+- Meals: `GET|POST /api/v1/meals`, `/recipes`, `/ingredients`, `/patient-requests`, `/allergies`, `/clinical-states`, `/diet-types`
+- Kitchen: `POST /api/v1/trays`, `POST /api/v1/trays/advance-state`
+
+## UI Domain Indicators
+
+The interface must clearly communicate which system area the user is in:
+- Use a **sidebar or top-nav** with clearly separated Patient / Meals / Kitchen sections
+- Apply **distinct accent colors** per domain (e.g., blue for Patient, green for Meals, orange for Kitchen)
+- Show a **section header or breadcrumb** on every page indicating the active domain
+- Route structure should reflect the domain: `/patient/...`, `/meals/...`, `/kitchen/...`
+
+## TypeScript Conventions
+
+- Strict mode is on — no implicit `any`, no unchecked index access
+- Use interfaces (not classes) for API models/DTOs
+- Use `readonly` where possible
+- Avoid `any`; prefer `unknown` and narrow with type guards

@@ -1,0 +1,67 @@
+---
+description: Enforces strict domain segmentation between Patient, Meals, and Kitchen
+alwaysApply: true
+---
+
+# Domain Segmentation Rules
+
+This system has three distinct bounded contexts. **Never** violate these boundaries.
+
+## Backend Segmentation
+
+### Patient Domain (`Backend/Patient/`)
+- Owns: Patient records, allergies, clinical states, diet types
+- Entities: Patient, Allergy, ClinicalState, DietType, PatientAllergy, PatientClinicalState
+- Does NOT know about meals, recipes, ingredients, trays, or kitchen operations
+- When reference data (allergy/clinical-state/diet-type) is created or updated, the Patient service publishes changes to the Meals service via HTTP
+
+### Meals Domain (`Backend/Meals/`)
+- Owns: Meals, recipes, ingredients, recipe-ingredient mappings, ingredient exclusions, patient meal requests
+- Entities: Meal, Recipe, Ingredient, RecipeIngredient, IngredientAllergyExclusions, IngredientClinicalStateExclusions, IngredientDietTypeExclusions, PatientRequest
+- Maintains its own copy of reference data (Allergy, ClinicalState, DietType) synced from Patient
+- Calls Patient API to get patient detail for safety checks
+- Calls Kitchen API to create trays for approved requests
+- Does NOT directly manage patient records or tray lifecycle
+
+### Kitchen Domain (`Backend/Kitchen/`)
+- Owns: Trays, tray ingredients, tray state machine
+- Entities: Tray, TrayIngredient
+- Tray states: Pending → PreparationStarted → AccuracyValidated → EnRoute → Delivered → Retrieved
+- Receives tray creation from Meals service only
+- Does NOT know about patients, recipes, or meal definitions
+
+## Frontend Segmentation
+
+Structure the Angular frontend with clear domain separation:
+
+```
+src/app/
+  patient/       → Components, services, routes for Patient management
+  meals/         → Components, services, routes for Meals/recipes/ingredients
+  kitchen/       → Components, services, routes for Kitchen tray tracking
+  auth/          → Login, auth guard, token service
+  shared/        → Shared UI components, layout, navigation
+```
+
+### UI Context Indicators
+- The UI must clearly show which area (Patient / Meals / Kitchen) the user is operating in
+- Use distinct visual cues (color accents, section headers, breadcrumbs, or sidebar highlights)
+- Navigation must group features by domain, not by entity type
+
+## Violation Examples
+
+```
+// BAD: Meals service directly querying Patient database
+var patient = await _patientDbContext.Patients.FindAsync(id);
+
+// GOOD: Meals service calling Patient API
+var patient = await _patientApiClient.GetPatientDetailAsync(patientId, ct);
+```
+
+```
+// BAD: Kitchen component importing from meals module
+import { RecipeService } from '../../meals/services/recipe.service';
+
+// GOOD: Kitchen module only uses its own services
+import { TrayService } from '../services/tray.service';
+```
