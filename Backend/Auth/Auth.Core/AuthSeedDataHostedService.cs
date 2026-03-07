@@ -34,7 +34,11 @@ namespace Hospital.Auth.Core.Implementation
         private static List<(User user, string password)> GetSeedUsers() => new()
         {
             (new User { Username = "admin", Name = "Administrator", Admin = true, PatientAdmin = false, MealsAdmin = false, MealsUser = false, KitchenUser = false }, "Admin123!"),
+            (new User { Username = "kitchenuser", Name = "Kitchen User", Admin = false, PatientAdmin = false, MealsAdmin = false, MealsUser = false, KitchenUser = true }, "User123!"),
+            (new User { Username = "patientadmin", Name = "Patient Admin", Admin = false, PatientAdmin = true, MealsAdmin = false, MealsUser = false, KitchenUser = false }, "User123!"),
+            (new User { Username = "mealsadmin", Name = "Meals Admin", Admin = false, PatientAdmin = false, MealsAdmin = true, MealsUser = false, KitchenUser = false }, "User123!"),
             (new User { Username = "mealsuser", Name = "Meals User", Admin = false, PatientAdmin = false, MealsAdmin = false, MealsUser = true, KitchenUser = false }, "User123!"),
+            (new User { Username = "patientadmin_mealsuser", Name = "Patient Admin and Meals User", Admin = false, PatientAdmin = true, MealsAdmin = false, MealsUser = true, KitchenUser = false }, "User123!"),
         };
 
         public async Task StartAsync(CancellationToken cancellationToken)

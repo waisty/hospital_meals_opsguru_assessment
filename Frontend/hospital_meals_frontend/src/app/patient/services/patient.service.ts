@@ -41,8 +41,11 @@ export class PatientService {
   }
 
   // --- Patients ---
-  listPatients(page: number, pageSize: number): Observable<PagedResult<PatientWithDietTypeNameViewModel>> {
-    const params = new HttpParams().set('page', page).set('pageSize', pageSize);
+  listPatients(page: number, pageSize: number, search?: string | null): Observable<PagedResult<PatientWithDietTypeNameViewModel>> {
+    let params = new HttpParams().set('page', page).set('pageSize', pageSize);
+    if (search != null && search.trim() !== '') {
+      params = params.set('search', search.trim());
+    }
     return this.http.get<PagedResult<PatientWithDietTypeNameViewModel>>(`${this.base}/patients`, { params });
   }
 

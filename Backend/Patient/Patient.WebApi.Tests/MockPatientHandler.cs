@@ -48,7 +48,7 @@ public sealed class MockPatientHandler : IPatientHandler, IAllergyHandler, IClin
         return Task.FromResult(vm);
     }
 
-    public Task<PagedResult<PatientWithDietTypeNameViewModel>> ListPatientsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+    public Task<PagedResult<PatientWithDietTypeNameViewModel>> ListPatientsAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default)
     {
         var items = _patients.Values
             .Skip((page - 1) * pageSize)

@@ -6,13 +6,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using NpgsqlTypes;
 
 #nullable disable
 
 namespace Hospital.Patient.Core.Migrations
 {
     [DbContext(typeof(PatientDBContext))]
-    [Migration("20260307104931_InitialCreate")]
+    [Migration("20260307115103_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -132,6 +133,14 @@ namespace Hospital.Patient.Core.Migrations
                         .HasColumnType("text")
                         .HasColumnName("notes");
 
+                    b.Property<NpgsqlTsVector>("SearchVector")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasColumnName("search_vector")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "simple")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "FirstName", "MiddleName", "LastName", "MobileNumber" });
+
                     b.HasKey("Id");
 
                     b.HasIndex("DietTypeId");
@@ -144,6 +153,10 @@ namespace Hospital.Patient.Core.Migrations
 
                     b.HasIndex("MobileNumber")
                         .IsUnique();
+
+                    b.HasIndex("SearchVector");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
 
                     b.ToTable("patients", "dbo");
                 });

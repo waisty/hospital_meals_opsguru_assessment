@@ -1,4 +1,22 @@
-<div class="table-wrap">
+<div class="patient-list-with-search">
+  <div class="search-bar">
+    <label for="patient-search">Search</label>
+    <input
+      id="patient-search"
+      type="search"
+      placeholder="Name or mobile number…"
+      [value]="searchTerm()"
+      (input)="onSearchInput($any($event.target).value)"
+      autocomplete="off"
+    />
+  </div>
+
+  @if (listError()) {
+    <p class="error">{{ listError() }}</p>
+  } @else if (result() === null) {
+    <p class="loading">Loading…</p>
+  } @else {
+    <div class="table-wrap">
   <table class="data-table">
     <thead>
       <tr>
@@ -12,7 +30,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (p of items(); track p.id) {
+      @for (p of items; track p.id) {
         <tr [class.clickable-row]="clickToNavigateEnabled()" (click)="onRowClick(p.id)">
           <td>{{ p.firstName }} {{ p.middleName }} {{ p.lastName }}</td>
           <td>{{ p.mobileNumber }}</td>
@@ -43,4 +61,13 @@
       }
     </tbody>
   </table>
+</div>
+    <app-pagination
+      [page]="page()"
+      [pageSize]="pageSize()"
+      [totalCount]="totalCount"
+      (pageChange)="onPageChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)"
+    />
+  }
 </div>

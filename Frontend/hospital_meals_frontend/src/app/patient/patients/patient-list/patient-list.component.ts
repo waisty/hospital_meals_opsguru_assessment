@@ -1,14 +1,16 @@
-import { Component, Injector, computed, inject, input } from '@angular/core';
+import { Component, Injector, computed, inject, input, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
-import { forkJoin, map, of, switchMap } from 'rxjs';
+import { catchError, debounceTime, forkJoin, map, of, startWith, switchMap, tap } from 'rxjs';
 import type { PatientWithDietTypeNameViewModel } from '../../models';
 import { PatientService } from '../../services/patient.service';
+import type { PagedResult } from '../../../shared/models';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-patient-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, PaginationComponent],
   templateUrl: './patient-list.component.html',
   styleUrl: './patient-list.component.scss',
 })
@@ -17,13 +19,59 @@ export class PatientListComponent {
   private readonly injector = inject(Injector);
   private readonly router = inject(Router);
 
-  readonly items = input.required<PatientWithDietTypeNameViewModel[]>();
   readonly showEditButton = input<boolean>(true);
   readonly clickToNavigateEnabled = input<boolean>(true);
 
-  private readonly items$ = toObservable(computed(() => this.items()), {
-    injector: this.injector,
+  readonly page = signal(1);
+  readonly pageSize = signal(10);
+  readonly searchTerm = signal('');
+  readonly listError = signal<string | null>(null);
+
+  private readonly debouncedSearch = toSignal(
+    toObservable(computed(() => this.searchTerm()), { injector: this.injector }).pipe(
+      debounceTime(300),
+      startWith('')
+    ),
+    { initialValue: '' }
+  );
+
+  private readonly params$ = toObservable(
+    computed(() => {
+      const search = this.debouncedSearch();
+      return {
+        page: this.page(),
+        pageSize: this.pageSize(),
+        search: search.length >= 2 ? search : '',
+      };
+    }),
+    { injector: this.injector }
+  ).pipe(
+    tap(() => this.listError.set(null)),
+    switchMap(({ page, pageSize, search }) =>
+      this.patientService.listPatients(page, pageSize, search).pipe(
+        catchError((err) => {
+          console.error('Failed to load patients', err);
+          this.listError.set('Failed to load patients.');
+          return of(null);
+        })
+      )
+    )
+  );
+  readonly result = toSignal<PagedResult<PatientWithDietTypeNameViewModel> | null>(this.params$, {
+    initialValue: null,
   });
+
+  get items(): PatientWithDietTypeNameViewModel[] {
+    return this.result()?.items ?? [];
+  }
+  get totalCount(): number {
+    return this.result()?.totalCount ?? 0;
+  }
+
+  private readonly items$ = toObservable(
+    computed(() => this.result()?.items ?? []),
+    { injector: this.injector }
+  );
   readonly allergiesByPatientId = toSignal(
     this.items$.pipe(
       switchMap((items) => {
@@ -75,5 +123,19 @@ export class PatientListComponent {
     if (this.clickToNavigateEnabled()) {
       this.navigateToDetail(patientId);
     }
+  }
+
+  onSearchInput(value: string): void {
+    this.searchTerm.set(value);
+    this.page.set(1);
+  }
+
+  onPageChange(p: number): void {
+    this.page.set(p);
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize.set(size);
+    this.page.set(1);
   }
 }

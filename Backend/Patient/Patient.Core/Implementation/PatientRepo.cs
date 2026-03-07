@@ -26,13 +26,43 @@ namespace Hospital.Patient.Core.Implementation
                 .ConfigureAwait(false);
         }
 
-        public async Task<PagedResult<InternalModels.PatientWithDietTypeName>> ListPatientsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<PagedResult<InternalModels.PatientWithDietTypeName>> ListPatientsAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default)
         {
-            var totalCount = await _context.Patients.CountAsync(cancellationToken).ConfigureAwait(false);
             var query = from p in _context.Patients
                         join dt in _context.DietTypes on p.DietTypeId equals dt.Id
-                        orderby p.LastName, p.FirstName
                         select new { p, dietTypeName = dt.Name };
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                if (!string.IsNullOrEmpty(search) && search.Length >= 2)
+                {
+                    var term = string.Join(" & ", search
+                    .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(word => $"{word}:*"));
+
+                    var matchingIds = await _context.Database
+                        .SqlQueryRaw<Guid>(
+                            "SELECT id FROM dbo.patients WHERE search_vector @@ to_tsquery('simple', {0})",
+                            term)
+                        .ToListAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                    if (matchingIds.Count == 0)
+                    {
+                        return new PagedResult<InternalModels.PatientWithDietTypeName>
+                        {
+                            Items = new List<InternalModels.PatientWithDietTypeName>(),
+                            TotalCount = 0,
+                            Page = page,
+                            PageSize = pageSize
+                        };
+                    }
+                    query = query.Where(x => matchingIds.Contains(x.p.Id));
+                }
+            }
+
+            query = query.OrderBy(x => x.p.LastName).ThenBy(x => x.p.FirstName);
+
+            var totalCount = await query.CountAsync(cancellationToken).ConfigureAwait(false);
             var list = await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)

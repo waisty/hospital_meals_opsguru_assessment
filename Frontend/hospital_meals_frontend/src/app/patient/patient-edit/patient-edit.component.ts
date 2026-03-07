@@ -2,7 +2,7 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { filter, switchMap, tap } from 'rxjs';
+import { filter, forkJoin, switchMap, tap } from 'rxjs';
 import { PatientService } from '../services/patient.service';
 import type {
   PatientDetailViewModel,
@@ -31,8 +31,6 @@ export class PatientEditComponent {
   readonly dietTypes = signal<DietTypeViewModel[]>([]);
   readonly loading = signal(true);
   readonly savingPatient = signal(false);
-  readonly savingAllergies = signal(false);
-  readonly savingClinicalStates = signal(false);
   readonly error = signal<string | null>(null);
 
   /** Editable patient fields (synced from detail when loaded). */
@@ -114,106 +112,57 @@ export class PatientEditComponent {
 
   removeAllergy(allergy: PatientAllergyViewModel): void {
     const d = this.detail();
-    if (!d || this.savingAllergies()) return;
-    const newIds = d.allergies.filter((a) => a.allergyId !== allergy.allergyId).map((a) => a.allergyId);
-    this.savingAllergies.set(true);
-    this.patientService.updatePatientAllergies(d.id, { allergyIds: newIds }).subscribe({
-      next: () => {
-        this.detail.update((prev) =>
-          prev
-            ? {
-                ...prev,
-                allergies: prev.allergies.filter((a) => a.allergyId !== allergy.allergyId),
-              }
-            : null
-        );
-        this.savingAllergies.set(false);
-      },
-      error: () => {
-        this.savingAllergies.set(false);
-        this.error.set('Failed to update allergies.');
-      },
-    });
+    if (!d || this.savingPatient()) return;
+    this.detail.update((prev) =>
+      prev
+        ? { ...prev, allergies: prev.allergies.filter((a) => a.allergyId !== allergy.allergyId) }
+        : null
+    );
   }
 
   addAllergy(allergyId: string): void {
     const d = this.detail();
-    if (!d || this.savingAllergies() || !allergyId) return;
+    if (!d || this.savingPatient() || !allergyId) return;
     const all = this.allAllergies();
     const allergy = all.find((a) => a.id === allergyId);
     if (!allergy) return;
-    const newIds = [...d.allergies.map((a) => a.allergyId), allergyId];
-    this.savingAllergies.set(true);
-    this.patientService.updatePatientAllergies(d.id, { allergyIds: newIds }).subscribe({
-      next: () => {
-        this.detail.update((prev) =>
-          prev
-            ? {
-                ...prev,
-                allergies: [...prev.allergies, { allergyId: allergy.id, allergyName: allergy.name }],
-              }
-            : null
-        );
-        this.savingAllergies.set(false);
-      },
-      error: () => {
-        this.savingAllergies.set(false);
-        this.error.set('Failed to update allergies.');
-      },
-    });
+    this.detail.update((prev) =>
+      prev
+        ? {
+            ...prev,
+            allergies: [...prev.allergies, { allergyId: allergy.id, allergyName: allergy.name }],
+          }
+        : null
+    );
   }
 
   removeClinicalState(state: PatientClinicalStateViewModel): void {
     const d = this.detail();
-    if (!d || this.savingClinicalStates()) return;
-    const newIds = d.clinicalStates
-      .filter((c) => c.clinicalStateId !== state.clinicalStateId)
-      .map((c) => c.clinicalStateId);
-    this.savingClinicalStates.set(true);
-    this.patientService.updatePatientClinicalStates(d.id, { clinicalStateIds: newIds }).subscribe({
-      next: () => {
-        this.detail.update((prev) =>
-          prev
-            ? {
-                ...prev,
-                clinicalStates: prev.clinicalStates.filter((c) => c.clinicalStateId !== state.clinicalStateId),
-              }
-            : null
-        );
-        this.savingClinicalStates.set(false);
-      },
-      error: () => {
-        this.savingClinicalStates.set(false);
-        this.error.set('Failed to update clinical states.');
-      },
-    });
+    if (!d || this.savingPatient()) return;
+    this.detail.update((prev) =>
+      prev
+        ? {
+            ...prev,
+            clinicalStates: prev.clinicalStates.filter((c) => c.clinicalStateId !== state.clinicalStateId),
+          }
+        : null
+    );
   }
 
   addClinicalState(clinicalStateId: string): void {
     const d = this.detail();
-    if (!d || this.savingClinicalStates() || !clinicalStateId) return;
+    if (!d || this.savingPatient() || !clinicalStateId) return;
     const all = this.allClinicalStates();
     const state = all.find((c) => c.id === clinicalStateId);
     if (!state) return;
-    const newIds = [...d.clinicalStates.map((c) => c.clinicalStateId), clinicalStateId];
-    this.savingClinicalStates.set(true);
-    this.patientService.updatePatientClinicalStates(d.id, { clinicalStateIds: newIds }).subscribe({
-      next: () => {
-        this.detail.update((prev) =>
-          prev
-            ? {
-                ...prev,
-                clinicalStates: [...prev.clinicalStates, { clinicalStateId: state.id, clinicalStateName: state.name }],
-              }
-            : null
-        );
-        this.savingClinicalStates.set(false);
-      },
-      error: () => {
-        this.savingClinicalStates.set(false);
-        this.error.set('Failed to update clinical states.');
-      },
-    });
+    this.detail.update((prev) =>
+      prev
+        ? {
+            ...prev,
+            clinicalStates: [...prev.clinicalStates, { clinicalStateId: state.id, clinicalStateName: state.name }],
+          }
+        : null
+    );
   }
 
   onAllergySelect(event: Event): void {
@@ -247,38 +196,29 @@ export class PatientEditComponent {
     }
     this.error.set(null);
     this.savingPatient.set(true);
-    this.patientService
-      .updatePatient(d.id, {
+    const allergyIds = d.allergies.map((a) => a.allergyId);
+    const clinicalStateIds = d.clinicalStates.map((c) => c.clinicalStateId);
+    forkJoin({
+      patient: this.patientService.updatePatient(d.id, {
         firstName,
         middleName: middleName,
         lastName: lastName.trim(),
         mobileNumber: mobile,
         dietTypeId: this.formDietTypeId(),
         notes: this.formNotes() || null,
-      })
-      .subscribe({
-        next: () => {
-          this.detail.update((prev) =>
-            prev
-              ? {
-                  ...prev,
-                  firstName,
-                  middleName: middleName,
-                  lastName: lastName.trim(),
-                  mobileNumber: mobile,
-                  dietTypeId: this.formDietTypeId(),
-                  notes: this.formNotes() || null,
-                }
-              : null
-          );
-          this.savingPatient.set(false);
-          this.router.navigate(['/patient/patients', d.id]);
-        },
-        error: () => {
-          this.savingPatient.set(false);
-          this.error.set('Failed to update patient.');
-        },
-      });
+      }),
+      allergies: this.patientService.updatePatientAllergies(d.id, { allergyIds }),
+      clinicalStates: this.patientService.updatePatientClinicalStates(d.id, { clinicalStateIds }),
+    }).subscribe({
+      next: () => {
+        this.savingPatient.set(false);
+        this.router.navigate(['/patient/patients', d.id]);
+      },
+      error: () => {
+        this.savingPatient.set(false);
+        this.error.set('Failed to save patient. Please try again.');
+      },
+    });
   }
 
   backToList(): void {

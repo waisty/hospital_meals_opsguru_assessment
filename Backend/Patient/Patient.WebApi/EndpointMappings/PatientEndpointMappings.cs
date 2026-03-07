@@ -39,11 +39,11 @@ public static class PatientEndpointMappings
             return detail is null ? Results.NotFound() : Results.Ok(detail);
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsServicePolicyName);
 
-        group.MapGet("/patients", async (int page, int pageSize, IPatientHandler handler, CancellationToken ct) =>
+        group.MapGet("/patients", async (int page, int pageSize, string? search, IPatientHandler handler, CancellationToken ct) =>
         {
             if (page < 1) page = 1;
             if (pageSize < 1 || pageSize > 100) pageSize = 10;
-            var result = await handler.ListPatientsAsync(page, pageSize, ct);
+            var result = await handler.ListPatientsAsync(page, pageSize, search, ct);
             return Results.Ok(result);
         }).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminPolicyName);
 

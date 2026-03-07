@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using NpgsqlTypes;
 
 #nullable disable
 
@@ -64,7 +65,10 @@ namespace Hospital.Patient.Core.Migrations
                     last_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     mobile_number = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
                     diet_type_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    notes = table.Column<string>(type: "text", nullable: false)
+                    notes = table.Column<string>(type: "text", nullable: false),
+                    search_vector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
+                        .Annotation("Npgsql:TsVectorConfig", "simple")
+                        .Annotation("Npgsql:TsVectorProperties", new[] { "first_name", "middle_name", "last_name", "mobile_number" })
                 },
                 constraints: table =>
                 {
@@ -195,6 +199,13 @@ namespace Hospital.Patient.Core.Migrations
                 table: "patients",
                 column: "mobile_number",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_patients_search_vector",
+                schema: "dbo",
+                table: "patients",
+                column: "search_vector")
+                .Annotation("Npgsql:IndexMethod", "GIN");
         }
 
         /// <inheritdoc />

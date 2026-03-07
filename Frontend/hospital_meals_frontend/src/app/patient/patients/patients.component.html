@@ -1,22 +1,4 @@
 <div class="patients-view">
   <h2>Patients</h2>
-
-  @if (listError()) {
-    <p class="error">{{ listError() }}</p>
-  } @else if (result() === null) {
-    <p class="loading">Loading…</p>
-  } @else {
-    <app-patient-list
-      [items]="items"
-      [showEditButton]="true"
-      [clickToNavigateEnabled]="true"
-    />
-    <app-pagination
-      [page]="page()"
-      [pageSize]="pageSize()"
-      [totalCount]="totalCount"
-      (pageChange)="onPageChange($event)"
-      (pageSizeChange)="onPageSizeChange($event)"
-    />
-  }
+  <app-patient-list [showEditButton]="true" [clickToNavigateEnabled]="true" />
 </div>

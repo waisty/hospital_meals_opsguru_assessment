@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NpgsqlTypes;
 using Hospital.Patient.ViewModels;
 using Hospital.Patient.ServiceViewModels;
 
@@ -14,6 +15,7 @@ namespace Hospital.Patient.Core.InternalModels
         public string MobileNumber { get; set; } = "";
         public string DietTypeId { get; set; } = "";
         public string Notes { get; set; } = "";
+        public NpgsqlTsVector SearchVector { get; set; } = null!;
 
         public virtual PatientViewModel ToPatientViewModel() => new()
         {
@@ -98,6 +100,14 @@ namespace Hospital.Patient.Core.InternalModels
                 .WithMany()
                 .HasForeignKey(e => e.DietTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasGeneratedTsVectorColumn(
+                    e => e.SearchVector,
+                    "simple",
+                    e => new { e.FirstName, e.MiddleName, e.LastName, e.MobileNumber })
+                .HasIndex(e => e.SearchVector)
+                .HasMethod("GIN");
+            entity.Property(e => e.SearchVector).HasColumnName("search_vector");
         }
     }
 }
