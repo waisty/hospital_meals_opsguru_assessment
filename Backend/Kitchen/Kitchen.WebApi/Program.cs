@@ -1,6 +1,7 @@
 using Hospital.Kitchen.Core;
 using Hospital.Kitchen.WebApi;
 using Hospital.Kitchen.WebApi.Authentication;
+using Hospital.Kitchen.WebApi.EndpointMappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,9 @@ var app = builder.Build();
 
 app.UseJwtAuthentication();
 
-app.MapEndpoints();
+app.MapGet("/", () => Results.Ok(new { service = "Hospital.Kitchen.WebApi", status = "running" }));
+var api = app.MapGroup("/api/v1");
+api.MapKitchenEndpointMappings();
 
 app.Run();
 

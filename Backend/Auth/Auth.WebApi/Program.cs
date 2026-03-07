@@ -1,5 +1,6 @@
 using Hospital.Auth.Core.Implementation;
 using Hospital.Auth.WebApi;
+using Hospital.Auth.WebApi.EndpointMappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,9 @@ if (!builder.Environment.IsEnvironment("Testing"))
 
 var app = builder.Build();
 
-app.MapEndpoints();
+app.MapGet("/", () => Results.Ok(new { service = "Hospital.Auth.WebApi", status = "running" }));
+var api = app.MapGroup("/api/v1");
+api.MapAuthEndpointMappings();
 
 app.Run();
 

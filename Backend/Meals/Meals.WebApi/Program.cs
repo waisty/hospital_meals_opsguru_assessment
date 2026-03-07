@@ -1,6 +1,8 @@
 using Hospital.Meals.Core;
 using Hospital.Meals.WebApi;
 using Hospital.Meals.WebApi.Authentication;
+using Hospital.Meals.WebApi.EndpointMappings;
+using Hospital.Meals.WebApi.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +19,13 @@ var app = builder.Build();
 
 app.UseJwtAuthentication();
 
-app.MapEndpoints();
+app.MapGet("/", () => Results.Ok(new { service = "Hospital.Meals.WebApi", status = "running" }));
+var api = app.MapGroup("/api/v1").AddEndpointFilter<ValidationEndpointFilter>();
+api.MapMealEndpointMappings();
+api.MapRecipeEndpointMappings();
+api.MapIngredientEndpointMappings();
+api.MapPatientRequestEndpointMappings();
+api.MapReferenceDataEndpointMappings();
 
 app.Run();
 

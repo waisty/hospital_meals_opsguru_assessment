@@ -1,6 +1,8 @@
 using Hospital.Patient.Core;
 using Hospital.Patient.WebApi;
 using Hospital.Patient.WebApi.Authentication;
+using Hospital.Patient.WebApi.EndpointMappings;
+using Hospital.Patient.WebApi.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +20,12 @@ var app = builder.Build();
 app.UseExceptionHandler();
 app.UseJwtAuthentication();
 
-app.MapEndpoints();
+app.MapGet("/", () => Results.Ok(new { service = "Hospital.Patient.WebApi", status = "running" }));
+var api = app.MapGroup("/api/v1").AddEndpointFilter<ValidationEndpointFilter>();
+api.MapPatientEndpointMappings();
+api.MapAllergyEndpointMappings();
+api.MapClinicalStateEndpointMappings();
+api.MapDietTypeEndpointMappings();
 
 app.Run();
 
