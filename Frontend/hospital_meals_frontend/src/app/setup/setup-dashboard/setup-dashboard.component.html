@@ -1,24 +1,6 @@
 <div class="dashboard setup">
   <div class="dashboard-body">
-    <nav class="sidebar">
-      <ul class="menu">
-        <li>
-          <a routerLink="/setup/allergies" routerLinkActive="active" [routerLinkActiveOptions]="{ paths: 'subset' }">
-            Allergies
-          </a>
-        </li>
-        <li>
-          <a routerLink="/setup/clinical-states" routerLinkActive="active" [routerLinkActiveOptions]="{ paths: 'subset' }">
-            Clinical States
-          </a>
-        </li>
-        <li>
-          <a routerLink="/setup/diet-types" routerLinkActive="active" [routerLinkActiveOptions]="{ paths: 'subset' }">
-            Diet Types
-          </a>
-        </li>
-      </ul>
-    </nav>
+    <app-sidebar [items]="sidebarItems" />
     <main class="dashboard-main">
       <router-outlet />
     </main>

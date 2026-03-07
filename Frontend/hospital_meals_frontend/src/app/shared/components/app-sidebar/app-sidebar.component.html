@@ -1,0 +1,53 @@
+<nav class="sidebar" aria-label="Area navigation">
+  <ul class="menu">
+    @for (item of items(); track item.label + (item.path ?? '')) {
+      @if (item.path) {
+        <li>
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="item.exact ? { exact: true } : { paths: 'subset' }"
+          >
+            {{ item.label }}
+          </a>
+        </li>
+      } @else if (item.children?.length) {
+        <li class="menu-group">
+          <span class="menu-group-label">{{ item.label }}</span>
+          <ul class="menu-sub">
+            @for (child of item.children; track child.label + (child.path ?? '')) {
+              @if (child.path) {
+                <li>
+                  <a
+                    [routerLink]="child.path"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ paths: 'subset' }"
+                  >
+                    {{ child.label }}
+                  </a>
+                </li>
+              } @else if (child.children?.length) {
+                <li class="menu-sub-group">
+                  <span class="menu-sub-group-label">{{ child.label }}</span>
+                  <ul class="menu-sub">
+                    @for (sub of child.children; track sub.label + (sub.path ?? '')) {
+                      <li>
+                        <a
+                          [routerLink]="sub.path"
+                          routerLinkActive="active"
+                          [routerLinkActiveOptions]="{ paths: 'subset' }"
+                        >
+                          {{ sub.label }}
+                        </a>
+                      </li>
+                    }
+                  </ul>
+                </li>
+              }
+            }
+          </ul>
+        </li>
+      }
+    }
+  </ul>
+</nav>
