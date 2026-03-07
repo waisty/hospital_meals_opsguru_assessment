@@ -24,6 +24,7 @@
           <tr>
             <th>Name</th>
             <th>Description</th>
+            <th>Meal</th>
             @if (selectionMode()) {
               <th class="col-actions"></th>
             } @else if (showEditButton()) {
@@ -36,6 +37,7 @@
             <tr [class.clickable-row]="clickToNavigateEnabled() && !selectionMode()" (click)="onRowClick(r.id)">
               <td>{{ r.name }}</td>
               <td>{{ r.description ?? '—' }}</td>
+              <td>{{ r.mappedMealName ?? '—' }}</td>
               @if (selectionMode()) {
                 <td class="col-actions">
                   @if (isAlreadySelected(r.id)) {
@@ -59,7 +61,7 @@
             </tr>
           } @empty {
             <tr>
-              <td [attr.colspan]="selectionMode() || showEditButton() ? 3 : 2" class="empty">No recipes found.</td>
+              <td [attr.colspan]="selectionMode() || showEditButton() ? 4 : 3" class="empty">No recipes found.</td>
             </tr>
           }
         </tbody>

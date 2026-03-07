@@ -173,7 +173,7 @@ internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, I
         return Task.FromResult(recipe);
     }
 
-    public Task<PagedResult<Recipe>> ListRecipesAsync(int page, int pageSize, string? search = null, CancellationToken ct = default)
+    public Task<PagedResult<RecipeWithMealName>> ListRecipesAsync(int page, int pageSize, string? search = null, CancellationToken ct = default)
     {
         var query = _recipes.Values.AsEnumerable();
         if (!string.IsNullOrWhiteSpace(search) && search.Trim().Length >= 2)
@@ -184,8 +184,22 @@ internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, I
                 (r.Description?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false));
         }
         var all = query.OrderBy(r => r.Name).ToList();
-        var items = all.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-        return Task.FromResult(new PagedResult<Recipe> { Items = items, TotalCount = all.Count, Page = page, PageSize = pageSize });
+        var mealNameByRecipeId = _mealRecipes
+            .Where(mr => _meals.ContainsKey(mr.MealId))
+            .ToDictionary(mr => mr.RecipeId, mr => _meals[mr.MealId].Name);
+        var items = all
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(r => new RecipeWithMealName
+            {
+                Id = r.Id,
+                Name = r.Name,
+                Description = r.Description,
+                Disabled = r.Disabled,
+                MealName = mealNameByRecipeId.TryGetValue(r.Id, out var name) ? name : null
+            })
+            .ToList();
+        return Task.FromResult(new PagedResult<RecipeWithMealName> { Items = items, TotalCount = all.Count, Page = page, PageSize = pageSize });
     }
 
     // ── Ingredient ───────────────────────────────────────────────────

@@ -37,13 +37,13 @@ namespace Hospital.Meals.Core.Implementation
                 .ConfigureAwait(false);
         }
 
-        public async Task<PagedResult<Recipe>> ListRecipesAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default)
+        public async Task<PagedResult<RecipeWithMealName>> ListRecipesAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default)
         {
             // Full-text search only runs when search is at least 2 characters (same as ingredients)
             if (!string.IsNullOrWhiteSpace(search) && search.Trim().Length < 2)
                 search = null;
 
-            var query = _context.Recipes.AsQueryable();
+            var baseQuery = _context.Recipes.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -59,26 +59,41 @@ namespace Hospital.Meals.Core.Implementation
                     .ConfigureAwait(false);
                 if (matchingIds.Count == 0)
                 {
-                    return new PagedResult<Recipe>
+                    return new PagedResult<RecipeWithMealName>
                     {
-                        Items = new List<Recipe>(),
+                        Items = new List<RecipeWithMealName>(),
                         TotalCount = 0,
                         Page = page,
                         PageSize = pageSize
                     };
                 }
-                query = query.Where(r => matchingIds.Contains(r.Id));
+                baseQuery = baseQuery.Where(r => matchingIds.Contains(r.Id));
             }
 
-            query = query.OrderBy(r => r.Name);
+            var recipeToMealName = from mr in _context.MealRecipes
+                                  join m in _context.Meals on mr.MealId equals m.Id
+                                  select new { mr.RecipeId, m.Name };
+            var queryWithMeal = from r in baseQuery
+                               join mn in recipeToMealName on r.Id equals mn.RecipeId into mnGroup
+                               from mn in mnGroup.DefaultIfEmpty()
+                               select new RecipeWithMealName
+                               {
+                                   Id = r.Id,
+                                   Name = r.Name,
+                                   Description = r.Description,
+                                   Disabled = r.Disabled,
+                                   MealName = mn != null ? mn.Name : null
+                               };
 
-            var totalCount = await query.CountAsync(cancellationToken).ConfigureAwait(false);
-            var items = await query
+            queryWithMeal = queryWithMeal.OrderBy(x => x.Name);
+
+            var totalCount = await queryWithMeal.CountAsync(cancellationToken).ConfigureAwait(false);
+            var items = await queryWithMeal
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
-            return new PagedResult<Recipe>
+            return new PagedResult<RecipeWithMealName>
             {
                 Items = items,
                 TotalCount = totalCount,

@@ -48,6 +48,15 @@ namespace Hospital.Meals.Core.Implementation
             Disabled = recipe.Disabled
         };
 
+        public static RecipeViewModel ToRecipeViewModel(this RecipeWithMealName r) => new()
+        {
+            Id = r.Id,
+            Name = r.Name,
+            Description = r.Description,
+            Disabled = r.Disabled,
+            MappedMealName = r.MealName
+        };
+
         public static RecipeDetailViewModel ToRecipeDetailViewModel(this Recipe recipe, IReadOnlyList<RecipeIngredientWithName> ingredients, string? mappedMealName = null) => new()
         {
             Id = recipe.Id,

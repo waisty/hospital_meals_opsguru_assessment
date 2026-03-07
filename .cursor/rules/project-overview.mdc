@@ -52,3 +52,4 @@ docker-compose.yml           → PostgreSQL + service containers
 - **ViewModels are the public API contract.** Internal EF models live in `*.Core/InternalModels/` and must stay `internal`.
 - **ServiceViewModels** are used when one service calls another service's API (inter-service DTOs).
 - **Never modify tests without my approval unless my prompt indicates a change in requirements**. Explain why you want to modify the test and how you want to modify it before making any changes to tests. If my prompt does indicate a change in requirements, hilight the fact that you have modified the tests
+- When you make updates replace "—" with "-" in the files you updated after making your update

@@ -3,6 +3,8 @@ export interface RecipeViewModel {
   name: string;
   description: string | null;
   disabled: boolean;
+  /** Name of the meal this recipe is mapped to, if any. */
+  mappedMealName?: string | null;
 }
 
 export interface RecipeDetailViewModel {
