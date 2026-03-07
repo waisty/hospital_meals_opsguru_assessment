@@ -201,6 +201,22 @@ public sealed class MockPatientHandler : IPatientHandler, IAllergyHandler, IClin
         return Task.FromResult<IReadOnlyList<string>>(ids ?? []);
     }
 
+    public Task<BatchPatientClinicalStatesResponse> GetClinicalStatesByPatientIdsAsync(BatchPatientClinicalStatesRequest request, CancellationToken cancellationToken = default)
+    {
+        if (request?.PatientIds == null || request.PatientIds.Count == 0)
+            return Task.FromResult(new BatchPatientClinicalStatesResponse());
+
+        var items = new List<PatientClinicalStatesItemViewModel>();
+        foreach (var id in request.PatientIds)
+        {
+            if (!Guid.TryParse(id, out var guid)) continue;
+            _patientClinicalStates.TryGetValue(guid, out var csIds);
+            var names = (csIds ?? []).Select(cid => _clinicalStates.TryGetValue(cid, out var c) ? c.Name : cid).ToList();
+            items.Add(new PatientClinicalStatesItemViewModel { PatientId = id, ClinicalStateNames = names });
+        }
+        return Task.FromResult(new BatchPatientClinicalStatesResponse { Items = items });
+    }
+
     public Task<bool> UpdatePatientClinicalStatesAsync(string patientId, PatientClinicalStatesUpdateRequest request, CancellationToken cancellationToken = default)
     {
         if (!Guid.TryParse(patientId, out var guid) || !_patients.ContainsKey(guid)) return Task.FromResult(false);

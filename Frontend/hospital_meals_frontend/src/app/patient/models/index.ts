@@ -12,6 +12,9 @@ export type {
   BatchPatientAllergiesRequest,
   BatchPatientAllergiesResponse,
   PatientAllergiesItemViewModel,
+  BatchPatientClinicalStatesRequest,
+  BatchPatientClinicalStatesResponse,
+  PatientClinicalStatesItemViewModel,
 } from './patient.models';
 
 export type {

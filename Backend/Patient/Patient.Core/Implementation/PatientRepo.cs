@@ -115,6 +115,32 @@ namespace Hospital.Patient.Core.Implementation
             return ret;
         }
 
+        public async Task<IReadOnlyDictionary<Guid, IReadOnlyList<string>>> GetPatientClinicalStateNamesByPatientIdsAsync(IReadOnlyList<Guid> patientIds, CancellationToken cancellationToken = default)
+        {
+            if (patientIds.Count == 0)
+                return new Dictionary<Guid, IReadOnlyList<string>>();
+
+            var raw = await (from pc in _context.PatientClinicalStates
+                             where patientIds.Contains(pc.PatientId)
+                             join cs in _context.ClinicalStates on pc.ClinicalStateId equals cs.Id
+                             orderby cs.Name
+                             select new { pc.PatientId, cs.Name })
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            var grouped = raw
+                .GroupBy(x => x.PatientId)
+                .ToDictionary(g => g.Key, g => (IReadOnlyList<string>)g.Select(x => x.Name).ToList());
+
+            foreach (var id in patientIds)
+            {
+                if (!grouped.ContainsKey(id))
+                    grouped[id] = Array.Empty<string>();
+            }
+
+            return grouped;
+        }
+
         public async Task SetClinicalStateIdsForPatientAsync(Guid patientId, IReadOnlyList<string> clinicalStateIds, CancellationToken cancellationToken = default)
         {
             await _context.PatientClinicalStates

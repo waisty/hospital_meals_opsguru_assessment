@@ -1,6 +1,5 @@
 <div class="patients-view">
   <h2>Patients</h2>
-  <p class="subtitle">Manage patient records.</p>
 
   @if (listError()) {
     <p class="error">{{ listError() }}</p>
@@ -14,7 +13,7 @@
             <th>Name</th>
             <th>Mobile</th>
             <th>Diet Type</th>
-            <th>Allergies</th>
+            <th>Allergies / Clinical states</th>
             <th class="col-actions"></th>
           </tr>
         </thead>
@@ -27,9 +26,12 @@
               <td class="col-allergies">
                 <ul class="tag-list">
                   @for (name of getAllergyNames(p.id); track name) {
-                    <li class="tag">{{ name }}</li>
+                    <li class="tag tag-allergy">{{ name }}</li>
                   }
-                  @empty {
+                  @for (name of getClinicalStateNames(p.id); track name) {
+                    <li class="tag tag-clinical-state">{{ name }}</li>
+                  }
+                  @if (getAllergyNames(p.id).length === 0 && getClinicalStateNames(p.id).length === 0) {
                     <li class="no-allergies">—</li>
                   }
                 </ul>

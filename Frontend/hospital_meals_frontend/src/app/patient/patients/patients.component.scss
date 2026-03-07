@@ -1,3 +1,10 @@
+// Tag background colours for the patients list (allergies vs clinical states).
+// Change these variables to adjust the appearance.
+$tag-allergy-bg: #fef3c7;
+$tag-allergy-border: #fcd34d;
+$tag-clinical-state-bg: #dbeafe;
+$tag-clinical-state-border: #93c5fd;
+
 .patients-view {
   h2 {
     margin: 0 0 0.5rem;
@@ -68,10 +75,18 @@
     display: inline-block;
     padding: 0.2rem 0.4rem;
     font-size: 0.75rem;
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
     border-radius: 0.25rem;
     color: #0f172a;
+  }
+
+  .tag-allergy {
+    background: $tag-allergy-bg;
+    border: 1px solid $tag-allergy-border;
+  }
+
+  .tag-clinical-state {
+    background: $tag-clinical-state-bg;
+    border: 1px solid $tag-clinical-state-border;
   }
 
   .no-allergies {

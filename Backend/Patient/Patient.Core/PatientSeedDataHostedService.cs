@@ -215,10 +215,14 @@ namespace Hospital.Patient.Core.Implementation
                     continue;
                 }
 
+                // Every third patient (3rd, 6th, 9th, ...) gets 1, 2 or 3 allergies and 1, 2 or 3 clinical states.
                 for (var i = batchStart; i < batchEnd; i++)
                 {
                     var patientId = CreateSeedPatientId(i);
-                    var allergyCount = i % 3;
+                    var isEveryThird = (i + 1) % 3 == 0; // 1-based: patient 3, 6, 9, ...
+                    var allergyCount = isEveryThird ? 1 + (i / 3) % 3 : 0;   // 1, 2 or 3
+                    var clinicalStateCount = isEveryThird ? 1 + (i / 3) % 3 : 0;
+
                     for (var a = 0; a < allergyCount; a++)
                     {
                         var allergyId = AllergyIds[(i + a) % AllergyIds.Length];
@@ -233,7 +237,6 @@ namespace Hospital.Patient.Core.Implementation
                         }
                     }
 
-                    var clinicalStateCount = (i + 1) % 3;
                     for (var c = 0; c < clinicalStateCount; c++)
                     {
                         var clinicalStateId = ClinicalStateIds[(i + c) % ClinicalStateIds.Length];

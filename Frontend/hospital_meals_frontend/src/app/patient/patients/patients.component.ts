@@ -1,6 +1,6 @@
 import { Component, Injector, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { catchError, filter, map, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
 import type { PagedResult } from '../../shared/models';
@@ -51,21 +51,34 @@ export class PatientsComponent {
       filter((r): r is PagedResult<PatientWithDietTypeNameViewModel> => r !== null),
       switchMap((r) => {
         const ids = r.items.map((p) => p.id);
-        if (ids.length === 0) return of<Record<string, string[]>>({});
-        return this.patientService.getAllergiesByPatientIds(ids).pipe(
-          map((res) =>
-            (res.items ?? []).reduce<Record<string, string[]>>(
-              (acc, it) => {
-                acc[it.patientId] = it.allergyNames ?? [];
-                return acc;
-              },
-              {}
+        if (ids.length === 0) return of({ allergies: {} as Record<string, string[]>, clinicalStates: {} as Record<string, string[]> });
+        return forkJoin({
+          allergies: this.patientService.getAllergiesByPatientIds(ids).pipe(
+            map((res) =>
+              (res.items ?? []).reduce<Record<string, string[]>>(
+                (acc, it) => {
+                  acc[it.patientId] = it.allergyNames ?? [];
+                  return acc;
+                },
+                {}
+              )
             )
-          )
-        );
+          ),
+          clinicalStates: this.patientService.getClinicalStatesByPatientIds(ids).pipe(
+            map((res) =>
+              (res.items ?? []).reduce<Record<string, string[]>>(
+                (acc, it) => {
+                  acc[it.patientId] = it.clinicalStateNames ?? [];
+                  return acc;
+                },
+                {}
+              )
+            )
+          ),
+        });
       })
     ),
-    { initialValue: {} as Record<string, string[]> }
+    { initialValue: { allergies: {} as Record<string, string[]>, clinicalStates: {} as Record<string, string[]> } }
   );
 
   get items(): PatientWithDietTypeNameViewModel[] {
@@ -76,7 +89,11 @@ export class PatientsComponent {
   }
 
   getAllergyNames(patientId: string): string[] {
-    return this.allergiesByPatientId()[patientId] ?? [];
+    return this.allergiesByPatientId().allergies[patientId] ?? [];
+  }
+
+  getClinicalStateNames(patientId: string): string[] {
+    return this.allergiesByPatientId().clinicalStates[patientId] ?? [];
   }
 
   onPageChange(p: number): void {

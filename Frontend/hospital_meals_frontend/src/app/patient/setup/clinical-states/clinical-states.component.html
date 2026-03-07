@@ -1,6 +1,5 @@
 <div class="setup-view">
   <h2>Clinical States</h2>
-  <p class="subtitle">Manage clinical state reference data.</p>
 
   @if (listError()) {
     <p class="error">{{ listError() }}</p>
@@ -22,7 +21,6 @@
               <td>{{ c.id }}</td>
               <td>{{ c.name }}</td>
               <td class="col-actions">
-                <a [routerLink]="['/patient/setup/clinical-states', c.id]" class="btn-view" title="View details" (click)="$event.stopPropagation()">View</a>
                 <a [routerLink]="['/patient/setup/clinical-states', c.id, 'edit']" class="btn-edit" title="Edit clinical state" (click)="$event.stopPropagation()">Edit</a>
               </td>
             </tr>

@@ -131,6 +131,32 @@ namespace Hospital.Patient.Core.Implementation
             return clinicalStates.Select(cs => cs.ClinicalStateId).ToList();
         }
 
+        public async Task<BatchPatientClinicalStatesResponse> GetClinicalStatesByPatientIdsAsync(BatchPatientClinicalStatesRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request?.PatientIds == null || request.PatientIds.Count == 0)
+                return new BatchPatientClinicalStatesResponse();
+
+            var guids = new List<Guid>();
+            foreach (var id in request.PatientIds)
+            {
+                if (Guid.TryParse(id, out var guid))
+                    guids.Add(guid);
+            }
+
+            if (guids.Count == 0)
+                return new BatchPatientClinicalStatesResponse();
+
+            var byPatient = await _repo.GetPatientClinicalStateNamesByPatientIdsAsync(guids, cancellationToken).ConfigureAwait(false);
+
+            var items = guids.Select(guid => new PatientClinicalStatesItemViewModel
+            {
+                PatientId = guid.ToString(),
+                ClinicalStateNames = byPatient.TryGetValue(guid, out var names) ? names.ToList() : new List<string>()
+            }).ToList();
+
+            return new BatchPatientClinicalStatesResponse { Items = items };
+        }
+
         public async Task<bool> UpdatePatientClinicalStatesAsync(string patientId, PatientClinicalStatesUpdateRequest request, CancellationToken cancellationToken = default)
         {
             if (request is null || !Guid.TryParse(patientId, out var guid))

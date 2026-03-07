@@ -1,6 +1,5 @@
 <div class="setup-view">
   <h2>Diet Types</h2>
-  <p class="subtitle">Manage diet type reference data.</p>
 
   @if (listError()) {
     <p class="error">{{ listError() }}</p>
@@ -22,7 +21,6 @@
               <td>{{ d.id }}</td>
               <td>{{ d.name }}</td>
               <td class="col-actions">
-                <a [routerLink]="['/patient/setup/diet-types', d.id]" class="btn-view" title="View details" (click)="$event.stopPropagation()">View</a>
                 <a [routerLink]="['/patient/setup/diet-types', d.id, 'edit']" class="btn-edit" title="Edit diet type" (click)="$event.stopPropagation()">Edit</a>
               </td>
             </tr>

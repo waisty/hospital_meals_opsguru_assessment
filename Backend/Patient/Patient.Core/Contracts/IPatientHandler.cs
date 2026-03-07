@@ -14,6 +14,7 @@ namespace Hospital.Patient.Core.Contracts
         Task<BatchPatientAllergiesResponse> GetAllergiesByPatientIdsAsync(BatchPatientAllergiesRequest request, CancellationToken cancellationToken = default);
         Task<bool> UpdatePatientAllergiesAsync(string patientId, PatientAllergiesUpdateRequest request, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<string>> GetClinicalStateIdsByPatientIdAsync(string patientId, CancellationToken cancellationToken = default);
+        Task<BatchPatientClinicalStatesResponse> GetClinicalStatesByPatientIdsAsync(BatchPatientClinicalStatesRequest request, CancellationToken cancellationToken = default);
         Task<bool> UpdatePatientClinicalStatesAsync(string patientId, PatientClinicalStatesUpdateRequest request, CancellationToken cancellationToken = default);
         Task<bool> UpdatePatientAsync(string id, PatientUpdateRequest request, CancellationToken cancellationToken = default);
     }

@@ -77,3 +77,16 @@ export interface PatientAllergiesItemViewModel {
 export interface BatchPatientAllergiesResponse {
   items: PatientAllergiesItemViewModel[];
 }
+
+export interface BatchPatientClinicalStatesRequest {
+  patientIds: string[];
+}
+
+export interface PatientClinicalStatesItemViewModel {
+  patientId: string;
+  clinicalStateNames: string[];
+}
+
+export interface BatchPatientClinicalStatesResponse {
+  items: PatientClinicalStatesItemViewModel[];
+}
