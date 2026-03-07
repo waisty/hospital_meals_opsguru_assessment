@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hospital.Kitchen.Core.Migrations
 {
     [DbContext(typeof(KitchenDBContext))]
-    [Migration("20260306183602_ChangeTrayStateToEnum")]
-    partial class ChangeTrayStateToEnum
+    [Migration("20260306184941_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,7 +62,8 @@ namespace Hospital.Kitchen.Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PatientMealRequestId");
+                    b.HasIndex("PatientMealRequestId")
+                        .IsUnique();
 
                     b.ToTable("trays", "dbo");
                 });

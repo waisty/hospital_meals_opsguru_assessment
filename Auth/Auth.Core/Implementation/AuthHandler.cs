@@ -72,10 +72,7 @@ namespace Hospital.Auth.Core.Implementation
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var tokenString = tokenHandler.WriteToken(token);
 
-                return new UserAuthResponse()
-                {
-                    AuthToken = tokenString
-                };
+                return user.ToUserAuthResponse(tokenString);
             }
         }
     }

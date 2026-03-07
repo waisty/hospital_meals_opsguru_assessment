@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Hospital.Kitchen.Core.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTrayStatusHistory : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,7 +24,7 @@ namespace Hospital.Kitchen.Core.Migrations
                     patient_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     patient_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     recipe_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    state = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false)
+                    state = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -60,7 +60,7 @@ namespace Hospital.Kitchen.Core.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     tray_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    status = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    status = table.Column<int>(type: "integer", nullable: false),
                     timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -85,7 +85,8 @@ namespace Hospital.Kitchen.Core.Migrations
                 name: "IX_trays_patient_meal_request_id",
                 schema: "dbo",
                 table: "trays",
-                column: "patient_meal_request_id");
+                column: "patient_meal_request_id",
+                unique: true);
         }
 
         /// <inheritdoc />
