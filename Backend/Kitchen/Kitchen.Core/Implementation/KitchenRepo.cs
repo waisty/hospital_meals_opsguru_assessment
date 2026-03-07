@@ -88,6 +88,33 @@ namespace Hospital.Kitchen.Core.Implementation
             return ret;
         }
 
+        public async Task<PagedResult<Tray>> ListTraysAsync(int page, int pageSize, TrayState? state, bool uncompletedOnly, CancellationToken cancellationToken = default)
+        {
+            var query = _context.Trays.AsNoTracking();
+
+            if (state.HasValue)
+                query = query.Where(t => t.State == state.Value);
+            if (uncompletedOnly)
+                query = query.Where(t => t.State != TrayState.Retrieved);
+
+            query = query.OrderByDescending(t => t.ReceivedDateTime);
+
+            var totalCount = await query.CountAsync(cancellationToken).ConfigureAwait(false);
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            return new PagedResult<Tray>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
+        }
+
         private async Task ExecuteInTransactionAsync(Func<CancellationToken, Task> work, CancellationToken cancellationToken = default)
         {
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);

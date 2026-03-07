@@ -44,5 +44,27 @@ namespace Hospital.Kitchen.Core.Implementation
         {
             return _repo.AdvanceTrayStateAsync(trayId, fromState, cancellationToken);
         }
+
+        public async Task<PagedResult<TrayViewModel>> ListTraysAsync(int page, int pageSize, Enums.TrayState? state, bool uncompletedOnly, CancellationToken cancellationToken = default)
+        {
+            var paged = await _repo.ListTraysAsync(page, pageSize, state, uncompletedOnly, cancellationToken).ConfigureAwait(false);
+            return new PagedResult<TrayViewModel>
+            {
+                Items = paged.Items.Select(t => new TrayViewModel
+                {
+                    Id = t.Id,
+                    PatientMealRequestId = t.PatientMealRequestId,
+                    PatientId = t.PatientId,
+                    PatientName = t.PatientName,
+                    RecipeName = t.RecipeName,
+                    State = (int)t.State,
+                    ReceivedDateTime = t.ReceivedDateTime,
+                    LastUpdateDateTime = t.LastUpdateDateTime
+                }).ToList(),
+                TotalCount = paged.TotalCount,
+                Page = paged.Page,
+                PageSize = paged.PageSize
+            };
+        }
     }
 }

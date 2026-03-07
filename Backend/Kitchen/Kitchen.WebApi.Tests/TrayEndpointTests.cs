@@ -217,4 +217,94 @@ public sealed class TrayEndpointTests : IClassFixture<KitchenWebApiFixture>
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
     }
+
+    // ── GET /api/v1/trays (paginated, filter by state, uncompleted) ───────
+
+    [Fact]
+    public async Task ListTrays_WithKitchenUserClaim_Returns200()
+    {
+        _fixture.MockHandler.AddTray(Guid.NewGuid(), Enums.TrayState.Pending);
+
+        using var client = _fixture.CreateAuthenticatedClient(ClaimIds.kitchenUserClaim);
+        var response = await client.GetAsync("/api/v1/trays?page=1&pageSize=10");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var result = await response.Content.ReadFromJsonAsync<PagedResult<TrayViewModel>>();
+        Assert.NotNull(result);
+        Assert.Equal(1, result.TotalCount);
+        Assert.Equal(1, result.Page);
+        Assert.Equal(10, result.PageSize);
+        Assert.Single(result.Items);
+        Assert.Equal((int)Enums.TrayState.Pending, result.Items[0].State);
+    }
+
+    [Fact]
+    public async Task ListTrays_WithoutAuth_Returns401()
+    {
+        using var client = _fixture.CreateClient();
+        var response = await client.GetAsync("/api/v1/trays");
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task ListTrays_WithMealsServiceClaim_Returns403()
+    {
+        using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsServiceClaim);
+        var response = await client.GetAsync("/api/v1/trays");
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task ListTrays_FilterByState_ReturnsMatchingTrays()
+    {
+        var pendingId = Guid.NewGuid();
+        var enRouteId = Guid.NewGuid();
+        _fixture.MockHandler.AddTray(pendingId, Enums.TrayState.Pending);
+        _fixture.MockHandler.AddTray(enRouteId, Enums.TrayState.EnRoute);
+
+        using var client = _fixture.CreateAuthenticatedClient(ClaimIds.kitchenUserClaim);
+        var response = await client.GetAsync("/api/v1/trays?page=1&pageSize=10&state=3"); // EnRoute = 3
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var result = await response.Content.ReadFromJsonAsync<PagedResult<TrayViewModel>>();
+        Assert.NotNull(result);
+        Assert.Equal(1, result.TotalCount);
+        Assert.Equal(3, result.Items[0].State);
+    }
+
+    [Fact]
+    public async Task ListTrays_UncompletedOnly_ReturnsOnlyUncompleted()
+    {
+        _fixture.MockHandler.AddTray(Guid.NewGuid(), Enums.TrayState.Pending);
+        _fixture.MockHandler.AddTray(Guid.NewGuid(), Enums.TrayState.Delivered);
+        _fixture.MockHandler.AddTray(Guid.NewGuid(), Enums.TrayState.Retrieved);
+
+        using var client = _fixture.CreateAuthenticatedClient(ClaimIds.kitchenUserClaim);
+        var response = await client.GetAsync("/api/v1/trays?page=1&pageSize=10&uncompletedOnly=true");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var result = await response.Content.ReadFromJsonAsync<PagedResult<TrayViewModel>>();
+        Assert.NotNull(result);
+        Assert.Equal(2, result.TotalCount); // Pending and Delivered, not Retrieved
+        Assert.All(result.Items, item => Assert.NotEqual((int)Enums.TrayState.Retrieved, item.State));
+    }
+
+    [Fact]
+    public async Task ListTrays_Pagination_ReturnsCorrectPage()
+    {
+        _fixture.MockHandler.AddTray(Guid.NewGuid(), Enums.TrayState.Pending);
+        _fixture.MockHandler.AddTray(Guid.NewGuid(), Enums.TrayState.Pending);
+        _fixture.MockHandler.AddTray(Guid.NewGuid(), Enums.TrayState.Pending);
+
+        using var client = _fixture.CreateAuthenticatedClient(ClaimIds.kitchenUserClaim);
+        var response = await client.GetAsync("/api/v1/trays?page=2&pageSize=2");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var result = await response.Content.ReadFromJsonAsync<PagedResult<TrayViewModel>>();
+        Assert.NotNull(result);
+        Assert.Equal(3, result.TotalCount);
+        Assert.Equal(2, result.Page);
+        Assert.Equal(2, result.PageSize);
+        Assert.Single(result.Items); // second page has 1 item
+    }
 }

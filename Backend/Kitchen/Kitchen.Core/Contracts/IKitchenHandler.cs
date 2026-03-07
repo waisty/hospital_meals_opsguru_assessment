@@ -14,5 +14,10 @@ namespace Hospital.Kitchen.Core.Contracts
         /// Advances the tray to the next state. Returns false if tray not found, current state does not match fromState, or already at final state (Retrieved).
         /// </summary>
         Task<bool> AdvanceTrayStateAsync(Guid trayId, Enums.TrayState fromState, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Lists trays with optional filter by state and/or uncompleted only. Requires KitchenUser policy.
+        /// </summary>
+        Task<PagedResult<TrayViewModel>> ListTraysAsync(int page, int pageSize, Enums.TrayState? state, bool uncompletedOnly, CancellationToken cancellationToken = default);
     }
 }

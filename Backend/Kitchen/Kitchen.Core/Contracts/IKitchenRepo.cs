@@ -15,5 +15,10 @@ namespace Hospital.Kitchen.Core.Contracts
         /// Updates the tray's State and appends a record to tray status history. Returns false if tray not found or current state does not match fromState.
         /// </summary>
         Task<bool> AdvanceTrayStateAsync(Guid trayId, TrayState fromState, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Lists trays with optional filter by state and/or uncompleted only (state != Retrieved). Results are ordered by ReceivedDateTime descending.
+        /// </summary>
+        Task<PagedResult<Tray>> ListTraysAsync(int page, int pageSize, TrayState? state, bool uncompletedOnly, CancellationToken cancellationToken = default);
     }
 }
