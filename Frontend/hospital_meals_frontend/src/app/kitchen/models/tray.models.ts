@@ -7,16 +7,18 @@ export enum TrayState {
   Retrieved = 5,
 }
 
+/** List item from Kitchen API (GET /api/v1/trays). State values match TrayState enum. */
 export interface TrayViewModel {
   id: string;
   patientMealRequestId: string;
   patientId: string;
   patientName: string;
   recipeName: string;
-  state: TrayState;
-  receivedDateTime: Date;
-  lastUpdateDateTime: Date | null;
-  ingredients: TrayIngredientItem[];
+  /** Current state as integer (see TrayState enum). */
+  state: number;
+  receivedDateTime: string;
+  lastUpdateDateTime: string | null;
+  stateName: string;
 }
 
 export interface TrayIngredientItem {

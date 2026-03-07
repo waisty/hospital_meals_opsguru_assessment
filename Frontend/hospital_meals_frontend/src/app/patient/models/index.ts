@@ -1,4 +1,5 @@
 export type {
+  PatientViewModel,
   PatientAllergyViewModel,
   PatientClinicalStateViewModel,
   PatientDetailViewModel,
