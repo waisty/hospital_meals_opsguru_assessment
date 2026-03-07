@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Patient.UIViewModels\Hospital.Patient.ViewModels.csproj" />
+    <ProjectReference Include="..\Patient.ViewModels\Hospital.Patient.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

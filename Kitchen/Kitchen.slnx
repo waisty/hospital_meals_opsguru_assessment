@@ -1,5 +1,5 @@
 <Solution>
     <Project Path="Kitchen.Core/Hospital.Kitchen.Core.csproj" Id="287f835f-4ff7-4537-a4d6-0a3b9dbb6313" />
-    <Project Path="Kitchen.UIViewModels/Hospital.Kitchen.ViewModels.csproj" Id="06ab722c-6529-459c-840f-893684aff47b" />
+    <Project Path="Kitchen.ViewModels/Hospital.Kitchen.ViewModels.csproj" Id="06ab722c-6529-459c-840f-893684aff47b" />
     <Project Path="Kitchen.WebApi/Hospital.Kitchen.WebApi.csproj" Id="efaf47f9-dedb-42d7-9e22-306fb3dba40b" />
 </Solution>

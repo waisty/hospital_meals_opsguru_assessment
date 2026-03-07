@@ -1,5 +1,5 @@
 <Solution>
     <Project Path="Patient.Core/Hospital.Patient.Core.csproj" Id="9ff0da70-7f6f-4c4c-afcd-d029c03bf916" />
-    <Project Path="Patient.UIViewModels/Hospital.Patient.ViewModels.csproj" Id="802bac80-f74d-4e76-b34c-bd04d28836ad" />
+    <Project Path="Patient.ViewModels/Hospital.Patient.ViewModels.csproj" Id="802bac80-f74d-4e76-b34c-bd04d28836ad" />
     <Project Path="Patient.WebApi/Hospital.Patient.WebApi.csproj" Id="a5a76a0d-dbbd-4389-b2a8-c40b0df2f234" />
 </Solution>
