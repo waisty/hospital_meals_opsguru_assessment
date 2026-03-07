@@ -2,7 +2,7 @@
   <header class="page-header">
     <h2>Diet Types</h2>
     @if (auth.isAdmin()) {
-      <app-add-button link="/patient/setup/diet-types/new" label="Add diet type" />
+      <app-add-button link="/setup/diet-types/new" label="Add diet type" />
     }
   </header>
 
@@ -29,7 +29,7 @@
               <td>{{ d.name }}</td>
               @if (auth.isAdmin()) {
                 <td class="col-actions">
-                  <app-edit-button [link]="['/patient/setup/diet-types', d.id, 'edit']" title="Edit diet type" [stopPropagation]="true" />
+                  <app-edit-button [link]="['/setup/diet-types', d.id, 'edit']" title="Edit diet type" [stopPropagation]="true" />
                 </td>
               }
             </tr>

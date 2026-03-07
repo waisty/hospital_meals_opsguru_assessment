@@ -3,7 +3,7 @@
     <p class="loading">Loading…</p>
   } @else if (error() && !detail() && !isCreateMode()) {
     <p class="error">{{ error() }}</p>
-    <a routerLink="/patient/setup/diet-types" class="back-link">← Back to diet types</a>
+    <a routerLink="/setup/diet-types" class="back-link">← Back to diet types</a>
   } @else if (detail(); as d) {
     <header class="page-header">
       <button type="button" class="back-link" (click)="backToList()">← Back to diet types</button>
@@ -63,6 +63,6 @@
     </section>
   } @else {
     <p class="error">Diet type not found.</p>
-    <a routerLink="/patient/setup/diet-types" class="back-link">← Back to diet types</a>
+    <a routerLink="/setup/diet-types" class="back-link">← Back to diet types</a>
   }
 </div>

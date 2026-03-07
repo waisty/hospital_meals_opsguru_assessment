@@ -3,7 +3,7 @@
     <p class="loading">Loading…</p>
   } @else if (error() && !detail() && !isCreateMode()) {
     <p class="error">{{ error() }}</p>
-    <a routerLink="/patient/setup/clinical-states" class="back-link">← Back to clinical states</a>
+    <a routerLink="/setup/clinical-states" class="back-link">← Back to clinical states</a>
   } @else if (detail(); as d) {
     <header class="page-header">
       <button type="button" class="back-link" (click)="backToList()">← Back to clinical states</button>
@@ -63,6 +63,6 @@
     </section>
   } @else {
     <p class="error">Clinical state not found.</p>
-    <a routerLink="/patient/setup/clinical-states" class="back-link">← Back to clinical states</a>
+    <a routerLink="/setup/clinical-states" class="back-link">← Back to clinical states</a>
   }
 </div>

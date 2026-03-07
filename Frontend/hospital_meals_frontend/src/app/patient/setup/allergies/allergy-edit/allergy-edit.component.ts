@@ -25,7 +25,7 @@ export class AllergyEditComponent {
   readonly formName = signal('');
 
   readonly isCreateMode = computed(
-    () => this.route.snapshot.routeConfig?.path === 'setup/allergies/new'
+    () => this.route.snapshot.routeConfig?.path === 'allergies/new'
   );
 
   constructor() {
@@ -33,12 +33,12 @@ export class AllergyEditComponent {
       .pipe(
         filter(
           (params) =>
-            !!params.get('id') || this.route.snapshot.routeConfig?.path === 'setup/allergies/new'
+            !!params.get('id') || this.route.snapshot.routeConfig?.path === 'allergies/new'
         ),
         switchMap((params) => {
           const id =
             params.get('id') ??
-            (this.route.snapshot.routeConfig?.path === 'setup/allergies/new' ? 'new' : '');
+            (this.route.snapshot.routeConfig?.path === 'allergies/new' ? 'new' : '');
           this.loading.set(true);
           this.error.set(null);
           if (id === 'new') {
@@ -81,7 +81,7 @@ export class AllergyEditComponent {
       this.patientService.createAllergy({ name }).subscribe({
         next: (res) => {
           this.saving.set(false);
-          this.router.navigate(['/patient/setup/allergies', res.id]);
+          this.router.navigate(['/setup/allergies', res.id]);
         },
         error: () => {
           this.saving.set(false);
@@ -94,7 +94,7 @@ export class AllergyEditComponent {
       this.patientService.updateAllergy(d.id, { name }).subscribe({
         next: () => {
           this.saving.set(false);
-          this.router.navigate(['/patient/setup/allergies', d.id]);
+          this.router.navigate(['/setup/allergies', d.id]);
         },
         error: () => {
           this.saving.set(false);
@@ -105,6 +105,6 @@ export class AllergyEditComponent {
   }
 
   backToList(): void {
-    this.router.navigate(['/patient/setup/allergies']);
+    this.router.navigate(['/setup/allergies']);
   }
 }

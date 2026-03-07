@@ -2,7 +2,7 @@
   <header class="page-header">
     <h2>Allergies</h2>
     @if (auth.isAdmin()) {
-      <app-add-button link="/patient/setup/allergies/new" label="Add allergy" />
+      <app-add-button link="/setup/allergies/new" label="Add allergy" />
     }
   </header>
 
@@ -29,7 +29,7 @@
               <td>{{ a.name }}</td>
               @if (auth.isAdmin()) {
                 <td class="col-actions">
-                  <app-edit-button [link]="['/patient/setup/allergies', a.id, 'edit']" title="Edit allergy" [stopPropagation]="true" />
+                  <app-edit-button [link]="['/setup/allergies', a.id, 'edit']" title="Edit allergy" [stopPropagation]="true" />
                 </td>
               }
             </tr>

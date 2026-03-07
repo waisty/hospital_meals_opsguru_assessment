@@ -15,13 +15,17 @@ import { ClinicalStateEditComponent } from './patient/setup/clinical-states/clin
 import { DietTypesComponent } from './patient/setup/diet-types/diet-types.component';
 import { DietTypeDetailComponent } from './patient/setup/diet-types/diet-type-detail/diet-type-detail.component';
 import { DietTypeEditComponent } from './patient/setup/diet-types/diet-type-edit/diet-type-edit.component';
+import { SetupDashboardComponent } from './setup/setup-dashboard/setup-dashboard.component';
 import { MealsDashboardComponent } from './meals/meals-dashboard/meals-dashboard.component';
+import { MealRequestsComponent } from './meals/meal-requests/meal-requests.component';
+import { SetupPlaceholderComponent } from './meals/setup/setup-placeholder.component';
 import { KitchenDashboardComponent } from './kitchen/kitchen-dashboard/kitchen-dashboard.component';
 import {
   initialRedirectGuard,
   redirectIfLoggedInGuard,
   authGuard,
   adminGuard,
+  mealsGuard,
   homeRedirectGuard,
 } from './auth/guards';
 
@@ -50,24 +54,41 @@ export const routes: Routes = [
       { path: 'patients', component: PatientsComponent },
       { path: 'patients/:id', component: PatientDetailComponent },
       { path: 'patients/:id/edit', component: PatientEditComponent },
-      { path: 'setup/allergies', component: AllergiesComponent },
-      { path: 'setup/allergies/new', component: AllergyEditComponent, canActivate: [adminGuard] },
-      { path: 'setup/allergies/:id', component: AllergyDetailComponent },
-      { path: 'setup/allergies/:id/edit', component: AllergyEditComponent, canActivate: [adminGuard] },
-      { path: 'setup/clinical-states', component: ClinicalStatesComponent },
-      { path: 'setup/clinical-states/new', component: ClinicalStateEditComponent, canActivate: [adminGuard] },
-      { path: 'setup/clinical-states/:id', component: ClinicalStateDetailComponent },
-      { path: 'setup/clinical-states/:id/edit', component: ClinicalStateEditComponent, canActivate: [adminGuard] },
-      { path: 'setup/diet-types', component: DietTypesComponent },
-      { path: 'setup/diet-types/new', component: DietTypeEditComponent, canActivate: [adminGuard] },
-      { path: 'setup/diet-types/:id', component: DietTypeDetailComponent },
-      { path: 'setup/diet-types/:id/edit', component: DietTypeEditComponent, canActivate: [adminGuard] },
+    ],
+  },
+  {
+    path: 'setup',
+    component: SetupDashboardComponent,
+    canActivate: [authGuard, adminGuard],
+    children: [
+      { path: '', redirectTo: 'allergies', pathMatch: 'full' },
+      { path: 'allergies', component: AllergiesComponent },
+      { path: 'allergies/new', component: AllergyEditComponent },
+      { path: 'allergies/:id', component: AllergyDetailComponent },
+      { path: 'allergies/:id/edit', component: AllergyEditComponent },
+      { path: 'clinical-states', component: ClinicalStatesComponent },
+      { path: 'clinical-states/new', component: ClinicalStateEditComponent },
+      { path: 'clinical-states/:id', component: ClinicalStateDetailComponent },
+      { path: 'clinical-states/:id/edit', component: ClinicalStateEditComponent },
+      { path: 'diet-types', component: DietTypesComponent },
+      { path: 'diet-types/new', component: DietTypeEditComponent },
+      { path: 'diet-types/:id', component: DietTypeDetailComponent },
+      { path: 'diet-types/:id/edit', component: DietTypeEditComponent },
     ],
   },
   {
     path: 'meals',
     component: MealsDashboardComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard, mealsGuard],
+    children: [
+      { path: '', redirectTo: 'meal-requests', pathMatch: 'full' },
+      { path: 'meal-requests', component: MealRequestsComponent },
+      { path: 'setup/ingredients/allergy-exclusions', component: SetupPlaceholderComponent, data: { title: 'Allergy Exclusions' } },
+      { path: 'setup/ingredients/clinical-state-exclusions', component: SetupPlaceholderComponent, data: { title: 'Clinical State Exclusions' } },
+      { path: 'setup/ingredients/diet-type-exclusions', component: SetupPlaceholderComponent, data: { title: 'Diet Type Exclusions' } },
+      { path: 'setup/recipes', component: SetupPlaceholderComponent, data: { title: 'Recipes' } },
+      { path: 'setup/meals', component: SetupPlaceholderComponent, data: { title: 'Meals' } },
+    ],
   },
   {
     path: 'kitchen',

@@ -25,7 +25,7 @@ export class ClinicalStateEditComponent {
   readonly formName = signal('');
 
   readonly isCreateMode = computed(
-    () => this.route.snapshot.routeConfig?.path === 'setup/clinical-states/new'
+    () => this.route.snapshot.routeConfig?.path === 'clinical-states/new'
   );
 
   constructor() {
@@ -34,12 +34,12 @@ export class ClinicalStateEditComponent {
         filter(
           (params) =>
             !!params.get('id') ||
-            this.route.snapshot.routeConfig?.path === 'setup/clinical-states/new'
+            this.route.snapshot.routeConfig?.path === 'clinical-states/new'
         ),
         switchMap((params) => {
           const id =
             params.get('id') ??
-            (this.route.snapshot.routeConfig?.path === 'setup/clinical-states/new' ? 'new' : '');
+            (this.route.snapshot.routeConfig?.path === 'clinical-states/new' ? 'new' : '');
           this.loading.set(true);
           this.error.set(null);
           if (id === 'new') {
@@ -82,7 +82,7 @@ export class ClinicalStateEditComponent {
       this.patientService.createClinicalState({ name }).subscribe({
         next: (res) => {
           this.saving.set(false);
-          this.router.navigate(['/patient/setup/clinical-states', res.id]);
+          this.router.navigate(['/setup/clinical-states', res.id]);
         },
         error: () => {
           this.saving.set(false);
@@ -95,7 +95,7 @@ export class ClinicalStateEditComponent {
       this.patientService.updateClinicalState(d.id, { name }).subscribe({
         next: () => {
           this.saving.set(false);
-          this.router.navigate(['/patient/setup/clinical-states', d.id]);
+          this.router.navigate(['/setup/clinical-states', d.id]);
         },
         error: () => {
           this.saving.set(false);
@@ -106,6 +106,6 @@ export class ClinicalStateEditComponent {
   }
 
   backToList(): void {
-    this.router.navigate(['/patient/setup/clinical-states']);
+    this.router.navigate(['/setup/clinical-states']);
   }
 }

@@ -1,5 +1,41 @@
 <div class="dashboard meals">
-  <main class="dashboard-main">
-    <p>Meals management area. Manage recipes, ingredients, meals, and patient meal requests.</p>
-  </main>
+  <div class="dashboard-body">
+    <nav class="sidebar">
+      <ul class="menu">
+        <li>
+          <a routerLink="/meals/meal-requests" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            Meal Requests
+          </a>
+        </li>
+        <li class="menu-group">
+          <span class="menu-group-label">Setup</span>
+          <ul class="menu-sub">
+            <li class="menu-sub-group">
+              <span class="menu-sub-group-label">Ingredients</span>
+              <ul class="menu-sub">
+                <li>
+                  <a routerLink="/meals/setup/ingredients/allergy-exclusions" routerLinkActive="active">Allergy Exclusions</a>
+                </li>
+                <li>
+                  <a routerLink="/meals/setup/ingredients/clinical-state-exclusions" routerLinkActive="active">Clinical State Exclusions</a>
+                </li>
+                <li>
+                  <a routerLink="/meals/setup/ingredients/diet-type-exclusions" routerLinkActive="active">Diet Type Exclusions</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a routerLink="/meals/setup/recipes" routerLinkActive="active">Recipes</a>
+            </li>
+            <li>
+              <a routerLink="/meals/setup/meals" routerLinkActive="active">Meals</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <main class="dashboard-main">
+      <router-outlet />
+    </main>
+  </div>
 </div>

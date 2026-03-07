@@ -5,7 +5,7 @@ import { AuthService } from '../auth/services/auth.service';
 export interface DashboardLink {
   path: string;
   label: string;
-  area: 'patient' | 'meals' | 'kitchen';
+  area: 'patient' | 'meals' | 'kitchen' | 'setup';
 }
 
 @Component({
@@ -23,6 +23,7 @@ export class HomeComponent {
     if (this.auth.canAccessPatient()) links.push({ path: '/patient', label: 'Patient', area: 'patient' });
     if (this.auth.canAccessMeals()) links.push({ path: '/meals', label: 'Meals', area: 'meals' });
     if (this.auth.canAccessKitchen()) links.push({ path: '/kitchen', label: 'Kitchen', area: 'kitchen' });
+    if (this.auth.isAdmin()) links.push({ path: '/setup', label: 'Setup', area: 'setup' });
     return links;
   });
 }

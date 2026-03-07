@@ -25,7 +25,7 @@ export class DietTypeEditComponent {
   readonly formName = signal('');
 
   readonly isCreateMode = computed(
-    () => this.route.snapshot.routeConfig?.path === 'setup/diet-types/new'
+    () => this.route.snapshot.routeConfig?.path === 'diet-types/new'
   );
 
   constructor() {
@@ -34,12 +34,12 @@ export class DietTypeEditComponent {
         filter(
           (params) =>
             !!params.get('id') ||
-            this.route.snapshot.routeConfig?.path === 'setup/diet-types/new'
+            this.route.snapshot.routeConfig?.path === 'diet-types/new'
         ),
         switchMap((params) => {
           const id =
             params.get('id') ??
-            (this.route.snapshot.routeConfig?.path === 'setup/diet-types/new' ? 'new' : '');
+            (this.route.snapshot.routeConfig?.path === 'diet-types/new' ? 'new' : '');
           this.loading.set(true);
           this.error.set(null);
           if (id === 'new') {
@@ -82,7 +82,7 @@ export class DietTypeEditComponent {
       this.patientService.createDietType({ name }).subscribe({
         next: (res) => {
           this.saving.set(false);
-          this.router.navigate(['/patient/setup/diet-types', res.id]);
+          this.router.navigate(['/setup/diet-types', res.id]);
         },
         error: () => {
           this.saving.set(false);
@@ -95,7 +95,7 @@ export class DietTypeEditComponent {
       this.patientService.updateDietType(d.id, { name }).subscribe({
         next: () => {
           this.saving.set(false);
-          this.router.navigate(['/patient/setup/diet-types', d.id]);
+          this.router.navigate(['/setup/diet-types', d.id]);
         },
         error: () => {
           this.saving.set(false);
@@ -106,6 +106,6 @@ export class DietTypeEditComponent {
   }
 
   backToList(): void {
-    this.router.navigate(['/patient/setup/diet-types']);
+    this.router.navigate(['/setup/diet-types']);
   }
 }

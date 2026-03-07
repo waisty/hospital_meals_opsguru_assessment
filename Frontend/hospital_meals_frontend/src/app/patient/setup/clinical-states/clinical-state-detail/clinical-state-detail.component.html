@@ -3,14 +3,14 @@
     <p class="loading">Loading…</p>
   } @else if (error()) {
     <p class="error">{{ error() }}</p>
-    <a routerLink="/patient/setup/clinical-states" class="back-link">← Back to clinical states</a>
+    <a routerLink="/setup/clinical-states" class="back-link">← Back to clinical states</a>
   } @else if (detail(); as d) {
     <header class="page-header">
-      <a routerLink="/patient/setup/clinical-states" class="back-link">← Back to clinical states</a>
+      <a routerLink="/setup/clinical-states" class="back-link">← Back to clinical states</a>
       <div class="header-row">
         <h2>Clinical state details</h2>
         @if (auth.isAdmin()) {
-          <app-edit-button [link]="['/patient/setup/clinical-states', d.id, 'edit']" />
+          <app-edit-button [link]="['/setup/clinical-states', d.id, 'edit']" />
         }
       </div>
       <p class="subtitle">{{ d.name }}</p>
@@ -27,6 +27,6 @@
     </section>
   } @else {
     <p class="error">Clinical state not found.</p>
-    <a routerLink="/patient/setup/clinical-states" class="back-link">← Back to clinical states</a>
+    <a routerLink="/setup/clinical-states" class="back-link">← Back to clinical states</a>
   }
 </div>

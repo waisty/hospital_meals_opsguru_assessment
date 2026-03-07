@@ -2,7 +2,7 @@
   <header class="page-header">
     <h2>Clinical States</h2>
     @if (auth.isAdmin()) {
-      <app-add-button link="/patient/setup/clinical-states/new" label="Add clinical state" />
+      <app-add-button link="/setup/clinical-states/new" label="Add clinical state" />
     }
   </header>
 
@@ -29,7 +29,7 @@
               <td>{{ c.name }}</td>
               @if (auth.isAdmin()) {
                 <td class="col-actions">
-                  <app-edit-button [link]="['/patient/setup/clinical-states', c.id, 'edit']" title="Edit clinical state" [stopPropagation]="true" />
+                  <app-edit-button [link]="['/setup/clinical-states', c.id, 'edit']" title="Edit clinical state" [stopPropagation]="true" />
                 </td>
               }
             </tr>

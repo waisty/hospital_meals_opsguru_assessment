@@ -1,0 +1,45 @@
+<div class="meal-request-list">
+  @if (listError()) {
+    <p class="error">{{ listError() }}</p>
+  } @else if (result() === null) {
+    <p class="loading">Loading…</p>
+  } @else {
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Recipe ID</th>
+            <th>Requested</th>
+            <th>Status</th>
+            <th>Status reason</th>
+            <th>Finalized</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of items; track r.id) {
+            <tr>
+              <td>{{ r.patientName }}</td>
+              <td>{{ r.recipeId }}</td>
+              <td>{{ formatDate(r.requestedDateTime) }}</td>
+              <td>{{ approvalStatusLabel(r.approvalStatus) }}</td>
+              <td>{{ r.statusReason ?? '—' }}</td>
+              <td>{{ formatDate(r.finalizedDateTime) }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty">No meal requests found.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <app-pagination
+      [page]="page()"
+      [pageSize]="pageSize()"
+      [totalCount]="totalCount"
+      (pageChange)="onPageChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)"
+    />
+  }
+</div>

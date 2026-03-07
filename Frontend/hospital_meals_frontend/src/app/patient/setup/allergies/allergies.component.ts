@@ -58,6 +58,6 @@ export class AllergiesComponent {
   }
 
   navigateToDetail(id: string): void {
-    this.router.navigate(['/patient/setup/allergies', id]);
+    this.router.navigate(['/setup/allergies', id]);
   }
 }

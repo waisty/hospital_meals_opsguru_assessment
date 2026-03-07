@@ -24,6 +24,7 @@ export class AppHeaderComponent {
     { path: '/patient', label: 'Patient', visible: this.auth.canAccessPatient() },
     { path: '/meals', label: 'Meals', visible: this.auth.canAccessMeals() },
     { path: '/kitchen', label: 'Kitchen', visible: this.auth.canAccessKitchen() },
+    { path: '/setup', label: 'Setup', visible: this.auth.isAdmin() },
   ]);
 
   protected logout(): void {

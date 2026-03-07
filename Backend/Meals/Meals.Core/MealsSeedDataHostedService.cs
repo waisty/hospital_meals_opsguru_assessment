@@ -10,49 +10,11 @@ namespace Hospital.Meals.Core.Implementation
 {
     /// <summary>
     /// Seeds reference data (diet types, allergies, clinical states, ingredients, allergy/clinical/diet-type exclusions,
-    /// recipes, recipe ingredients, meals, and patient requests) when the database is empty or when SeedData:Enabled is true.
+    /// recipes, recipe ingredients, and meals) when the database is empty or when SeedData:Enabled is true.
     /// Uses the same IDs for allergies, clinical states, and diet types as the Patient WebApi.
-    /// Patient request seeds use deterministic patient IDs matching Patient.WebApi seed (see PatientSeedDataHostedService.SeedPatientCount).
     /// </summary>
     internal sealed class MealsSeedDataHostedService : IHostedService
     {
-        /// <summary>Must match Patient.Core PatientSeedDataHostedService.SeedPatientCount.</summary>
-        private const int SeedPatientCount = 1000;
-
-        /// <summary>Number of patient requests to seed; subset of SeedPatientCount so data matches Patient service.</summary>
-        private const int SeedPatientRequestCount = 400;
-
-        private static readonly string[] FirstNames =
-        {
-            "James", "Mary", "John", "Patricia", "Robert", "Jennifer", "Michael", "Linda", "William", "Elizabeth",
-            "David", "Barbara", "Richard", "Susan", "Joseph", "Jessica", "Thomas", "Sarah", "Charles", "Karen",
-            "Christopher", "Nancy", "Daniel", "Lisa", "Matthew", "Betty", "Anthony", "Margaret", "Mark", "Sandra",
-            "Donald", "Ashley", "Steven", "Kimberly", "Paul", "Emily", "Andrew", "Donna", "Joshua", "Michelle",
-            "Kenneth", "Dorothy", "Kevin", "Carol", "Brian", "Amanda", "George", "Melissa", "Timothy", "Deborah",
-        };
-
-        private static readonly string[] LastNames =
-        {
-            "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez",
-            "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin",
-            "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson",
-            "Walker", "Young", "Allen", "King", "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores",
-            "Green", "Adams", "Nelson", "Baker", "Hall", "Rivera", "Campbell", "Mitchell", "Carter", "Roberts",
-        };
-
-        private static readonly string[] RecipeIdsByDiet = { "REGULAR-BREAKFAST", "VEGETARIAN-LUNCH", "DIABETIC-DINNER", "LOW-SODIUM-SOUP" };
-
-        /// <summary>Deterministic GUID for seed patient index; must match Patient.Core PatientSeedDataHostedService.CreateSeedPatientId.</summary>
-        private static Guid CreateSeedPatientId(int index)
-        {
-            var bytes = new byte[16];
-            bytes[15] = (byte)(index & 0xFF);
-            bytes[14] = (byte)((index >> 8) & 0xFF);
-            bytes[13] = (byte)((index >> 16) & 0xFF);
-            bytes[12] = (byte)((index >> 24) & 0xFF);
-            return new Guid(bytes);
-        }
-
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IConfiguration _configuration;
         private readonly ILogger<MealsSeedDataHostedService> _logger;
@@ -104,7 +66,6 @@ namespace Hospital.Meals.Core.Implementation
             await SeedRecipesAsync(db, cancellationToken).ConfigureAwait(false);
             await SeedRecipeIngredientsAsync(db, cancellationToken).ConfigureAwait(false);
             await SeedMealsAsync(db, cancellationToken).ConfigureAwait(false);
-            await SeedPatientRequestsAsync(db, cancellationToken).ConfigureAwait(false);
         }
 
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
@@ -363,49 +324,5 @@ namespace Hospital.Meals.Core.Implementation
             }
         }
 
-        private async Task SeedPatientRequestsAsync(MealsDBContext db, CancellationToken cancellationToken)
-        {
-            var baseDate = DateTime.UtcNow.AddDays(-14);
-            const int batchSize = 100;
-            for (var batchStart = 0; batchStart < SeedPatientRequestCount; batchStart += batchSize)
-            {
-                var batchEnd = Math.Min(batchStart + batchSize, SeedPatientRequestCount);
-                for (var i = batchStart; i < batchEnd; i++)
-                {
-                    var patientId = CreateSeedPatientId(i);
-                    var firstName = FirstNames[i % FirstNames.Length];
-                    var lastName = LastNames[i % LastNames.Length];
-                    var middleIndex = (i / FirstNames.Length) % LastNames.Length;
-                    var middleName = middleIndex == 0 ? "" : LastNames[middleIndex];
-                    var patientName = string.IsNullOrEmpty(middleName) ? $"{firstName} {lastName}" : $"{firstName} {middleName} {lastName}";
-                    var recipeId = RecipeIdsByDiet[i % RecipeIdsByDiet.Length];
-                    var request = new PatientRequest
-                    {
-                        Id = Guid.NewGuid(),
-                        PatientId = patientId.ToString(),
-                        PatientName = patientName,
-                        FirstName = firstName,
-                        MiddleName = middleName ?? "",
-                        LastName = lastName,
-                        RecipeId = recipeId,
-                        RequestedDateTime = baseDate.AddHours(i),
-                        ApprovalStatus = Enums.MealRequestAppprovalStatus.Pending,
-                    };
-                    db.PatientRequests.Add(request);
-                }
-
-                try
-                {
-                    await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-                    _logger.LogInformation("Seed patient requests added: batch {Start}-{End} of {Total}", batchStart + 1, batchEnd, SeedPatientRequestCount);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex, "Seed patient request batch {Start}-{End} failed; continuing.", batchStart + 1, batchEnd);
-                }
-            }
-
-            _logger.LogInformation("Seed patient requests completed: {Count} requests (matching Patient service IDs).", SeedPatientRequestCount);
-        }
     }
 }

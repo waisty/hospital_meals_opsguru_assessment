@@ -58,6 +58,6 @@ export class DietTypesComponent {
   }
 
   navigateToDetail(id: string): void {
-    this.router.navigate(['/patient/setup/diet-types', id]);
+    this.router.navigate(['/setup/diet-types', id]);
   }
 }

@@ -3,14 +3,14 @@
     <p class="loading">Loading…</p>
   } @else if (error()) {
     <p class="error">{{ error() }}</p>
-    <a routerLink="/patient/setup/diet-types" class="back-link">← Back to diet types</a>
+    <a routerLink="/setup/diet-types" class="back-link">← Back to diet types</a>
   } @else if (detail(); as d) {
     <header class="page-header">
-      <a routerLink="/patient/setup/diet-types" class="back-link">← Back to diet types</a>
+      <a routerLink="/setup/diet-types" class="back-link">← Back to diet types</a>
       <div class="header-row">
         <h2>Diet type details</h2>
         @if (auth.isAdmin()) {
-          <app-edit-button [link]="['/patient/setup/diet-types', d.id, 'edit']" />
+          <app-edit-button [link]="['/setup/diet-types', d.id, 'edit']" />
         }
       </div>
       <p class="subtitle">{{ d.name }}</p>
@@ -27,6 +27,6 @@
     </section>
   } @else {
     <p class="error">Diet type not found.</p>
-    <a routerLink="/patient/setup/diet-types" class="back-link">← Back to diet types</a>
+    <a routerLink="/setup/diet-types" class="back-link">← Back to diet types</a>
   }
 </div>

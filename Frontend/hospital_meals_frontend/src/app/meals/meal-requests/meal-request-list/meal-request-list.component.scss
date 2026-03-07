@@ -1,0 +1,45 @@
+.meal-request-list {
+  .loading {
+    margin: 1rem 0;
+    color: #64748b;
+  }
+
+  .error {
+    margin: 1rem 0;
+    color: #b91c1c;
+  }
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+
+  th,
+  td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  th {
+    font-weight: 600;
+    color: #0f172a;
+    background: #f8fafc;
+  }
+
+  td {
+    color: #475569;
+  }
+
+  .empty {
+    color: #94a3b8;
+    font-style: italic;
+    text-align: center;
+    padding: 1.5rem;
+  }
+}

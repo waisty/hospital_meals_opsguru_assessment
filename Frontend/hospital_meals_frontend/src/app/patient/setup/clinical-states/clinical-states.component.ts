@@ -58,6 +58,6 @@ export class ClinicalStatesComponent {
   }
 
   navigateToDetail(id: string): void {
-    this.router.navigate(['/patient/setup/clinical-states', id]);
+    this.router.navigate(['/setup/clinical-states', id]);
   }
 }

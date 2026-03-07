@@ -3,14 +3,14 @@
     <p class="loading">Loading…</p>
   } @else if (error()) {
     <p class="error">{{ error() }}</p>
-    <a routerLink="/patient/setup/allergies" class="back-link">← Back to allergies</a>
+    <a routerLink="/setup/allergies" class="back-link">← Back to allergies</a>
   } @else if (detail(); as d) {
     <header class="page-header">
-      <a routerLink="/patient/setup/allergies" class="back-link">← Back to allergies</a>
+      <a routerLink="/setup/allergies" class="back-link">← Back to allergies</a>
       <div class="header-row">
         <h2>Allergy details</h2>
         @if (auth.isAdmin()) {
-          <app-edit-button [link]="['/patient/setup/allergies', d.id, 'edit']" />
+          <app-edit-button [link]="['/setup/allergies', d.id, 'edit']" />
         }
       </div>
       <p class="subtitle">{{ d.name }}</p>
@@ -27,6 +27,6 @@
     </section>
   } @else {
     <p class="error">Allergy not found.</p>
-    <a routerLink="/patient/setup/allergies" class="back-link">← Back to allergies</a>
+    <a routerLink="/setup/allergies" class="back-link">← Back to allergies</a>
   }
 </div>
