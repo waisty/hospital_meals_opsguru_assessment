@@ -56,3 +56,16 @@ export interface PatientAllergiesUpdateRequest {
 export interface PatientClinicalStatesUpdateRequest {
   clinicalStateIds: string[];
 }
+
+export interface BatchPatientAllergiesRequest {
+  patientIds: string[];
+}
+
+export interface PatientAllergiesItemViewModel {
+  patientId: string;
+  allergyNames: string[];
+}
+
+export interface BatchPatientAllergiesResponse {
+  items: PatientAllergiesItemViewModel[];
+}

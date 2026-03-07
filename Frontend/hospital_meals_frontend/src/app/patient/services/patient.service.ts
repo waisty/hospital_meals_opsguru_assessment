@@ -11,6 +11,8 @@ import type {
   PatientCreateResponse,
   PatientUpdateRequest,
   PatientAllergiesUpdateRequest,
+  BatchPatientAllergiesRequest,
+  BatchPatientAllergiesResponse,
   PatientClinicalStatesUpdateRequest,
   AllergyViewModel,
   AllergyCreateRequest,
@@ -60,6 +62,12 @@ export class PatientService {
 
   getPatientAllergyIds(patientId: string): Observable<string[]> {
     return this.http.get<string[]>(`${this.base}/patients/${patientId}/allergies`);
+  }
+
+  getAllergiesByPatientIds(patientIds: string[]): Observable<BatchPatientAllergiesResponse> {
+    return this.http.post<BatchPatientAllergiesResponse>(`${this.base}/patients/allergies-by-ids`, {
+      patientIds,
+    } as BatchPatientAllergiesRequest);
   }
 
   updatePatientAllergies(

@@ -47,6 +47,12 @@ public static class PatientEndpointMappings
             return Results.Ok(result);
         }).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminPolicyName);
 
+        group.MapPost("/patients/allergies-by-ids", async (BatchPatientAllergiesRequest request, IPatientHandler handler, CancellationToken ct) =>
+        {
+            var result = await handler.GetAllergiesByPatientIdsAsync(request, ct);
+            return Results.Ok(result);
+        }).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminPolicyName);
+
         group.MapGet("/patients/{patientId}/allergies", async (string patientId, IPatientHandler handler, CancellationToken ct) =>
         {
             var ids = await handler.GetAllergyIdsByPatientIdAsync(patientId, ct);

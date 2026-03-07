@@ -8,6 +8,7 @@ namespace Hospital.Patient.Core.Contracts
         Task<InternalModels.Patient?> GetPatientByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<PagedResult<InternalModels.PatientWithDietTypeName>> ListPatientsAsync(int page, int pageSize, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<PatientAllergyWithName>> GetPatientAllergiesWithNameAsync(Guid patientId, CancellationToken cancellationToken = default);
+        Task<IReadOnlyDictionary<Guid, IReadOnlyList<string>>> GetPatientAllergyNamesByPatientIdsAsync(IReadOnlyList<Guid> patientIds, CancellationToken cancellationToken = default);
         Task SetAllergyIdsForPatientAsync(Guid patientId, IReadOnlyList<string> allergyIds, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<PatientClinicalStateWithName>> GetPatientClinicalStatesWithNameAsync(Guid patientId, CancellationToken cancellationToken = default);
         Task SetClinicalStateIdsForPatientAsync(Guid patientId, IReadOnlyList<string> clinicalStateIds, CancellationToken cancellationToken = default);

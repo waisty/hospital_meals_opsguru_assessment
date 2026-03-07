@@ -62,6 +62,32 @@ namespace Hospital.Patient.Core.Implementation
             return ret;
         }
 
+        public async Task<IReadOnlyDictionary<Guid, IReadOnlyList<string>>> GetPatientAllergyNamesByPatientIdsAsync(IReadOnlyList<Guid> patientIds, CancellationToken cancellationToken = default)
+        {
+            if (patientIds.Count == 0)
+                return new Dictionary<Guid, IReadOnlyList<string>>();
+
+            var raw = await (from pa in _context.PatientAllergies
+                             where patientIds.Contains(pa.PatientId)
+                             join allergy in _context.Allergies on pa.AllergyId equals allergy.Id
+                             orderby allergy.Name
+                             select new { pa.PatientId, allergy.Name })
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            var grouped = raw
+                .GroupBy(x => x.PatientId)
+                .ToDictionary(g => g.Key, g => (IReadOnlyList<string>)g.Select(x => x.Name).ToList());
+
+            foreach (var id in patientIds)
+            {
+                if (!grouped.ContainsKey(id))
+                    grouped[id] = Array.Empty<string>();
+            }
+
+            return grouped;
+        }
+
         public async Task SetAllergyIdsForPatientAsync(Guid patientId, IReadOnlyList<string> allergyIds, CancellationToken cancellationToken = default)
         {
             await _context.PatientAllergies

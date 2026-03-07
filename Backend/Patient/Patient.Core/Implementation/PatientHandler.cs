@@ -84,6 +84,32 @@ namespace Hospital.Patient.Core.Implementation
             return allergies.Select(a => a.AllergyId).ToList();
         }
 
+        public async Task<BatchPatientAllergiesResponse> GetAllergiesByPatientIdsAsync(BatchPatientAllergiesRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request?.PatientIds == null || request.PatientIds.Count == 0)
+                return new BatchPatientAllergiesResponse();
+
+            var guids = new List<Guid>();
+            foreach (var id in request.PatientIds)
+            {
+                if (Guid.TryParse(id, out var guid))
+                    guids.Add(guid);
+            }
+
+            if (guids.Count == 0)
+                return new BatchPatientAllergiesResponse();
+
+            var byPatient = await _repo.GetPatientAllergyNamesByPatientIdsAsync(guids, cancellationToken).ConfigureAwait(false);
+
+            var items = guids.Select(guid => new PatientAllergiesItemViewModel
+            {
+                PatientId = guid.ToString(),
+                AllergyNames = byPatient.TryGetValue(guid, out var names) ? names.ToList() : new List<string>()
+            }).ToList();
+
+            return new BatchPatientAllergiesResponse { Items = items };
+        }
+
         public async Task<bool> UpdatePatientAllergiesAsync(string patientId, PatientAllergiesUpdateRequest request, CancellationToken cancellationToken = default)
         {
             if (request is null || !Guid.TryParse(patientId, out var guid))
