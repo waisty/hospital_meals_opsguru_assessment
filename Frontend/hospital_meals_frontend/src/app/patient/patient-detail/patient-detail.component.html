@@ -1,0 +1,66 @@
+<div class="patient-detail-view">
+  @if (loading()) {
+    <p class="loading">Loading…</p>
+  } @else if (error()) {
+    <p class="error">{{ error() }}</p>
+    <a routerLink="/patient/patients" class="back-link">← Back to patients</a>
+  } @else if (detail(); as d) {
+    <header class="page-header">
+      <a routerLink="/patient/patients" class="back-link">← Back to patients</a>
+      <div class="header-row">
+        <h2>Patient details</h2>
+        <a [routerLink]="['/patient/patients', d.id, 'edit']" class="btn-edit" role="button">Edit</a>
+      </div>
+      <p class="subtitle">{{ d.name }}</p>
+    </header>
+
+    <div class="detail-layout">
+      <section class="patient-info">
+        <h3>Patient details</h3>
+        <dl class="info-list">
+          <dt>Name</dt>
+          <dd>{{ d.name }}</dd>
+          <dt>Mobile</dt>
+          <dd>{{ d.mobileNumber }}</dd>
+          <dt>Diet type</dt>
+          <dd>{{ dietTypeName() }}</dd>
+          @if (d.notes) {
+            <dt>Notes</dt>
+            <dd>{{ d.notes }}</dd>
+          }
+        </dl>
+      </section>
+
+      <aside class="right-side">
+        <section class="section-card">
+          <h3>Allergies</h3>
+          @if (d.allergies.length > 0) {
+            <ul class="tag-list tag-list-readonly">
+              @for (a of d.allergies; track a.allergyId) {
+                <li class="tag">{{ a.allergyName }}</li>
+              }
+            </ul>
+          } @else {
+            <p class="empty-hint">No allergies assigned.</p>
+          }
+        </section>
+
+        <section class="section-card">
+          <h3>Clinical states</h3>
+          @if (d.clinicalStates.length > 0) {
+            <ul class="tag-list tag-list-readonly">
+              @for (c of d.clinicalStates; track c.clinicalStateId) {
+                <li class="tag">{{ c.clinicalStateName }}</li>
+              }
+            </ul>
+          } @else {
+            <p class="empty-hint">No clinical states assigned.</p>
+          }
+        </section>
+      </aside>
+    </div>
+  } @else {
+    <p class="error">Patient not found.</p>
+    <a routerLink="/patient/patients" class="back-link">← Back to patients</a>
+  }
+</div>

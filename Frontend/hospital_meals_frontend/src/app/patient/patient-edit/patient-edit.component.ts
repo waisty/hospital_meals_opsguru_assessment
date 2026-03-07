@@ -262,6 +262,7 @@ export class PatientEditComponent {
               : null
           );
           this.savingPatient.set(false);
+          this.router.navigate(['/patient/patients', d.id]);
         },
         error: () => {
           this.savingPatient.set(false);

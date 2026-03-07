@@ -52,6 +52,14 @@
     white-space: nowrap;
   }
 
+  .clickable-row {
+    cursor: pointer;
+
+    &:hover {
+      background: #f8fafc;
+    }
+  }
+
   .btn-edit {
     font-size: 0.8125rem;
     color: #2563eb;
