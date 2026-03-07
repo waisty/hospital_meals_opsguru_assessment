@@ -69,7 +69,12 @@ namespace Hospital.Meals.Core.Implementation
             PatientName = request.PatientName,
             RecipeId = request.RecipeId,
             RequestedDateTime = request.RequestedDateTime,
-            ApprovalStatus = (MealRequestApprovalStatus)(int)request.ApprovalStatus,
+            ApprovalStatus = request.ApprovalStatus switch
+            {
+                MealRequestAppprovalStatus.Accepted => MealRequestApprovalStatus.Accepted,
+                MealRequestAppprovalStatus.Rejected => MealRequestApprovalStatus.Rejected,
+                _ => MealRequestApprovalStatus.Pending,
+            },
             StatusReason = request.StatusReason,
             UnsafeIngredientId = request.UnsafeIngredientId,
             FinalizedDateTime = request.FinalizedDateTime

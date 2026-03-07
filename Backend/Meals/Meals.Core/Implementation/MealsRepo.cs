@@ -9,14 +9,10 @@ namespace Hospital.Meals.Core.Implementation
     internal sealed class MealsRepo : IMealsRepo
     {
         private readonly MealsDBContext _context;
-        private readonly IPatientApiClient _patientApiClient;
-        private readonly IKitchenApiClient _kitchenApiClient;
 
-        public MealsRepo(MealsDBContext context, IPatientApiClient patientApiClient, IKitchenApiClient kitchenApiClient)
+        public MealsRepo(MealsDBContext context)
         {
             _context = context;
-            _patientApiClient = patientApiClient;
-            _kitchenApiClient = kitchenApiClient;
         }
 
         // Meal
@@ -151,127 +147,15 @@ namespace Hospital.Meals.Core.Implementation
         }
 
         // Patient request
-        private async Task AddPatientRequestAsync(PatientRequest request, CancellationToken cancellationToken = default)
+        public async Task AddPatientRequestAsync(PatientRequest request, CancellationToken cancellationToken = default)
         {
-            var recipe = await this.GetRecipeByIdAsync(request.RecipeId, cancellationToken) ?? throw new Exception($"Recipe '{request.RecipeId}' not found");
-            var recipeIngredients = await this.GetRecipeIngredientsByRecipeIdAsync(request.RecipeId, cancellationToken);
-            await ExecuteInTransactionAsync(async (ctx) =>
-            {
-                _context.PatientRequests.Add(request);
-
-                await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-                var publishTrayRequest = recipe.ToKitchenPublishTrayRequest(recipeIngredients, request);
-
-                await _kitchenApiClient.PublishTrayAsync(publishTrayRequest);
-            }, cancellationToken);
-            
+            _context.PatientRequests.Add(request);
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public async Task UpdatePatientRequestAsync(PatientRequest request, CancellationToken cancellationToken = default)
         {
             _context.PatientRequests.Update(request);
-            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task<(Guid requestId, MealRequestAppprovalStatus status, string? statusReason, string unsafeIngredientId)> AddPatientRequestWithSafetyCheckAsync(PatientRequestCreateRequest request, CancellationToken cancellationToken = default)
-        {
-            var patientState = await _patientApiClient.GetPatientDetailAsync(request.PatientId, cancellationToken).ConfigureAwait(false) ?? throw new Exception($"Patient '{request.PatientId}' not found");
-
-            var patientRequest = new PatientRequest
-            {
-                PatientId = request.PatientId,
-                PatientName = patientState.Name,
-                RecipeId = request.RecipeId,
-                RequestedDateTime = DateTime.UtcNow,
-                ApprovalStatus = MealRequestAppprovalStatus.Pending
-            };
-            await AddPatientRequestAsync(patientRequest, cancellationToken).ConfigureAwait(false);
-
-            if (patientState == null)
-            {
-                patientRequest.ApprovalStatus = MealRequestAppprovalStatus.Rejected;
-                patientRequest.StatusReason = $"Patient '{request.PatientId}' state not found";
-                await UpdatePatientRequestAsync(patientRequest, cancellationToken).ConfigureAwait(false);
-                return (patientRequest.Id, patientRequest.ApprovalStatus, patientRequest.StatusReason, patientRequest.UnsafeIngredientId ?? "");
-            }
-
-            try
-            {
-                await VerifyRecipeSafetyAndUpdatePatientRequestAsync(
-                    patientRequest,
-                    patientState.AllergyIds,
-                    patientState.ClinicalStateIds,
-                    patientState.DietTypeId,
-                    cancellationToken).ConfigureAwait(false);
-            }
-            catch
-            {
-                patientRequest.ApprovalStatus = MealRequestAppprovalStatus.Rejected;
-                patientRequest.StatusReason = "Error while performing safety validation";
-                await UpdatePatientRequestAsync(patientRequest, cancellationToken).ConfigureAwait(false);
-            }
-
-            return (patientRequest.Id, patientRequest.ApprovalStatus, patientRequest.StatusReason, patientRequest.UnsafeIngredientId ?? "");
-        }
-
-        private async Task VerifyRecipeSafetyAndUpdatePatientRequestAsync(PatientRequest patientRequest, IReadOnlyList<string> allergyIds, IReadOnlyList<string> clinicalStateIds, string? dietTypeId, CancellationToken cancellationToken = default)
-        {
-            // Verifying the recipe is safe
-            var recipeIngredients = await GetRecipeIngredientsByRecipeIdAsync(patientRequest.RecipeId, cancellationToken).ConfigureAwait(false);
-
-            foreach (var recipeIngredient in recipeIngredients)
-            {
-                var ingredientId = recipeIngredient.IngredientId;
-
-                if (allergyIds.Count > 0)
-                {
-                    var allergyExclusionIds = await GetAllergyIdsByIngredientIdAsync(ingredientId, cancellationToken).ConfigureAwait(false);
-                    if (allergyIds.Any(aid => allergyExclusionIds.Contains(aid)))
-                    {
-                        patientRequest.ApprovalStatus = MealRequestAppprovalStatus.Rejected;
-                        patientRequest.StatusReason = "Allergen detected";
-                        patientRequest.UnsafeIngredientId = ingredientId;
-                        _context.PatientRequests.Update(patientRequest);
-                        await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-                        return;
-                    }
-                }
-
-                if (clinicalStateIds.Count > 0)
-                {
-                    var clinicalStateExclusionIds = await GetClinicalStateIdsByIngredientIdAsync(ingredientId, cancellationToken).ConfigureAwait(false);
-                    if (clinicalStateIds.Any(cid => clinicalStateExclusionIds.Contains(cid)))
-                    {
-                        patientRequest.ApprovalStatus = MealRequestAppprovalStatus.Rejected;
-                        patientRequest.StatusReason = "Clinical state contraindication";
-                        patientRequest.UnsafeIngredientId = ingredientId;
-                        _context.PatientRequests.Update(patientRequest);
-                        await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-                        return;
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(dietTypeId))
-                {
-                    var dietTypeExclusionIds = await GetDietTypeExclusionIdsByIngredientIdAsync(ingredientId, cancellationToken).ConfigureAwait(false);
-                    if (dietTypeExclusionIds.Contains(dietTypeId))
-                    {
-                        patientRequest.ApprovalStatus = MealRequestAppprovalStatus.Rejected;
-                        patientRequest.StatusReason = "Diet type exclusion";
-                        patientRequest.UnsafeIngredientId = ingredientId;
-                        _context.PatientRequests.Update(patientRequest);
-                        await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-                        return;
-                    }
-                }
-            }
-
-            patientRequest.ApprovalStatus = MealRequestAppprovalStatus.Accepted;
-            patientRequest.StatusReason = null;
-            patientRequest.UnsafeIngredientId = null;
-            patientRequest.FinalizedDateTime = DateTime.UtcNow;
-            _context.PatientRequests.Update(patientRequest);
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
@@ -464,21 +348,6 @@ namespace Hospital.Meals.Core.Implementation
                 _context.IngredientDietTypeExclusions.Add(new IngredientDietTypeExclusions { IngredientId = ingredientId, DietTypeId = dietTypeId });
             }
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        }
-
-        private async Task ExecuteInTransactionAsync(Func<CancellationToken, Task> work, CancellationToken cancellationToken = default)
-        {
-            await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
-            try
-            {
-                await work(cancellationToken).ConfigureAwait(false);
-                await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
-            }
-            catch
-            {
-                await transaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
-                throw;
-            }
         }
 
     }

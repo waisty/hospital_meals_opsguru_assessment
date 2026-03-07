@@ -13,7 +13,7 @@ public sealed class IngredientEndpointTests : IClassFixture<MealsWebApiFixture>
     public IngredientEndpointTests(MealsWebApiFixture fixture)
     {
         _fixture = fixture;
-        _fixture.MockHandler.Clear();
+        _fixture.ClearAll();
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public sealed class IngredientEndpointTests : IClassFixture<MealsWebApiFixture>
     [Fact]
     public async Task GetIngredient_Existing_ReturnsOk()
     {
-        _fixture.MockHandler.SeedIngredient("chicken", "Chicken Breast");
+        _fixture.MockRepo.SeedIngredient("chicken", "Chicken Breast");
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
 
         var response = await client.GetAsync("/api/v1/ingredients/chicken");
@@ -60,7 +60,9 @@ public sealed class IngredientEndpointTests : IClassFixture<MealsWebApiFixture>
     [Fact]
     public async Task GetIngredientDetail_Existing_ReturnsOk()
     {
-        _fixture.MockHandler.SeedIngredient("chicken", "Chicken");
+        _fixture.MockRepo.SeedIngredient("chicken", "Chicken");
+        _fixture.MockRepo.SeedIngredientAllergyExclusion("chicken", "poultry-allergy");
+
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
 
         var response = await client.GetAsync("/api/v1/ingredients/chicken/detail");
@@ -69,7 +71,8 @@ public sealed class IngredientEndpointTests : IClassFixture<MealsWebApiFixture>
         var body = await response.Content.ReadFromJsonAsync<IngredientDetailViewModel>();
         Assert.NotNull(body);
         Assert.Equal("Chicken", body.Name);
-        Assert.Empty(body.AllergyExclusionIds);
+        Assert.Single(body.AllergyExclusionIds);
+        Assert.Equal("poultry-allergy", body.AllergyExclusionIds[0]);
     }
 
     [Fact]
@@ -83,8 +86,8 @@ public sealed class IngredientEndpointTests : IClassFixture<MealsWebApiFixture>
     [Fact]
     public async Task ListIngredients_ReturnsPagedResult()
     {
-        _fixture.MockHandler.SeedIngredient("i1", "I1");
-        _fixture.MockHandler.SeedIngredient("i2", "I2");
+        _fixture.MockRepo.SeedIngredient("i1", "I1");
+        _fixture.MockRepo.SeedIngredient("i2", "I2");
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
         var response = await client.GetAsync("/api/v1/ingredients?page=1&pageSize=10");
@@ -100,14 +103,23 @@ public sealed class IngredientEndpointTests : IClassFixture<MealsWebApiFixture>
     [Fact]
     public async Task GetIngredientAllergyExclusions_ReturnsOk()
     {
+        _fixture.MockRepo.SeedIngredient("chicken", "Chicken");
+        _fixture.MockRepo.SeedIngredientAllergyExclusion("chicken", "peanuts");
+
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
         var response = await client.GetAsync("/api/v1/ingredients/chicken/allergies");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var body = await response.Content.ReadFromJsonAsync<List<string>>();
+        Assert.NotNull(body);
+        Assert.Single(body);
     }
 
     [Fact]
     public async Task SetIngredientAllergyExclusions_WithMealsAdminClaim_Returns204()
     {
+        _fixture.MockRepo.SeedIngredient("chicken", "Chicken");
+
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsAdminClaim);
         var request = new SetIngredientAllergyExclusionsRequest { AllergyIds = ["peanuts", "shellfish"] };
 
@@ -118,6 +130,7 @@ public sealed class IngredientEndpointTests : IClassFixture<MealsWebApiFixture>
     [Fact]
     public async Task GetIngredientClinicalStateExclusions_ReturnsOk()
     {
+        _fixture.MockRepo.SeedIngredient("chicken", "Chicken");
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
         var response = await client.GetAsync("/api/v1/ingredients/chicken/clinical-states");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -126,6 +139,8 @@ public sealed class IngredientEndpointTests : IClassFixture<MealsWebApiFixture>
     [Fact]
     public async Task SetIngredientClinicalStateExclusions_WithMealsAdminClaim_Returns204()
     {
+        _fixture.MockRepo.SeedIngredient("chicken", "Chicken");
+
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsAdminClaim);
         var request = new SetIngredientClinicalStateExclusionsRequest { ClinicalStateIds = ["diabetic"] };
 
@@ -136,6 +151,7 @@ public sealed class IngredientEndpointTests : IClassFixture<MealsWebApiFixture>
     [Fact]
     public async Task GetIngredientDietTypeExclusions_ReturnsOk()
     {
+        _fixture.MockRepo.SeedIngredient("chicken", "Chicken");
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
         var response = await client.GetAsync("/api/v1/ingredients/chicken/diet-types");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -144,6 +160,8 @@ public sealed class IngredientEndpointTests : IClassFixture<MealsWebApiFixture>
     [Fact]
     public async Task SetIngredientDietTypeExclusions_WithMealsUserClaim_Returns204()
     {
+        _fixture.MockRepo.SeedIngredient("chicken", "Chicken");
+
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
         var request = new SetIngredientDietTypeExclusionsRequest { DietTypeIds = ["vegan"] };
 

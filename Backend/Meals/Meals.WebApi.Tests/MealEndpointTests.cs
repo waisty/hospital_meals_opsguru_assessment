@@ -13,7 +13,7 @@ public sealed class MealEndpointTests : IClassFixture<MealsWebApiFixture>
     public MealEndpointTests(MealsWebApiFixture fixture)
     {
         _fixture = fixture;
-        _fixture.MockHandler.Clear();
+        _fixture.ClearAll();
     }
 
     [Fact]
@@ -29,6 +29,8 @@ public sealed class MealEndpointTests : IClassFixture<MealsWebApiFixture>
     [Fact]
     public async Task CreateMeal_WithMealsAdminClaim_Returns201()
     {
+        _fixture.MockRepo.SeedRecipe("recipe-1", "Chicken Soup Recipe");
+
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsAdminClaim);
         var request = new MealCreateRequest { Id = "meal-1", Name = "Chicken Soup", RecipeId = "recipe-1" };
 
@@ -60,7 +62,9 @@ public sealed class MealEndpointTests : IClassFixture<MealsWebApiFixture>
     [Fact]
     public async Task GetMeal_Existing_ReturnsOk()
     {
-        _fixture.MockHandler.SeedMeal("meal-1", "Chicken Soup", "recipe-1");
+        _fixture.MockRepo.SeedRecipe("recipe-1", "Chicken Soup Recipe");
+        _fixture.MockRepo.SeedMeal("meal-1", "Chicken Soup", "recipe-1");
+
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
 
         var response = await client.GetAsync("/api/v1/meals/meal-1");
@@ -84,8 +88,10 @@ public sealed class MealEndpointTests : IClassFixture<MealsWebApiFixture>
     [Fact]
     public async Task ListMeals_ReturnsPagedResult()
     {
-        _fixture.MockHandler.SeedMeal("m1", "Meal 1", "r1");
-        _fixture.MockHandler.SeedMeal("m2", "Meal 2", "r2");
+        _fixture.MockRepo.SeedRecipe("r1", "Recipe 1");
+        _fixture.MockRepo.SeedRecipe("r2", "Recipe 2");
+        _fixture.MockRepo.SeedMeal("m1", "Meal 1", "r1");
+        _fixture.MockRepo.SeedMeal("m2", "Meal 2", "r2");
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
         var response = await client.GetAsync("/api/v1/meals?page=1&pageSize=10");

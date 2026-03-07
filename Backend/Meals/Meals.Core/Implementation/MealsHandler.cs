@@ -9,10 +9,14 @@ namespace Hospital.Meals.Core.Implementation
     internal sealed class MealsHandler : IMealsHandler
     {
         private readonly IMealsRepo _repo;
+        private readonly IPatientApiClient _patientApiClient;
+        private readonly IKitchenApiClient _kitchenApiClient;
 
-        public MealsHandler(IMealsRepo repo)
+        public MealsHandler(IMealsRepo repo, IPatientApiClient patientApiClient, IKitchenApiClient kitchenApiClient)
         {
             _repo = repo;
+            _patientApiClient = patientApiClient;
+            _kitchenApiClient = kitchenApiClient;
         }
 
         // Meal
@@ -156,9 +160,99 @@ namespace Hospital.Meals.Core.Implementation
 
         public async Task<(Guid requestId, MealRequestAppprovalStatus status, string? statusReason, string unsafeIngredientId)> AddPatientRequestAsync(PatientRequestCreateRequest request, CancellationToken cancellationToken = default)
         {
-            var ret = await _repo.AddPatientRequestWithSafetyCheckAsync(request, cancellationToken).ConfigureAwait(false);
+            var patientState = await _patientApiClient.GetPatientDetailAsync(request.PatientId, cancellationToken).ConfigureAwait(false)
+                ?? throw new Exception($"Patient '{request.PatientId}' not found");
 
-            return ret;
+            var patientRequest = new PatientRequest
+            {
+                PatientId = request.PatientId,
+                PatientName = patientState.Name,
+                RecipeId = request.RecipeId,
+                RequestedDateTime = DateTime.UtcNow,
+                ApprovalStatus = MealRequestAppprovalStatus.Pending
+            };
+
+            var recipe = await _repo.GetRecipeByIdAsync(request.RecipeId, cancellationToken).ConfigureAwait(false)
+                ?? throw new Exception($"Recipe '{request.RecipeId}' not found");
+            var recipeIngredients = await _repo.GetRecipeIngredientsByRecipeIdAsync(request.RecipeId, cancellationToken).ConfigureAwait(false);
+
+            await _repo.AddPatientRequestAsync(patientRequest, cancellationToken).ConfigureAwait(false);
+
+            var publishTrayRequest = recipe.ToKitchenPublishTrayRequest(recipeIngredients, patientRequest);
+            await _kitchenApiClient.PublishTrayAsync(publishTrayRequest, cancellationToken).ConfigureAwait(false);
+
+            try
+            {
+                await VerifyRecipeSafetyAsync(patientRequest, patientState.AllergyIds, patientState.ClinicalStateIds, patientState.DietTypeId, cancellationToken).ConfigureAwait(false);
+            }
+            catch
+            {
+                patientRequest.ApprovalStatus = MealRequestAppprovalStatus.Rejected;
+                patientRequest.StatusReason = "Error while performing safety validation";
+                await _repo.UpdatePatientRequestAsync(patientRequest, cancellationToken).ConfigureAwait(false);
+            }
+
+            return (patientRequest.Id, patientRequest.ApprovalStatus, patientRequest.StatusReason, patientRequest.UnsafeIngredientId ?? "");
+        }
+
+        private async Task VerifyRecipeSafetyAsync(
+            PatientRequest patientRequest,
+            IReadOnlyList<string> allergyIds,
+            IReadOnlyList<string> clinicalStateIds,
+            string? dietTypeId,
+            CancellationToken cancellationToken = default)
+        {
+            var recipeIngredients = await _repo.GetRecipeIngredientsByRecipeIdAsync(patientRequest.RecipeId, cancellationToken).ConfigureAwait(false);
+
+            foreach (var recipeIngredient in recipeIngredients)
+            {
+                var ingredientId = recipeIngredient.IngredientId;
+
+                if (allergyIds.Count > 0)
+                {
+                    var allergyExclusionIds = await _repo.GetAllergyIdsByIngredientIdAsync(ingredientId, cancellationToken).ConfigureAwait(false);
+                    if (allergyIds.Any(aid => allergyExclusionIds.Contains(aid)))
+                    {
+                        patientRequest.ApprovalStatus = MealRequestAppprovalStatus.Rejected;
+                        patientRequest.StatusReason = "Allergen detected";
+                        patientRequest.UnsafeIngredientId = ingredientId;
+                        await _repo.UpdatePatientRequestAsync(patientRequest, cancellationToken).ConfigureAwait(false);
+                        return;
+                    }
+                }
+
+                if (clinicalStateIds.Count > 0)
+                {
+                    var clinicalStateExclusionIds = await _repo.GetClinicalStateIdsByIngredientIdAsync(ingredientId, cancellationToken).ConfigureAwait(false);
+                    if (clinicalStateIds.Any(cid => clinicalStateExclusionIds.Contains(cid)))
+                    {
+                        patientRequest.ApprovalStatus = MealRequestAppprovalStatus.Rejected;
+                        patientRequest.StatusReason = "Clinical state contraindication";
+                        patientRequest.UnsafeIngredientId = ingredientId;
+                        await _repo.UpdatePatientRequestAsync(patientRequest, cancellationToken).ConfigureAwait(false);
+                        return;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(dietTypeId))
+                {
+                    var dietTypeExclusionIds = await _repo.GetDietTypeExclusionIdsByIngredientIdAsync(ingredientId, cancellationToken).ConfigureAwait(false);
+                    if (dietTypeExclusionIds.Contains(dietTypeId))
+                    {
+                        patientRequest.ApprovalStatus = MealRequestAppprovalStatus.Rejected;
+                        patientRequest.StatusReason = "Diet type exclusion";
+                        patientRequest.UnsafeIngredientId = ingredientId;
+                        await _repo.UpdatePatientRequestAsync(patientRequest, cancellationToken).ConfigureAwait(false);
+                        return;
+                    }
+                }
+            }
+
+            patientRequest.ApprovalStatus = MealRequestAppprovalStatus.Accepted;
+            patientRequest.StatusReason = null;
+            patientRequest.UnsafeIngredientId = null;
+            patientRequest.FinalizedDateTime = DateTime.UtcNow;
+            await _repo.UpdatePatientRequestAsync(patientRequest, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<PatientRequestViewModel?> GetPatientRequestByIdAsync(string id, CancellationToken cancellationToken = default)

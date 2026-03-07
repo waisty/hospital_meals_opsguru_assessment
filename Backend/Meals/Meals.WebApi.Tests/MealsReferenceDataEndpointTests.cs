@@ -13,7 +13,7 @@ public sealed class MealsAllergyEndpointTests : IClassFixture<MealsWebApiFixture
     public MealsAllergyEndpointTests(MealsWebApiFixture fixture)
     {
         _fixture = fixture;
-        _fixture.MockHandler.Clear();
+        _fixture.ClearAll();
     }
 
     [Fact]
@@ -35,7 +35,7 @@ public sealed class MealsAllergyEndpointTests : IClassFixture<MealsWebApiFixture
     [Fact]
     public async Task UpdateAllergy_Existing_Returns204()
     {
-        _fixture.MockHandler.SeedAllergy("peanuts", "Peanuts");
+        _fixture.MockRepo.SeedAllergy("peanuts", "Peanuts");
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.patientsServiceClaim);
 
         var response = await client.PutAsJsonAsync("/api/v1/allergies/peanuts", new AllergyUpdateRequest { Name = "Tree Nuts" });
@@ -53,11 +53,15 @@ public sealed class MealsAllergyEndpointTests : IClassFixture<MealsWebApiFixture
     [Fact]
     public async Task GetAllergy_Existing_ReturnsOk()
     {
-        _fixture.MockHandler.SeedAllergy("shellfish", "Shellfish");
+        _fixture.MockRepo.SeedAllergy("shellfish", "Shellfish");
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
 
         var response = await client.GetAsync("/api/v1/allergies/shellfish");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var body = await response.Content.ReadFromJsonAsync<AllergyViewModel>();
+        Assert.NotNull(body);
+        Assert.Equal("Shellfish", body.Name);
     }
 
     [Fact]
@@ -71,10 +75,14 @@ public sealed class MealsAllergyEndpointTests : IClassFixture<MealsWebApiFixture
     [Fact]
     public async Task ListAllergies_ReturnsOk()
     {
-        _fixture.MockHandler.SeedAllergy("a1", "A1");
+        _fixture.MockRepo.SeedAllergy("a1", "A1");
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
         var response = await client.GetAsync("/api/v1/allergies");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var body = await response.Content.ReadFromJsonAsync<List<AllergyViewModel>>();
+        Assert.NotNull(body);
+        Assert.Single(body);
     }
 }
 
@@ -85,7 +93,7 @@ public sealed class MealsClinicalStateEndpointTests : IClassFixture<MealsWebApiF
     public MealsClinicalStateEndpointTests(MealsWebApiFixture fixture)
     {
         _fixture = fixture;
-        _fixture.MockHandler.Clear();
+        _fixture.ClearAll();
     }
 
     [Fact]
@@ -99,7 +107,7 @@ public sealed class MealsClinicalStateEndpointTests : IClassFixture<MealsWebApiF
     [Fact]
     public async Task UpdateClinicalState_Existing_Returns204()
     {
-        _fixture.MockHandler.SeedClinicalState("diabetic", "Diabetic");
+        _fixture.MockRepo.SeedClinicalState("diabetic", "Diabetic");
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.patientsServiceClaim);
 
         var response = await client.PutAsJsonAsync("/api/v1/clinical-states/diabetic", new ClinicalStateUpdateRequest { Name = "Type 2 Diabetic" });
@@ -117,20 +125,28 @@ public sealed class MealsClinicalStateEndpointTests : IClassFixture<MealsWebApiF
     [Fact]
     public async Task GetClinicalState_Existing_ReturnsOk()
     {
-        _fixture.MockHandler.SeedClinicalState("hypertension", "Hypertension");
+        _fixture.MockRepo.SeedClinicalState("hypertension", "Hypertension");
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
 
         var response = await client.GetAsync("/api/v1/clinical-states/hypertension");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var body = await response.Content.ReadFromJsonAsync<ClinicalStateViewModel>();
+        Assert.NotNull(body);
+        Assert.Equal("Hypertension", body.Name);
     }
 
     [Fact]
     public async Task ListClinicalStates_ReturnsOk()
     {
-        _fixture.MockHandler.SeedClinicalState("cs1", "CS1");
+        _fixture.MockRepo.SeedClinicalState("cs1", "CS1");
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
         var response = await client.GetAsync("/api/v1/clinical-states");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var body = await response.Content.ReadFromJsonAsync<List<ClinicalStateViewModel>>();
+        Assert.NotNull(body);
+        Assert.Single(body);
     }
 }
 
@@ -141,7 +157,7 @@ public sealed class MealsDietTypeEndpointTests : IClassFixture<MealsWebApiFixtur
     public MealsDietTypeEndpointTests(MealsWebApiFixture fixture)
     {
         _fixture = fixture;
-        _fixture.MockHandler.Clear();
+        _fixture.ClearAll();
     }
 
     [Fact]
@@ -155,7 +171,7 @@ public sealed class MealsDietTypeEndpointTests : IClassFixture<MealsWebApiFixtur
     [Fact]
     public async Task UpdateDietType_Existing_Returns204()
     {
-        _fixture.MockHandler.SeedDietType("vegan", "Vegan");
+        _fixture.MockRepo.SeedDietType("vegan", "Vegan");
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.patientsServiceClaim);
 
         var response = await client.PutAsJsonAsync("/api/v1/diet-types/vegan", new DietTypeUpdateRequest { Name = "Strict Vegan" });
@@ -173,11 +189,15 @@ public sealed class MealsDietTypeEndpointTests : IClassFixture<MealsWebApiFixtur
     [Fact]
     public async Task GetDietType_Existing_ReturnsOk()
     {
-        _fixture.MockHandler.SeedDietType("keto", "Keto");
+        _fixture.MockRepo.SeedDietType("keto", "Keto");
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
 
         var response = await client.GetAsync("/api/v1/diet-types/keto");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var body = await response.Content.ReadFromJsonAsync<DietTypeViewModel>();
+        Assert.NotNull(body);
+        Assert.Equal("Keto", body.Name);
     }
 
     [Fact]
@@ -191,11 +211,15 @@ public sealed class MealsDietTypeEndpointTests : IClassFixture<MealsWebApiFixtur
     [Fact]
     public async Task ListDietTypes_ReturnsOk()
     {
-        _fixture.MockHandler.SeedDietType("dt1", "DT1");
-        _fixture.MockHandler.SeedDietType("dt2", "DT2");
+        _fixture.MockRepo.SeedDietType("dt1", "DT1");
+        _fixture.MockRepo.SeedDietType("dt2", "DT2");
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
 
         var response = await client.GetAsync("/api/v1/diet-types");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var body = await response.Content.ReadFromJsonAsync<List<DietTypeViewModel>>();
+        Assert.NotNull(body);
+        Assert.Equal(2, body.Count);
     }
 }

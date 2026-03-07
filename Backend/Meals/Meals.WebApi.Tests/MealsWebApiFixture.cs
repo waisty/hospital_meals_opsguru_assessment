@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Hospital.Meals.Core.Contracts;
+using Hospital.Meals.Core.Implementation;
 using Hospital.Meals.WebApi.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
@@ -34,14 +35,30 @@ public sealed class MealsWebApiFixture : WebApplicationFactory<Program>
         builder.ConfigureServices((context, services) =>
         {
             services.AddJwtAuthentication(context.Configuration);
-            services.AddSingleton<MockMealsHandler>();
-            services.AddScoped<IMealsHandler>(sp => sp.GetRequiredService<MockMealsHandler>());
+
+            services.AddSingleton<MockMealsRepo>();
+            services.AddSingleton<MockPatientApiClient>();
+            services.AddSingleton<MockKitchenApiClient>();
+
+            services.AddScoped<IMealsRepo>(sp => sp.GetRequiredService<MockMealsRepo>());
+            services.AddScoped<IPatientApiClient>(sp => sp.GetRequiredService<MockPatientApiClient>());
+            services.AddScoped<IKitchenApiClient>(sp => sp.GetRequiredService<MockKitchenApiClient>());
+            services.AddScoped<IMealsHandler, MealsHandler>();
         });
 
         return base.CreateHost(builder);
     }
 
-    public MockMealsHandler MockHandler => Services.GetRequiredService<MockMealsHandler>();
+    internal MockMealsRepo MockRepo => Services.GetRequiredService<MockMealsRepo>();
+    internal MockPatientApiClient MockPatientApi => Services.GetRequiredService<MockPatientApiClient>();
+    internal MockKitchenApiClient MockKitchenApi => Services.GetRequiredService<MockKitchenApiClient>();
+
+    public void ClearAll()
+    {
+        MockRepo.Clear();
+        MockPatientApi.Clear();
+        MockKitchenApi.Clear();
+    }
 
     public HttpClient CreateAuthenticatedClient(params string[] claimTypes)
     {

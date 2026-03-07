@@ -13,7 +13,7 @@ public sealed class RecipeEndpointTests : IClassFixture<MealsWebApiFixture>
     public RecipeEndpointTests(MealsWebApiFixture fixture)
     {
         _fixture = fixture;
-        _fixture.MockHandler.Clear();
+        _fixture.ClearAll();
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public sealed class RecipeEndpointTests : IClassFixture<MealsWebApiFixture>
     [Fact]
     public async Task GetRecipe_Existing_ReturnsOk()
     {
-        _fixture.MockHandler.SeedRecipe("recipe-1", "Chicken Soup Recipe");
+        _fixture.MockRepo.SeedRecipe("recipe-1", "Chicken Soup Recipe");
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
 
         var response = await client.GetAsync("/api/v1/recipes/recipe-1");
@@ -61,7 +61,10 @@ public sealed class RecipeEndpointTests : IClassFixture<MealsWebApiFixture>
     [Fact]
     public async Task GetRecipeDetail_Existing_ReturnsOk()
     {
-        _fixture.MockHandler.SeedRecipe("recipe-det", "Detail Recipe");
+        _fixture.MockRepo.SeedRecipe("recipe-det", "Detail Recipe");
+        _fixture.MockRepo.SeedIngredient("chicken", "Chicken");
+        _fixture.MockRepo.SeedRecipeIngredient("recipe-det", "chicken", 200, "g");
+
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
 
         var response = await client.GetAsync("/api/v1/recipes/recipe-det/detail");
@@ -70,6 +73,8 @@ public sealed class RecipeEndpointTests : IClassFixture<MealsWebApiFixture>
         var body = await response.Content.ReadFromJsonAsync<RecipeDetailViewModel>();
         Assert.NotNull(body);
         Assert.Equal("Detail Recipe", body.Name);
+        Assert.Single(body.Ingredients);
+        Assert.Equal("chicken", body.Ingredients[0].IngredientId);
     }
 
     [Fact]
@@ -83,11 +88,15 @@ public sealed class RecipeEndpointTests : IClassFixture<MealsWebApiFixture>
     [Fact]
     public async Task ListRecipes_ReturnsPagedResult()
     {
-        _fixture.MockHandler.SeedRecipe("r1", "R1");
+        _fixture.MockRepo.SeedRecipe("r1", "R1");
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
 
         var response = await client.GetAsync("/api/v1/recipes?page=1&pageSize=10");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var body = await response.Content.ReadFromJsonAsync<PagedResult<RecipeViewModel>>();
+        Assert.NotNull(body);
+        Assert.Equal(1, body.TotalCount);
     }
 
     // ── Recipe ingredients ──────────────────────────────────────────
@@ -95,14 +104,25 @@ public sealed class RecipeEndpointTests : IClassFixture<MealsWebApiFixture>
     [Fact]
     public async Task GetRecipeIngredients_ReturnsOk()
     {
+        _fixture.MockRepo.SeedRecipe("r1", "Recipe 1");
+        _fixture.MockRepo.SeedIngredient("chicken", "Chicken");
+        _fixture.MockRepo.SeedRecipeIngredient("r1", "chicken", 200, "g");
+
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
         var response = await client.GetAsync("/api/v1/recipes/r1/ingredients");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var body = await response.Content.ReadFromJsonAsync<List<RecipeIngredientViewModel>>();
+        Assert.NotNull(body);
+        Assert.Single(body);
     }
 
     [Fact]
     public async Task SetRecipeIngredients_WithMealsAdminClaim_Returns204()
     {
+        _fixture.MockRepo.SeedRecipe("r1", "Recipe 1");
+        _fixture.MockRepo.SeedIngredient("chicken", "Chicken");
+
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsAdminClaim);
         var request = new SetRecipeIngredientsRequest
         {

@@ -26,12 +26,8 @@ namespace Hospital.Meals.Core.Contracts
         Task SetRecipeIngredientsForRecipeAsync(string recipeId, IReadOnlyList<RecipeIngredient> recipeIngredients, CancellationToken cancellationToken = default);
 
         // Patient request
-        //Task AddPatientRequestAsync(PatientRequest request, CancellationToken cancellationToken = default);
+        Task AddPatientRequestAsync(PatientRequest request, CancellationToken cancellationToken = default);
         Task UpdatePatientRequestAsync(PatientRequest request, CancellationToken cancellationToken = default);
-        /// <summary>
-        /// Adds the patient request, fetches patient state, verifies recipe safety (allergies, clinical states, diet type), and updates the request. Returns the new request id.
-        /// </summary>
-        Task<(Guid requestId, MealRequestAppprovalStatus status, string? statusReason, string unsafeIngredientId)> AddPatientRequestWithSafetyCheckAsync(PatientRequestCreateRequest request, CancellationToken cancellationToken);
         Task<PatientRequest?> GetPatientRequestByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<PagedResult<PatientRequest>> ListPatientRequestsAsync(int page, int pageSize, CancellationToken cancellationToken = default);
 
