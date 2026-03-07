@@ -10,13 +10,16 @@
       <div class="header-row">
         <h2>Recipe details</h2>
         <div class="header-actions">
-          @if (canAddToMeal()) {
+          @if (canAddToMeal() && !d.mappedMealName) {
             <button type="button" class="btn-secondary" (click)="openAddToMealModal()">Add to meal</button>
           }
           <app-edit-button [link]="['/meals/setup/recipes', d.id, 'edit']" title="Edit recipe" />
         </div>
       </div>
       <p class="subtitle">{{ d.name }}</p>
+      @if (d.mappedMealName) {
+        <p class="mapped-meal">Mapped to meal: <strong>{{ d.mappedMealName }}</strong></p>
+      }
     </header>
 
     <div class="detail-layout">

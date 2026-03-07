@@ -66,6 +66,7 @@ export class RecipeEditComponent {
               name: '',
               description: null,
               disabled: false,
+              mappedMealName: null,
               ingredients: [],
             });
             this.formName.set('');
@@ -276,10 +277,18 @@ export class RecipeEditComponent {
       next: () => {
         this.addingMealId.set(null);
         this.closeAddToMealModal();
+        this.error.set(null);
+        this.detail.update((prev) => (prev ? { ...prev, mappedMealName: meal.name } : null));
       },
-      error: () => {
+      error: (err) => {
         this.addingMealId.set(null);
-        this.error.set('Failed to add recipe to meal.');
+        const body = err?.error as { existingMealName?: string } | undefined;
+        const existingName = body?.existingMealName;
+        this.error.set(
+          existingName
+            ? `This recipe is already assigned to meal "${existingName}".`
+            : 'Failed to add recipe to meal.'
+        );
       },
     });
   }

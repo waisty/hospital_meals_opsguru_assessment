@@ -82,7 +82,7 @@
   }
 
   .col-actions {
-    width: 6rem;
+    width: 8rem;
     text-align: right;
     white-space: nowrap;
 
@@ -103,6 +103,43 @@
       &:disabled {
         opacity: 0.7;
         cursor: not-allowed;
+      }
+    }
+
+    .confirm-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .btn-confirm {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #fff;
+      background: #2563eb;
+      border: 1px solid #2563eb;
+      border-radius: 0.25rem;
+      cursor: pointer;
+
+      &:hover {
+        background: #1d4ed8;
+        border-color: #1d4ed8;
+      }
+    }
+
+    .btn-cancel {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #374151;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.25rem;
+      cursor: pointer;
+
+      &:hover {
+        background: #e5e7eb;
       }
     }
   }

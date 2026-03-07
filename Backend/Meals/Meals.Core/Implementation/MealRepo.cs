@@ -99,6 +99,19 @@ namespace Hospital.Meals.Core.Implementation
                 .ConfigureAwait(false);
         }
 
+        public async Task<Meal?> GetMealByRecipeIdAsync(string recipeId, CancellationToken cancellationToken = default)
+        {
+            var mealId = await _context.MealRecipes
+                .Where(mr => mr.RecipeId == recipeId)
+                .Select(mr => mr.MealId)
+                .FirstOrDefaultAsync(cancellationToken)
+                .ConfigureAwait(false);
+            if (string.IsNullOrEmpty(mealId)) return null;
+            return await _context.Meals
+                .FirstOrDefaultAsync(m => m.Id == mealId, cancellationToken)
+                .ConfigureAwait(false);
+        }
+
         public async Task<bool> UpdateMealAsync(string id, string name, string? description, CancellationToken cancellationToken = default)
         {
             var meal = await _context.Meals.FirstOrDefaultAsync(m => m.Id == id, cancellationToken).ConfigureAwait(false);

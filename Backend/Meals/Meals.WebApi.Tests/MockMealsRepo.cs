@@ -43,6 +43,12 @@ internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, I
         _mealRecipes.Add(new MealRecipe { MealId = id, RecipeId = recipeId, Disabled = false });
     }
 
+    /// <summary>Seeds a meal with no recipes (e.g. for testing add-recipe when recipe is already in another meal).</summary>
+    public void SeedMealOnly(string id, string name)
+    {
+        _meals[id] = new Meal { Id = id, Name = name, Description = null };
+    }
+
     public void SeedRecipe(string id, string name, string? description = null) =>
         _recipes[id] = new Recipe { Id = id, Name = name, Description = description };
 
@@ -88,6 +94,14 @@ internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, I
     {
         var list = _mealRecipes.Where(mr => mr.MealId == mealId).OrderBy(mr => mr.RecipeId).ToList();
         return Task.FromResult<IReadOnlyList<MealRecipe>>(list);
+    }
+
+    public Task<Meal?> GetMealByRecipeIdAsync(string recipeId, CancellationToken ct = default)
+    {
+        var mealId = _mealRecipes.Where(mr => mr.RecipeId == recipeId).Select(mr => mr.MealId).FirstOrDefault();
+        if (string.IsNullOrEmpty(mealId)) return Task.FromResult<Meal?>(null);
+        _meals.TryGetValue(mealId, out var meal);
+        return Task.FromResult(meal);
     }
 
     public Task<IReadOnlyDictionary<string, int>> GetRecipeCountByMealIdsAsync(IEnumerable<string> mealIds, CancellationToken ct = default)

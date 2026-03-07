@@ -149,9 +149,15 @@ export class MealEditComponent {
               this.saving.set(false);
               this.refreshMealDetail();
             },
-            error: () => {
+            error: (err) => {
               this.saving.set(false);
-              this.error.set('Failed to add some recipes. Please try again.');
+              const body = err?.error as { existingMealName?: string } | undefined;
+              const name = body?.existingMealName;
+              this.error.set(
+                name
+                  ? `A recipe could not be added: it is already assigned to meal "${name}".`
+                  : 'Failed to add some recipes. Please try again.'
+              );
             },
           });
         },

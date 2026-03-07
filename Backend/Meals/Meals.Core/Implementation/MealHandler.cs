@@ -79,9 +79,17 @@ namespace Hospital.Meals.Core.Implementation
             return result;
         }
 
-        public async Task<bool> AddRecipeToMealAsync(string mealId, string recipeId, CancellationToken cancellationToken = default)
+        public async Task<AddRecipeToMealResult> AddRecipeToMealAsync(string mealId, string recipeId, CancellationToken cancellationToken = default)
         {
-            return await _repo.AddRecipeToMealAsync(mealId, recipeId, cancellationToken).ConfigureAwait(false);
+            var existingMeal = await _repo.GetMealByRecipeIdAsync(recipeId, cancellationToken).ConfigureAwait(false);
+            if (existingMeal != null)
+            {
+                if (existingMeal.Id == mealId)
+                    return new AddRecipeToMealResult { Success = false, ExistingMealName = null };
+                return new AddRecipeToMealResult { Success = false, ExistingMealName = existingMeal.Name };
+            }
+            var added = await _repo.AddRecipeToMealAsync(mealId, recipeId, cancellationToken).ConfigureAwait(false);
+            return new AddRecipeToMealResult { Success = added, ExistingMealName = null };
         }
 
         public async Task<bool> SetMealRecipeDisabledAsync(string mealId, string recipeId, bool disabled, CancellationToken cancellationToken = default)

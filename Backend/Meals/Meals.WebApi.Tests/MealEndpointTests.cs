@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 using Hospital.Meals.Core.Contracts;
 using Hospital.Meals.ViewModels;
 using Xunit;
@@ -100,5 +101,24 @@ public sealed class MealEndpointTests : IClassFixture<MealsWebApiFixture>
         var body = await response.Content.ReadFromJsonAsync<PagedResult<MealViewModel>>();
         Assert.NotNull(body);
         Assert.Equal(2, body.TotalCount);
+    }
+
+    // ── POST /api/v1/meals/{id}/recipes ────────────────────────────────────
+
+    [Fact]
+    public async Task AddRecipeToMeal_RecipeAlreadyInAnotherMeal_Returns409WithExistingMealName()
+    {
+        _fixture.MockRepo.SeedRecipe("recipe-1", "Chicken Soup");
+        _fixture.MockRepo.SeedMeal("meal-a", "Meal A", "recipe-1");
+        _fixture.MockRepo.SeedMealOnly("meal-b", "Meal B");
+
+        using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsAdminClaim);
+        var request = new AddRecipeToMealRequest { RecipeId = "recipe-1" };
+        var response = await client.PostAsJsonAsync("/api/v1/meals/meal-b/recipes", request);
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        var body = await response.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.True(body.TryGetProperty("existingMealName", out var nameProp));
+        Assert.Equal("Meal A", nameProp.GetString());
     }
 }

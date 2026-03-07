@@ -14,7 +14,7 @@
             <p class="subtitle">{{ d.name }}</p>
           }
         </div>
-        @if (!isCreateMode() && canAddToMeal()) {
+        @if (!isCreateMode() && canAddToMeal() && !d.mappedMealName) {
           <button type="button" class="btn-secondary" (click)="openAddToMealModal()">Add to meal</button>
         }
       </div>

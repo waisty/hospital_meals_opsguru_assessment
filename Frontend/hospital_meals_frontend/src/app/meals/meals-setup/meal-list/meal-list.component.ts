@@ -37,6 +37,8 @@ export class MealListComponent {
   readonly pageSize = signal(10);
   readonly searchTerm = signal('');
   readonly listError = signal<string | null>(null);
+  /** When in selection mode, the meal currently chosen for confirm (before emitting). */
+  readonly pendingMeal = signal<MealViewModel | null>(null);
 
   readonly recipes = toSignal(
     this.recipeService.listRecipes(1, 500, null).pipe(map((p) => p.items)),
@@ -120,7 +122,18 @@ export class MealListComponent {
 
   onSelectMeal(meal: MealViewModel): void {
     if (this.addingMealId() !== null) return;
+    this.pendingMeal.set(meal);
+  }
+
+  onConfirmSelection(): void {
+    const meal = this.pendingMeal();
+    if (!meal) return;
+    this.pendingMeal.set(null);
     this.mealSelected.emit(meal);
+  }
+
+  onCancelSelection(): void {
+    this.pendingMeal.set(null);
   }
 
   onSearchInput(value: string): void {

@@ -43,8 +43,11 @@ public static class MealEndpointMappings
 
         group.MapPost("/meals/{id}/recipes", async (string id, AddRecipeToMealRequest request, IMealHandler handler, CancellationToken ct) =>
         {
-            var added = await handler.AddRecipeToMealAsync(id, request.RecipeId, ct);
-            return added ? Results.NoContent() : Results.Conflict();
+            var result = await handler.AddRecipeToMealAsync(id, request.RecipeId, ct);
+            if (result.Success) return Results.NoContent();
+            return result.ExistingMealName != null
+                ? Results.Conflict(new { existingMealName = result.ExistingMealName })
+                : Results.Conflict();
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
 
         group.MapPut("/meals/{mealId}/recipes/{recipeId}/disabled", async (string mealId, string recipeId, SetMealRecipeDisabledRequest request, IMealHandler handler, CancellationToken ct) =>

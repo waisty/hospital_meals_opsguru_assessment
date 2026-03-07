@@ -7,10 +7,12 @@ namespace Hospital.Meals.Core.Implementation
     internal sealed class RecipeHandler : IRecipeHandler
     {
         private readonly IRecipeRepo _repo;
+        private readonly IMealRepo _mealRepo;
 
-        public RecipeHandler(IRecipeRepo repo)
+        public RecipeHandler(IRecipeRepo repo, IMealRepo mealRepo)
         {
             _repo = repo;
+            _mealRepo = mealRepo;
         }
 
         public async Task AddRecipeAsync(RecipeCreateRequest request, CancellationToken cancellationToken = default)
@@ -41,7 +43,8 @@ namespace Hospital.Meals.Core.Implementation
             if (recipe == null) return null;
 
             var ingredients = await _repo.GetRecipeIngredientsByRecipeIdAsync(id, cancellationToken).ConfigureAwait(false);
-            return recipe.ToRecipeDetailViewModel(ingredients);
+            var mappedMeal = await _mealRepo.GetMealByRecipeIdAsync(id, cancellationToken).ConfigureAwait(false);
+            return recipe.ToRecipeDetailViewModel(ingredients, mappedMeal?.Name);
         }
 
         public async Task<PagedResult<RecipeViewModel>> ListRecipesAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default)

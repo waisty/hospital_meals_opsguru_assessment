@@ -38,14 +38,22 @@
               <td>{{ getRecipesSummary(m) }}</td>
               @if (selectionMode()) {
                 <td class="col-actions">
-                  <button
-                    type="button"
-                    class="btn-select"
-                    [disabled]="addingMealId() === m.id"
-                    (click)="onSelectMeal(m); $event.stopPropagation()"
-                  >
-                    {{ addingMealId() === m.id ? 'Adding…' : 'Select' }}
-                  </button>
+                  @if (addingMealId() === m.id) {
+                    <button type="button" class="btn-select" disabled>Adding…</button>
+                  } @else if (pendingMeal()?.id === m.id) {
+                    <span class="confirm-actions">
+                      <button type="button" class="btn-confirm" (click)="onConfirmSelection(); $event.stopPropagation()">Confirm</button>
+                      <button type="button" class="btn-cancel" (click)="onCancelSelection(); $event.stopPropagation()">Cancel</button>
+                    </span>
+                  } @else {
+                    <button
+                      type="button"
+                      class="btn-select"
+                      (click)="onSelectMeal(m); $event.stopPropagation()"
+                    >
+                      Select
+                    </button>
+                  }
                 </td>
               } @else if (showEditButton()) {
                 <td class="col-actions">

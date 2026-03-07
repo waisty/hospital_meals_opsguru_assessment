@@ -48,12 +48,13 @@ namespace Hospital.Meals.Core.Implementation
             Disabled = recipe.Disabled
         };
 
-        public static RecipeDetailViewModel ToRecipeDetailViewModel(this Recipe recipe, IReadOnlyList<RecipeIngredientWithName> ingredients) => new()
+        public static RecipeDetailViewModel ToRecipeDetailViewModel(this Recipe recipe, IReadOnlyList<RecipeIngredientWithName> ingredients, string? mappedMealName = null) => new()
         {
             Id = recipe.Id,
             Name = recipe.Name,
             Description = recipe.Description,
             Disabled = recipe.Disabled,
+            MappedMealName = mappedMealName,
             Ingredients = ingredients.Select(ri => ri.ToRecipeIngredientViewModel()).ToList()
         };
 
