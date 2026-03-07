@@ -6,48 +6,11 @@
   } @else if (result() === null) {
     <p class="loading">Loading…</p>
   } @else {
-    <div class="table-wrap">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Mobile</th>
-            <th>Diet Type</th>
-            <th>Allergies / Clinical states</th>
-            <th class="col-actions"></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (p of items; track p.id) {
-            <tr class="clickable-row" (click)="navigateToDetail(p.id)">
-              <td>{{ p.firstName }} {{ p.middleName }} {{ p.lastName }}</td>
-              <td>{{ p.mobileNumber }}</td>
-              <td>{{ p.dietTypeName }}</td>
-              <td class="col-allergies">
-                <ul class="tag-list">
-                  @for (name of getAllergyNames(p.id); track name) {
-                    <li class="tag tag-allergy">{{ name }}</li>
-                  }
-                  @for (name of getClinicalStateNames(p.id); track name) {
-                    <li class="tag tag-clinical-state">{{ name }}</li>
-                  }
-                  @if (getAllergyNames(p.id).length === 0 && getClinicalStateNames(p.id).length === 0) {
-                    <li class="no-allergies">—</li>
-                  }
-                </ul>
-              </td>
-              <td class="col-actions">
-                <a [routerLink]="['/patient/patients', p.id, 'edit']" class="btn-edit" title="Edit patient" (click)="$event.stopPropagation()">Edit</a>
-              </td>
-            </tr>
-          } @empty {
-            <tr>
-              <td colspan="5" class="empty">No patients found.</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-patient-list
+      [items]="items"
+      [showEditButton]="true"
+      [clickToNavigateEnabled]="true"
+    />
     <app-pagination
       [page]="page()"
       [pageSize]="pageSize()"
