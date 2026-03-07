@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Meals.ViewModels\Hospital.Meals.ViewModels.csproj" />
+    <ProjectReference Include="..\Meals.ServiceViewModels\Hospital.Meals.ServiceViewModels.csproj" />
   </ItemGroup>
 
 </Project>

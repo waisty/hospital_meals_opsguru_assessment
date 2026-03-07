@@ -1,10 +1,11 @@
 using System.Net;
 using System.Net.Http.Json;
 using Hospital.Kitchen.Core.Contracts;
+using Hospital.Kitchen.ServiceViewModels;
 using Hospital.Kitchen.ViewModels;
 using Xunit;
-using CoreCreateTrayRequest = Hospital.Kitchen.Core.Contracts.CreateTrayRequest;
-using CoreTrayIngredientItem = Hospital.Kitchen.Core.Contracts.TrayIngredientItem;
+using CoreCreateTrayRequest = Hospital.Kitchen.ServiceViewModels.CreateTrayRequest;
+using CoreTrayIngredientItem = Hospital.Kitchen.ServiceViewModels.TrayIngredientItem;
 
 namespace Hospital.Kitchen.WebApi.Tests;
 

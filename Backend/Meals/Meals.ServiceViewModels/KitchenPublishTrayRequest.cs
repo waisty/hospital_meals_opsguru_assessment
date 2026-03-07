@@ -1,4 +1,4 @@
-namespace Hospital.Meals.ViewModels;
+namespace Hospital.Meals.ServiceViewModels;
 
 /// <summary>
 /// Request shape for publishing a tray to the Kitchen API (POST /api/v1/trays).

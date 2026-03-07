@@ -1,4 +1,5 @@
 using Hospital.Meals.Core.InternalModels;
+using Hospital.Meals.ServiceViewModels;
 using Hospital.Meals.ViewModels;
 using static Hospital.Meals.Core.Contracts.Enums;
 

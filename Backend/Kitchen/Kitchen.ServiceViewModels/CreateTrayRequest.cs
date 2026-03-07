@@ -1,4 +1,6 @@
-namespace Hospital.Kitchen.Core.Contracts
+using static Hospital.Kitchen.Core.Contracts.Enums;
+
+namespace Hospital.Kitchen.ServiceViewModels
 {
     public sealed class TrayIngredientItem
     {
@@ -13,7 +15,7 @@ namespace Hospital.Kitchen.Core.Contracts
         public string PatientId { get; set; } = "";
         public string PatientName { get; set; } = "";
         public string RecipeName { get; set; } = "";
-        public Enums.TrayState State { get; set; } = Enums.TrayState.Pending;
+        public TrayState State { get; set; } = TrayState.Pending;
         public IReadOnlyList<TrayIngredientItem> Ingredients { get; set; } = [];
     }
 }

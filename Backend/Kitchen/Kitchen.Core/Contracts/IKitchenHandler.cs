@@ -1,3 +1,6 @@
+using Hospital.Kitchen.ServiceViewModels;
+using Hospital.Kitchen.ViewModels;
+
 namespace Hospital.Kitchen.Core.Contracts
 {
     public interface IKitchenHandler

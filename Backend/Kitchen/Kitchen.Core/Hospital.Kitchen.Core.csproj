@@ -25,4 +25,9 @@
     <Folder Include="Repos\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Kitchen.ViewModels\Hospital.Kitchen.ViewModels.csproj" />
+    <ProjectReference Include="..\Kitchen.ServiceViewModels\Hospital.Kitchen.ServiceViewModels.csproj" />
+  </ItemGroup>
+
 </Project>

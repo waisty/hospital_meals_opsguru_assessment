@@ -2,7 +2,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Hospital.Meals.Core.Contracts;
-using Hospital.Meals.ViewModels;
+using Hospital.Meals.ServiceViewModels;
 using Microsoft.Extensions.Configuration;
 
 namespace Hospital.Meals.Core.Implementation;

@@ -1,4 +1,5 @@
 using Hospital.Kitchen.Core.Contracts;
+using Hospital.Kitchen.ServiceViewModels;
 using Hospital.Kitchen.ViewModels;
 using Hospital.Kitchen.WebApi.Authentication;
 
@@ -12,7 +13,7 @@ public static class EndpointMapping
 
         var api = app.MapGroup("/api/v1");
 
-        api.MapPost("/trays", async (Hospital.Kitchen.Core.Contracts.CreateTrayRequest request, IKitchenHandler handler, CancellationToken ct) =>
+        api.MapPost("/trays", async (CreateTrayRequest request, IKitchenHandler handler, CancellationToken ct) =>
         {
             var trayId = await handler.CreateTrayAsync(request, ct);
             return Results.Created($"/api/v1/trays/{trayId}", new { id = trayId });

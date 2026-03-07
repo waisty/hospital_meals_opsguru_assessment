@@ -1,4 +1,4 @@
-using Hospital.Meals.ViewModels;
+using Hospital.Meals.ServiceViewModels;
 
 namespace Hospital.Meals.Core.Contracts;
 

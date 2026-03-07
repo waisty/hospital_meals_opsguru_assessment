@@ -1,5 +1,6 @@
 <Solution>
     <Project Path="Meals.Core/Hospital.Meals.Core.csproj" Id="f6527b1d-5f24-4e31-bc12-1851aab65ad4" />
+    <Project Path="Meals.ServiceViewModels/Hospital.Meals.ServiceViewModels.csproj" />
     <Project Path="Meals.ViewModels/Hospital.Meals.ViewModels.csproj" Id="a39ec85d-076b-4ff1-9cd5-6321efe043b3" />
     <Project Path="Meals.WebApi.Tests/Hospital.Meals.WebApi.Tests.csproj" />
     <Project Path="Meals.WebApi/Hospital.Meals.WebApi.csproj" Id="01c6fe4a-bdda-4072-a73d-43f0d5e3ac19" />
