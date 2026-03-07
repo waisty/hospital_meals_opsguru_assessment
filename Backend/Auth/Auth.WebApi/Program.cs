@@ -6,9 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-if (builder.Environment.IsEnvironment("Testing"))
-    builder.Services.AddMockAuthServicesForTesting();
-else
+if (!builder.Environment.IsEnvironment("Testing"))
     builder.Services.AddAuthServices(builder.Configuration);
 
 var app = builder.Build();

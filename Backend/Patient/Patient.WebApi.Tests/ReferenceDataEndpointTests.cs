@@ -13,7 +13,7 @@ public sealed class AllergyEndpointTests : IClassFixture<PatientWebApiFixture>
     public AllergyEndpointTests(PatientWebApiFixture fixture)
     {
         _fixture = fixture;
-        _fixture.MockHandler.Clear();
+        _fixture.ClearAll();
     }
 
     [Fact]
@@ -138,7 +138,7 @@ public sealed class ClinicalStateEndpointTests : IClassFixture<PatientWebApiFixt
     public ClinicalStateEndpointTests(PatientWebApiFixture fixture)
     {
         _fixture = fixture;
-        _fixture.MockHandler.Clear();
+        _fixture.ClearAll();
     }
 
     [Fact]
@@ -222,7 +222,7 @@ public sealed class DietTypeEndpointTests : IClassFixture<PatientWebApiFixture>
     public DietTypeEndpointTests(PatientWebApiFixture fixture)
     {
         _fixture = fixture;
-        _fixture.MockHandler.Clear();
+        _fixture.ClearAll();
     }
 
     [Fact]

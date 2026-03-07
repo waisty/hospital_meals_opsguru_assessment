@@ -16,7 +16,7 @@ public sealed class TrayEndpointTests : IClassFixture<KitchenWebApiFixture>
     public TrayEndpointTests(KitchenWebApiFixture fixture)
     {
         _fixture = fixture;
-        _fixture.MockHandler.Clear();
+        _fixture.ClearAll();
     }
 
     // ── Health / root ───────────────────────────────────────────────

@@ -43,6 +43,14 @@ public sealed class PatientWebApiFixture : WebApplicationFactory<Program>
 
     public MockPatientHandler MockHandler => Services.GetRequiredService<MockPatientHandler>();
 
+    /// <summary>
+    /// Clears all mock data for test isolation. Call from test class constructors.
+    /// </summary>
+    public void ClearAll()
+    {
+        MockHandler.Clear();
+    }
+
     public HttpClient CreateAuthenticatedClient(params string[] claimTypes)
     {
         var client = CreateClient();

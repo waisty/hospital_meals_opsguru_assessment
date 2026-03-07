@@ -13,7 +13,7 @@ public sealed class PatientEndpointTests : IClassFixture<PatientWebApiFixture>
     public PatientEndpointTests(PatientWebApiFixture fixture)
     {
         _fixture = fixture;
-        _fixture.MockHandler.Clear();
+        _fixture.ClearAll();
     }
 
     // ── Health ───────────────────────────────────────────────────────

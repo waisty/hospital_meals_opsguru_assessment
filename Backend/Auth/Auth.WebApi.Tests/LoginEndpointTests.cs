@@ -13,6 +13,7 @@ public sealed class LoginEndpointTests : IClassFixture<AuthWebApiFixture>
     public LoginEndpointTests(AuthWebApiFixture fixture)
     {
         _fixture = fixture;
+        _fixture.ClearAll();
     }
 
     // ── Health ───────────────────────────────────────────────────────

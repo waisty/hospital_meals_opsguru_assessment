@@ -43,6 +43,14 @@ public sealed class KitchenWebApiFixture : WebApplicationFactory<Program>
 
     public MockKitchenHandler MockHandler => Services.GetRequiredService<MockKitchenHandler>();
 
+    /// <summary>
+    /// Clears all mock data for test isolation. Call from test class constructors.
+    /// </summary>
+    public void ClearAll()
+    {
+        MockHandler.Clear();
+    }
+
     public HttpClient CreateAuthenticatedClient(params string[] claimTypes)
     {
         var client = CreateClient();
@@ -51,7 +59,7 @@ public sealed class KitchenWebApiFixture : WebApplicationFactory<Program>
         return client;
     }
 
-    public static string GenerateTestToken(string[] claimTypes)
+    public static string GenerateTestToken(params string[] claimTypes)
     {
         var claims = claimTypes.Select(c => new Claim(c, "True")).ToList();
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TestJwtKey));
