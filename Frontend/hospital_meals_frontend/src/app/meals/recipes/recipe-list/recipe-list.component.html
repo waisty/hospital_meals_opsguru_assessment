@@ -25,20 +25,27 @@
             <th>Name</th>
             <th>Description</th>
             <th>Meal</th>
-            @if (selectionMode()) {
+            <th>Exclusions</th>
+            @if (selectionMode() && showSelectButton()) {
               <th class="col-actions"></th>
-            } @else if (showEditButton()) {
+            } @else if (!selectionMode() && showEditButton()) {
               <th class="col-actions"></th>
             }
           </tr>
         </thead>
         <tbody>
           @for (r of items; track r.id) {
-            <tr [class.clickable-row]="clickToNavigateEnabled() && !selectionMode()" (click)="onRowClick(r.id)">
+            <tr
+              [class.clickable-row]="(clickToNavigateEnabled() && !selectionMode()) || (selectionMode() && !showSelectButton())"
+              (click)="onRowClick(r)"
+            >
               <td>{{ r.name }}</td>
-              <td>{{ r.description ?? '—' }}</td>
-              <td>{{ r.mappedMealName ?? '—' }}</td>
-              @if (selectionMode()) {
+              <td>{{ r.description ?? '-' }}</td>
+              <td>{{ r.mappedMealName ?? '-' }}</td>
+              <td class="exclusions-cell">
+                <app-recipe-exclusion-tags [summary]="getExclusionSummary(r.id)" />
+              </td>
+              @if (selectionMode() && showSelectButton()) {
                 <td class="col-actions">
                   @if (isAlreadySelected(r.id)) {
                     <span class="muted">Already added</span>
@@ -53,7 +60,7 @@
                     </button>
                   }
                 </td>
-              } @else if (showEditButton()) {
+              } @else if (!selectionMode() && showEditButton()) {
                 <td class="col-actions">
                   <app-edit-button [link]="['/meals/setup/recipes', r.id, 'edit']" title="Edit recipe" [stopPropagation]="true" />
                 </td>
@@ -61,7 +68,7 @@
             </tr>
           } @empty {
             <tr>
-              <td [attr.colspan]="selectionMode() || showEditButton() ? 4 : 3" class="empty">No recipes found.</td>
+              <td [attr.colspan]="(selectionMode() && showSelectButton()) || (!selectionMode() && showEditButton()) ? 5 : 4" class="empty">No recipes found.</td>
             </tr>
           }
         </tbody>

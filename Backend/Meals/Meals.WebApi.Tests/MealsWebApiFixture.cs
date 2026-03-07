@@ -51,6 +51,7 @@ public sealed class MealsWebApiFixture : WebApplicationFactory<Program>
             services.AddScoped<IRecipeHandler, RecipeHandler>();
             services.AddScoped<IIngredientHandler, IngredientHandler>();
             services.AddScoped<IPatientRequestHandler, PatientRequestHandler>();
+            services.AddScoped<IRecipeSafetyService, RecipeSafetyService>();
             services.AddScoped<IReferenceDataHandler, ReferenceDataHandler>();
         });
 

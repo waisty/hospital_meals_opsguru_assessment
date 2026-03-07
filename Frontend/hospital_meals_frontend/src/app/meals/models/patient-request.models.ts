@@ -28,3 +28,9 @@ export interface PatientRequestCreateResponse {
   statusReason: string;
   unsafeIngredientId: string;
 }
+
+export interface SafetyCheckViewModel {
+  isSafe: boolean;
+  statusReason: string | null;
+  unsafeIngredientId: string | null;
+}

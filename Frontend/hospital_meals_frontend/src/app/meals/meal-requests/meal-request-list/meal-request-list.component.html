@@ -34,8 +34,12 @@
               <td>{{ r.patientName }}</td>
               <td>{{ r.recipeId }}</td>
               <td>{{ formatDate(r.requestedDateTime) }}</td>
-              <td>{{ approvalStatusLabel(r.approvalStatus) }}</td>
-              <td>{{ r.statusReason ?? '—' }}</td>
+              <td>
+                <span class="status-badge {{ statusBadgeClass(r.approvalStatus) }}">
+                  {{ approvalStatusLabel(r.approvalStatus) }}
+                </span>
+              </td>
+              <td>{{ r.statusReason ?? '-' }}</td>
               <td>{{ formatDate(r.finalizedDateTime) }}</td>
             </tr>
           } @empty {

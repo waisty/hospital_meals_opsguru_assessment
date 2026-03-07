@@ -41,6 +41,12 @@ public static class RecipeEndpointMappings
             return Results.Ok(result);
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
+        group.MapPost("/recipes/exclusion-names-by-ids", async (RecipeExclusionNamesRequest request, IRecipeHandler handler, CancellationToken ct) =>
+        {
+            var result = await handler.GetExclusionNamesByRecipeIdsAsync(request, ct);
+            return Results.Ok(result);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
+
         group.MapGet("/recipes/{recipeId}/ingredients", async (string recipeId, IRecipeHandler handler, CancellationToken ct) =>
         {
             var list = await handler.GetRecipeIngredientsByRecipeIdAsync(recipeId, ct);

@@ -30,6 +30,7 @@ namespace Hospital.Meals.Core
             services.AddScoped<IRecipeHandler, RecipeHandler>();
             services.AddScoped<IIngredientHandler, IngredientHandler>();
             services.AddScoped<IPatientRequestHandler, PatientRequestHandler>();
+            services.AddScoped<IRecipeSafetyService, RecipeSafetyService>();
             services.AddScoped<IReferenceDataHandler, ReferenceDataHandler>();
             services.AddSingleton<DelegatingHandler, MealsServiceTokenHandler>();
             services.AddHttpClient<IPatientApiClient, PatientApiClient>(client =>

@@ -33,7 +33,7 @@
     </thead>
     <tbody>
       @for (p of items; track p.id) {
-        <tr [class.clickable-row]="clickToNavigateEnabled()" (click)="onRowClick(p.id)">
+        <tr [class.clickable-row]="clickToNavigateEnabled() || selectionMode()" (click)="onRowClick(p)">
           <td>{{ p.firstName }} {{ p.middleName }} {{ p.lastName }}</td>
           <td>{{ p.mobileNumber }}</td>
           <td>{{ p.dietTypeName }}</td>
@@ -46,7 +46,7 @@
                 <li class="tag tag-clinical-state">{{ name }}</li>
               }
               @if (getAllergyNames(p.id).length === 0 && getClinicalStateNames(p.id).length === 0) {
-                <li class="no-allergies">—</li>
+                <li class="no-allergies">-</li>
               }
             </ul>
           </td>
@@ -64,6 +64,15 @@
     </tbody>
   </table>
 </div>
+    @if (maxRecords() != null && result() != null && items.length > 0) {
+      <p class="truncated-hint">
+        @if (totalCount > (maxRecords() ?? 0)) {
+          Showing first {{ maxRecords() }} of {{ totalCount }} patients. Refine your search to find a specific patient.
+        } @else {
+          Showing up to {{ maxRecords() }} patients.
+        }
+      </p>
+    }
     @if (showPagination()) {
       <app-pagination
         [page]="page()"

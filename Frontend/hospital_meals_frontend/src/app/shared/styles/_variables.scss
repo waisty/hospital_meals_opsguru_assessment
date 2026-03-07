@@ -45,3 +45,12 @@ $color-error-border: #fecaca;
 
 // Placeholder
 $color-placeholder: #9ca3af;
+
+// Exclusion tags (recipes table, ingredients table, request summary - same colours everywhere)
+$tag-exclusion-allergy-bg: #dc2626;
+$tag-exclusion-allergy-border: #b91c1c;
+$tag-exclusion-allergy-text: #fff;
+$tag-exclusion-clinical-bg: #fca5a5;
+$tag-exclusion-clinical-border: #ef4444;
+$tag-exclusion-diet-bg: #fecaca;
+$tag-exclusion-diet-border: #f87171;

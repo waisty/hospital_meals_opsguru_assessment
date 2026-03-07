@@ -7,6 +7,8 @@ import type { PagedResult } from '../../shared/models';
 import type {
   RecipeViewModel,
   RecipeDetailViewModel,
+  RecipeExclusionNamesRequest,
+  RecipeExclusionNamesResponseViewModel,
   RecipeCreateRequest,
   RecipeUpdateRequest,
   RecipeIngredientViewModel,
@@ -35,6 +37,14 @@ export class RecipeService {
     return this.http.get<PagedResult<RecipeViewModel>>(`${this.base}/recipes`, {
       params,
     });
+  }
+
+  /** Subsequent call: get exclusion names for the given recipe IDs (e.g. after list recipes). */
+  getExclusionNamesByRecipeIds(recipeIds: string[]): Observable<RecipeExclusionNamesResponseViewModel> {
+    return this.http.post<RecipeExclusionNamesResponseViewModel>(
+      `${this.base}/recipes/exclusion-names-by-ids`,
+      { recipeIds } as RecipeExclusionNamesRequest
+    );
   }
 
   getRecipeById(id: string): Observable<RecipeViewModel | null> {

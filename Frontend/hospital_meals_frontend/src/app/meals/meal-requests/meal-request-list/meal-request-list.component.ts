@@ -75,8 +75,20 @@ export class MealRequestListComponent {
     }
   }
 
+  /** CSS class for status badge (accepted=green, rejected=red, other=gray). */
+  statusBadgeClass(status: MealRequestApprovalStatus): string {
+    switch (status) {
+      case MealRequestApprovalStatus.Accepted:
+        return 'status-accepted';
+      case MealRequestApprovalStatus.Rejected:
+        return 'status-rejected';
+      default:
+        return 'status-other';
+    }
+  }
+
   formatDate(d: Date | string | null): string {
-    if (d == null) return '—';
+    if (d == null) return '-';
     const date = typeof d === 'string' ? new Date(d) : d;
     return date.toLocaleString();
   }

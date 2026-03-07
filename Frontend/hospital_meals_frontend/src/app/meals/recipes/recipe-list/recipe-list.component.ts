@@ -1,18 +1,19 @@
 import { Component, Injector, computed, inject, input, output, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { catchError, debounceTime, of, startWith, switchMap, tap } from 'rxjs';
-import type { RecipeViewModel } from '../../models';
+import { catchError, debounceTime, map, of, startWith, switchMap, tap } from 'rxjs';
+import type { RecipeViewModel, RecipeExclusionNamesItemViewModel } from '../../models';
+import type { RecipeExclusionSummary } from '../../utils/recipe-exclusions.util';
 import { RecipeService } from '../../services/recipe.service';
-import type { PagedResult } from '../../../shared/models';
 import { isSearchLongEnough } from '../../../shared/constants/search.constants';
 import { EditButtonComponent } from '../../../shared/components/edit-button/edit-button.component';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
+import { RecipeExclusionTagsComponent } from '../../../shared/components/recipe-exclusion-tags/recipe-exclusion-tags.component';
 
 @Component({
   selector: 'app-recipe-list',
   standalone: true,
-  imports: [PaginationComponent, EditButtonComponent],
+  imports: [PaginationComponent, EditButtonComponent, RecipeExclusionTagsComponent],
   templateUrl: './recipe-list.component.html',
   styleUrl: './recipe-list.component.scss',
 })
@@ -27,6 +28,8 @@ export class RecipeListComponent {
 
   /** When true, show a Select column and emit recipeSelected instead of navigating. */
   readonly selectionMode = input<boolean>(false);
+  /** When false (e.g. in request-flow popup), hide the Select column and select on row click. Default true. */
+  readonly showSelectButton = input<boolean>(true);
   /** Recipe IDs that are already selected (e.g. already added to meal); show "Already added" and no Select button. */
   readonly alreadySelectedIds = input<string[]>([]);
   /** When set, the recipe with this ID shows "Adding…" and Select is disabled. */
@@ -77,9 +80,32 @@ export class RecipeListComponent {
     )
   );
 
-  readonly result = toSignal<PagedResult<RecipeViewModel> | null>(this.params$, {
-    initialValue: null,
+  readonly result = toSignal(this.params$, {
+    initialValue: null as { items: RecipeViewModel[]; totalCount: number; page: number; pageSize: number } | null,
   });
+
+  private readonly result$ = toObservable(computed(() => this.result()), { injector: this.injector });
+
+  /** Exclusion names per recipe ID (from subsequent getExclusionNamesByRecipeIds call). */
+  readonly exclusionByRecipeId = toSignal(
+    this.result$.pipe(
+      switchMap((res) => {
+        const items = res?.items ?? [];
+        if (items.length === 0) return of({} as Record<string, RecipeExclusionNamesItemViewModel>);
+        return this.recipeService.getExclusionNamesByRecipeIds(items.map((r) => r.id)).pipe(
+          map((response) => {
+            const map: Record<string, RecipeExclusionNamesItemViewModel> = {};
+            for (const item of response.items ?? []) {
+              map[item.recipeId] = item;
+            }
+            return map;
+          }),
+          catchError(() => of({} as Record<string, RecipeExclusionNamesItemViewModel>))
+        );
+      })
+    ),
+    { initialValue: {} as Record<string, RecipeExclusionNamesItemViewModel> }
+  );
 
   get items(): RecipeViewModel[] {
     return this.result()?.items ?? [];
@@ -88,14 +114,29 @@ export class RecipeListComponent {
     return this.result()?.totalCount ?? 0;
   }
 
+  getExclusionSummary(recipeId: string): RecipeExclusionSummary | null {
+    const item = this.exclusionByRecipeId()[recipeId];
+    if (!item) return null;
+    return {
+      allergyNames: item.allergyNames ?? [],
+      clinicalStateNames: item.clinicalStateNames ?? [],
+      dietTypeNames: item.dietTypeNames ?? [],
+    };
+  }
+
   navigateToDetail(id: string): void {
     this.router.navigate(['/meals/setup/recipes', id]);
   }
 
-  onRowClick(recipeId: string): void {
-    if (this.selectionMode()) return;
+  onRowClick(recipe: RecipeViewModel): void {
+    if (this.selectionMode()) {
+      if (!this.showSelectButton() && !this.isAlreadySelected(recipe.id) && this.addingRecipeId() === null) {
+        this.recipeSelected.emit(recipe);
+      }
+      return;
+    }
     if (this.clickToNavigateEnabled()) {
-      this.navigateToDetail(recipeId);
+      this.navigateToDetail(recipe.id);
     }
   }
 

@@ -14,6 +14,9 @@ export type {
 export type {
   RecipeViewModel,
   RecipeDetailViewModel,
+  RecipeExclusionNamesRequest,
+  RecipeExclusionNamesItemViewModel,
+  RecipeExclusionNamesResponseViewModel,
   RecipeCreateRequest,
   RecipeUpdateRequest,
   RecipeIngredientViewModel,
@@ -34,4 +37,5 @@ export type {
   PatientRequestViewModel,
   PatientRequestCreateRequest,
   PatientRequestCreateResponse,
+  SafetyCheckViewModel,
 } from './patient-request.models';

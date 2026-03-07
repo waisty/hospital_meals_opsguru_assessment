@@ -97,7 +97,7 @@ export class MealListComponent {
 
   getRecipesSummary(m: MealViewModel): string {
     const count = m.recipeCount ?? (m.recipes?.length ?? 0);
-    if (count === 0) return '—';
+    if (count === 0) return '-';
     const recipes = m.recipes ?? [];
     if (recipes.length > 0) {
       const active = recipes.filter((r) => !r.disabled);

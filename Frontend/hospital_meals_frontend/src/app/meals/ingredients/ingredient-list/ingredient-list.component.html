@@ -34,7 +34,7 @@
           @for (i of items; track i.id) {
             <tr [class.clickable-row]="clickToNavigateEnabled()" (click)="onRowClick(i.id)">
               <td>{{ i.name }}</td>
-              <td>{{ i.description ?? '—' }}</td>
+              <td>{{ i.description ?? '-' }}</td>
               <td class="col-exclusions">
                 <ul class="tag-list">
                   @for (name of getAllergyNames(i.id); track name) {
@@ -47,7 +47,7 @@
                     <li class="tag tag-exclusion-diet-type">{{ name }}</li>
                   }
                   @if (getAllergyNames(i.id).length === 0 && getClinicalStateNames(i.id).length === 0 && getDietTypeNames(i.id).length === 0) {
-                    <li class="no-exclusions">—</li>
+                    <li class="no-exclusions">-</li>
                   }
                 </ul>
               </td>

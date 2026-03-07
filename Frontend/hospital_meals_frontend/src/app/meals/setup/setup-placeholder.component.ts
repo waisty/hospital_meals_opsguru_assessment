@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-setup-placeholder',
   standalone: true,
-  template: `<div class="setup-placeholder"><h2>{{ title }}</h2><p>Setup page — coming soon.</p></div>`,
+  template: `<div class="setup-placeholder"><h2>{{ title }}</h2><p>Setup page - coming soon.</p></div>`,
   styles: [
     `
       .setup-placeholder {

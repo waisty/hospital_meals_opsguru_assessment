@@ -1,0 +1,57 @@
+<div class="meal-requests-view">
+  <header class="page-header">
+    <h2>Meal Requests</h2>
+    <app-add-button label="Request meal" (addClick)="openRequestMeal()" />
+  </header>
+
+  <app-meal-request-list />
+</div>
+
+@if (showPatientModal()) {
+  <div class="modal-overlay" (click)="closePatientModal()">
+    <div class="modal-dialog modal-dialog-lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Select patient</h3>
+        <button type="button" class="modal-close" (click)="closePatientModal()" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-hint">Enter at least 2 characters to search. Results are limited to 20 patients.</p>
+        <app-patient-list
+          [selectionMode]="true"
+          [clickToNavigateEnabled]="false"
+          [showEditButton]="false"
+          [suspendLoadUntilSearch]="true"
+          [maxRecords]="20"
+          (patientSelected)="onPatientSelected($event)"
+        />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="closePatientModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (showRecipeModal()) {
+  <div class="modal-overlay" (click)="closeRecipeModal()">
+    <div class="modal-dialog modal-dialog-lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Select recipe</h3>
+        <button type="button" class="modal-close" (click)="closeRecipeModal()" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <app-recipe-list
+          [selectionMode]="true"
+          [showSelectButton]="false"
+          [clickToNavigateEnabled]="false"
+          [suspendLoadUntilSearch]="false"
+          [alreadySelectedIds]="[]"
+          (recipeSelected)="onRecipeSelected($event)"
+        />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" (click)="closeRecipeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+}

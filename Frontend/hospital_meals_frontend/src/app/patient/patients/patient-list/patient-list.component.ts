@@ -1,4 +1,4 @@
-import { Component, Injector, computed, inject, input, signal } from '@angular/core';
+import { Component, Injector, computed, inject, input, output, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { catchError, debounceTime, forkJoin, map, of, startWith, switchMap, tap } from 'rxjs';
@@ -23,6 +23,10 @@ export class PatientListComponent {
 
   readonly showEditButton = input<boolean>(true);
   readonly clickToNavigateEnabled = input<boolean>(true);
+
+  /** When true, row click emits patientSelected and does not navigate. */
+  readonly selectionMode = input<boolean>(false);
+  readonly patientSelected = output<PatientWithDietTypeNameViewModel>();
 
   /**
    * When true, the list is not loaded until the user has entered a search term (at least 2 characters).
@@ -146,9 +150,13 @@ export class PatientListComponent {
     this.router.navigate(['/patient/patients', id]);
   }
 
-  onRowClick(patientId: string): void {
+  onRowClick(patient: PatientWithDietTypeNameViewModel): void {
+    if (this.selectionMode()) {
+      this.patientSelected.emit(patient);
+      return;
+    }
     if (this.clickToNavigateEnabled()) {
-      this.navigateToDetail(patientId);
+      this.navigateToDetail(patient.id);
     }
   }
 

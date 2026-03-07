@@ -1,7 +1,7 @@
 import { Component, Injector, computed, inject, input, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { catchError, debounceTime, forkJoin, map, of, startWith, switchMap, tap } from 'rxjs';
+import { catchError, debounceTime, map, of, startWith, switchMap, tap } from 'rxjs';
 import type { IngredientViewModel } from '../../models';
 import { IngredientService } from '../../services/ingredient.service';
 import type { PagedResult } from '../../../shared/models';

@@ -7,6 +7,7 @@ import type {
   PatientRequestViewModel,
   PatientRequestCreateRequest,
   PatientRequestCreateResponse,
+  SafetyCheckViewModel,
 } from '../models';
 
 const API = '/api/v1';
@@ -37,6 +38,20 @@ export class PatientRequestService {
   getPatientRequestById(id: string): Observable<PatientRequestViewModel | null> {
     return this.http.get<PatientRequestViewModel | null>(
       `${this.base}/patient-requests/${id}`
+    );
+  }
+
+  /**
+   * Check if a recipe is safe for a patient (allergies, clinical states, diet).
+   * Does not create a request.
+   */
+  checkSafety(patientId: string, recipeId: string): Observable<SafetyCheckViewModel> {
+    const params = new HttpParams()
+      .set('patientId', patientId)
+      .set('recipeId', recipeId);
+    return this.http.get<SafetyCheckViewModel>(
+      `${this.base}/patient-requests/safety-check`,
+      { params }
     );
   }
 

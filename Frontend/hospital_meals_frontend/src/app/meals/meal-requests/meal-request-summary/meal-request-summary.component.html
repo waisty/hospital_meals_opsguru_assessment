@@ -1,0 +1,139 @@
+<div class="meal-request-summary-view">
+  @if (loading()) {
+    <p class="loading">Loading summary…</p>
+  } @else if (error() && !patient()) {
+    <p class="error">{{ error() }}</p>
+    <button type="button" class="back-link" (click)="cancel()">← Back to meal requests</button>
+  } @else if (patient() && recipe(); as r) {
+    <header class="page-header">
+      <button type="button" class="back-link" (click)="cancel()">← Back to meal requests</button>
+      <h2>Meal request summary</h2>
+    </header>
+
+    @if (error()) {
+      <div class="error-banner" role="alert">
+        {{ error() }}
+      </div>
+    }
+
+    @if (!isSafe()) {
+      <div class="safety-warning" role="alert">
+        <strong>Safety warning:</strong> {{ safetyCheck()?.statusReason ?? 'This recipe may not be safe for this patient.' }}
+      </div>
+    }
+
+    <section class="summary-section">
+      <h3>Patient</h3>
+      <dl class="info-list">
+        <dt>Name</dt>
+        <dd>{{ patientDisplayName() }}</dd>
+        <dt>Clinical statuses</dt>
+        <dd>
+          @if (clinicalStateNames().length > 0) {
+            <span class="tag-list">
+              @for (name of clinicalStateNames(); track name) {
+                <span class="tag tag-clinical-state">{{ name }}</span>
+              }
+            </span>
+          } @else {
+            -
+          }
+        </dd>
+        <dt>Allergies</dt>
+        <dd>
+          @if (allergyNames().length > 0) {
+            <span class="tag-list">
+              @for (name of allergyNames(); track name) {
+                <span class="tag tag-allergy">{{ name }}</span>
+              }
+            </span>
+          } @else {
+            -
+          }
+        </dd>
+        <dt>Diet</dt>
+        <dd>{{ dietTypeName() }}</dd>
+      </dl>
+    </section>
+
+    <section class="summary-section">
+      <h3>Meal and recipe</h3>
+      <dl class="info-list">
+        <dt>Meal</dt>
+        <dd>{{ mealDisplayName() }}</dd>
+        <dt>Recipe</dt>
+        <dd>
+          {{ r.name }}
+          <button type="button" class="btn-link" (click)="openChangeRecipeModal()">Change recipe</button>
+        </dd>
+        <dt>Recipe exclusions</dt>
+        <dd>
+          <app-recipe-exclusion-tags [summary]="recipeExclusionSummary()" [showEmptyAsDash]="true" />
+        </dd>
+      </dl>
+    </section>
+
+    <section class="summary-section">
+      <h3>Ingredients</h3>
+      @if (r.ingredients.length > 0) {
+        <ul class="ingredient-list">
+          @for (ing of r.ingredients; track ing.ingredientId) {
+            <li class="ingredient-row">
+              <span class="ingredient-name">{{ ing.ingredientName }}</span>
+              <span class="ingredient-qty">{{ formatQuantityUnit(ing.quantity, ing.unit) }}</span>
+              @if (getExclusions(ing.ingredientId); as ex) {
+                <span class="exclusions">
+                  @if (ex.allergyNames.length > 0 || ex.clinicalStateNames.length > 0 || ex.dietTypeNames.length > 0) {
+                    <span class="exclusion-label">Exclusions:</span>
+                    @for (n of ex.allergyNames; track n) {
+                      <span class="tag tag-allergy">{{ n }}</span>
+                    }
+                    @for (n of ex.clinicalStateNames; track n) {
+                      <span class="tag tag-clinical-state">{{ n }}</span>
+                    }
+                    @for (n of ex.dietTypeNames; track n) {
+                      <span class="tag tag-diet">{{ n }}</span>
+                    }
+                  }
+                </span>
+              }
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="muted">No ingredients.</p>
+      }
+    </section>
+
+    <div class="actions">
+      <button type="button" class="btn-cancel" (click)="cancel()">Cancel</button>
+      <button type="button" class="btn-submit" (click)="submit()" [disabled]="saving()">
+        {{ saving() ? 'Submitting…' : 'Submit request' }}
+      </button>
+    </div>
+  } @else {
+    <p class="error">Missing patient or recipe. Go back and select again.</p>
+    <button type="button" class="back-link" (click)="cancel()">← Back to meal requests</button>
+  }
+</div>
+
+@if (showRecipeModal()) {
+  <div class="modal-overlay" (click)="closeRecipeModal()">
+    <div class="modal-dialog modal-dialog-lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Change recipe</h3>
+        <button type="button" class="modal-close" (click)="closeRecipeModal()" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <app-recipe-list
+          [selectionMode]="true"
+          [showSelectButton]="false"
+          [clickToNavigateEnabled]="false"
+          [suspendLoadUntilSearch]="false"
+          [alreadySelectedIds]="[]"
+          (recipeSelected)="onRecipeChange($event)"
+        />
+      </div>
+    </div>
+  </div>
+}

@@ -102,6 +102,23 @@ namespace Hospital.Meals.Core.Implementation
             };
         }
 
+        public async Task<IReadOnlyDictionary<string, IReadOnlyList<string>>> GetIngredientIdsByRecipeIdsAsync(IEnumerable<string> recipeIds, CancellationToken cancellationToken = default)
+        {
+            var idList = recipeIds.Distinct().ToList();
+            if (idList.Count == 0)
+                return new Dictionary<string, IReadOnlyList<string>>();
+
+            var pairs = await _context.RecipeIngredients
+                .Where(ri => idList.Contains(ri.RecipeId))
+                .Select(ri => new { ri.RecipeId, ri.IngredientId })
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            return pairs
+                .GroupBy(x => x.RecipeId)
+                .ToDictionary(g => g.Key, g => (IReadOnlyList<string>)g.Select(x => x.IngredientId).Distinct().ToList());
+        }
+
         public async Task<IReadOnlyList<RecipeIngredientWithName>> GetRecipeIngredientsByRecipeIdAsync(string recipeId, CancellationToken cancellationToken = default)
         {
             var ret = await (from recipeIngredient in _context.RecipeIngredients

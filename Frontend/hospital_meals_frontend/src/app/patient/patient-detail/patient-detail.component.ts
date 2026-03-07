@@ -25,7 +25,7 @@ export class PatientDetailComponent {
   readonly dietTypeName = computed(() => {
     const d = this.detail();
     const list = this.dietTypes();
-    if (!d || !list.length) return d?.dietTypeId ?? '—';
+    if (!d || !list.length) return d?.dietTypeId ?? '-';
     const dt = list.find((x) => x.id === d.dietTypeId);
     return dt?.name ?? d.dietTypeId;
   });

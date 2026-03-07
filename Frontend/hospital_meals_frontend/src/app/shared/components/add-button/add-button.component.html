@@ -1,4 +1,11 @@
-<a [routerLink]="link()" class="add-btn">
-  <i class="fas fa-plus" aria-hidden="true"></i>
-  {{ label() }}
-</a>
+@if (link(); as route) {
+  <a [routerLink]="route" class="add-btn">
+    <i class="fas fa-plus" aria-hidden="true"></i>
+    {{ label() }}
+  </a>
+} @else {
+  <button type="button" class="add-btn" (click)="addClick.emit()">
+    <i class="fas fa-plus" aria-hidden="true"></i>
+    {{ label() }}
+  </button>
+}

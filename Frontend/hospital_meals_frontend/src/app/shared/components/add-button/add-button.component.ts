@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -9,9 +9,12 @@ import { RouterLink } from '@angular/router';
   styleUrl: './add-button.component.scss',
 })
 export class AddButtonComponent {
-  /** Route link (path string or array of segments). */
-  readonly link = input.required<string | string[]>();
+  /** Route link (path string or array of segments). When not set, button emits addClick on click. */
+  readonly link = input<string | string[]>();
 
-  /** Button label (e.g. "Add patient", "Add allergy"). */
+  /** Button label (e.g. "Add patient", "Request meal"). */
   readonly label = input.required<string>();
+
+  /** Emitted when the button is clicked and no link is set. */
+  readonly addClick = output<void>();
 }

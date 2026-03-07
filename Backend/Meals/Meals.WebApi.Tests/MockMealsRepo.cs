@@ -245,6 +245,16 @@ internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, I
 
     // ── Recipe ingredients ───────────────────────────────────────────
 
+    public Task<IReadOnlyDictionary<string, IReadOnlyList<string>>> GetIngredientIdsByRecipeIdsAsync(IEnumerable<string> recipeIds, CancellationToken ct = default)
+    {
+        var idSet = recipeIds.Distinct().ToHashSet();
+        var dict = _recipeIngredients
+            .Where(ri => idSet.Contains(ri.RecipeId))
+            .GroupBy(ri => ri.RecipeId)
+            .ToDictionary(g => g.Key, g => (IReadOnlyList<string>)g.Select(x => x.IngredientId).Distinct().ToList());
+        return Task.FromResult<IReadOnlyDictionary<string, IReadOnlyList<string>>>(dict);
+    }
+
     public Task<IReadOnlyList<RecipeIngredientWithName>> GetRecipeIngredientsByRecipeIdAsync(string recipeId, CancellationToken ct = default)
     {
         var list = _recipeIngredients

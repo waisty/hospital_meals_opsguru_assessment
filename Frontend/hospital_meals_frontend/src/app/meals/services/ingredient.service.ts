@@ -7,10 +7,10 @@ import type { PagedResult } from '../../shared/models';
 import type {
   IngredientViewModel,
   IngredientDetailViewModel,
-  IngredientCreateRequest,
-  IngredientUpdateRequest,
   IngredientExclusionNamesRequest,
   IngredientExclusionNamesResponse,
+  IngredientCreateRequest,
+  IngredientUpdateRequest,
   SetIngredientAllergyExclusionsRequest,
   SetIngredientClinicalStateExclusionsRequest,
   SetIngredientDietTypeExclusionsRequest,

@@ -18,6 +18,7 @@ import { DietTypeEditComponent } from './patient/setup/diet-types/diet-type-edit
 import { SetupDashboardComponent } from './setup/setup-dashboard/setup-dashboard.component';
 import { MealsDashboardComponent } from './meals/meals-dashboard/meals-dashboard.component';
 import { MealRequestsComponent } from './meals/meal-requests/meal-requests.component';
+import { MealRequestSummaryComponent } from './meals/meal-requests/meal-request-summary/meal-request-summary.component';
 import { IngredientsComponent } from './meals/ingredients/ingredients.component';
 import { IngredientDetailComponent } from './meals/ingredients/ingredient-detail/ingredient-detail.component';
 import { IngredientEditComponent } from './meals/ingredients/ingredient-edit/ingredient-edit.component';
@@ -93,6 +94,7 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'meal-requests', pathMatch: 'full' },
       { path: 'meal-requests', component: MealRequestsComponent },
+      { path: 'meal-requests/summary', component: MealRequestSummaryComponent },
       {
         path: 'setup/ingredients',
         component: IngredientsComponent,

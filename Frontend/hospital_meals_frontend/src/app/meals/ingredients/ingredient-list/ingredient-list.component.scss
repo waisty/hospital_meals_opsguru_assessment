@@ -1,10 +1,4 @@
-// Exclusion tags: different shades of red to indicate exclusions (vs patient list which uses yellow/blue for assigned).
-$tag-exclusion-diet-bg: #fecaca;
-$tag-exclusion-diet-border: #f87171;
-$tag-exclusion-clinical-bg: #fca5a5;
-$tag-exclusion-clinical-border: #ef4444;
-$tag-exclusion-allergy-bg: #dc2626;
-$tag-exclusion-allergy-border: #b91c1c;
+@use '../../../shared/styles/variables' as v;
 
 .ingredient-list-with-search {
   .search-bar {
@@ -121,20 +115,19 @@ $tag-exclusion-allergy-border: #b91c1c;
   }
 
   .tag-exclusion-allergy {
-    background: $tag-exclusion-allergy-bg;
-    border: 1px solid $tag-exclusion-allergy-border;
-    color: #fff;
+    background: v.$tag-exclusion-allergy-bg;
+    border: 1px solid v.$tag-exclusion-allergy-border;
+    color: v.$tag-exclusion-allergy-text;
   }
 
   .tag-exclusion-clinical-state {
-    background: $tag-exclusion-clinical-bg;
-    border: 1px solid $tag-exclusion-clinical-border;
+    background: v.$tag-exclusion-clinical-bg;
+    border: 1px solid v.$tag-exclusion-clinical-border;
   }
 
   .tag-exclusion-diet-type {
-    background: $tag-exclusion-diet-bg;
-    border: 1px solid $tag-exclusion-diet-border;
-    
+    background: v.$tag-exclusion-diet-bg;
+    border: 1px solid v.$tag-exclusion-diet-border;
   }
 
   .no-exclusions {
