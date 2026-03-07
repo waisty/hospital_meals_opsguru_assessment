@@ -13,6 +13,8 @@ namespace Hospital.Kitchen.Core.InternalModels
         public string PatientName { get; set; } = "";
         public string RecipeName { get; set; } = "";
         public Enums.TrayState State { get; set; }
+        public DateTime ReceivedDateTime { get; set; }
+        public DateTime? LastUpdateDateTime { get; set; }
 
         public List<TrayIngredient> TrayIngredients { get; set; } = [];
 
@@ -30,6 +32,8 @@ namespace Hospital.Kitchen.Core.InternalModels
             entity.Property(e => e.PatientName).HasColumnName("patient_name").HasMaxLength(256);
             entity.Property(e => e.RecipeName).HasColumnName("recipe_name").HasMaxLength(256).IsRequired();
             entity.Property(e => e.State).HasColumnName("state").HasConversion<int>().IsRequired();
+            entity.Property(e => e.ReceivedDateTime).HasColumnName("received_date_time").IsRequired();
+            entity.Property(e => e.LastUpdateDateTime).HasColumnName("last_update_date_time");
             entity.HasMany(e => e.TrayIngredients)
                 .WithOne()
                 .HasForeignKey(e => e.TrayId)

@@ -74,6 +74,7 @@ namespace Hospital.Kitchen.Core.Implementation
                 TrayState toState = fromState + 1;
 
                 trayToUpdate.State = toState;
+                trayToUpdate.LastUpdateDateTime = DateTime.UtcNow;
                 _context.TrayStatusHistories.Add(new TrayStatusHistory
                 {
                     TrayId = trayId,

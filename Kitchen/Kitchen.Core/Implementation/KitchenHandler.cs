@@ -21,6 +21,8 @@ namespace Hospital.Kitchen.Core.Implementation
                 PatientName = request.PatientName,
                 RecipeName = request.RecipeName,
                 State = request.State,
+                ReceivedDateTime = DateTime.UtcNow,
+                LastUpdateDateTime = DateTime.UtcNow,
                 TrayIngredients = (request.Ingredients ?? [])
                     .Select(i => new TrayIngredient
                     {

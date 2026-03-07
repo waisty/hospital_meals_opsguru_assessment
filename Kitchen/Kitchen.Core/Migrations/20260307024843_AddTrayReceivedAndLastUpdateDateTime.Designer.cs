@@ -3,6 +3,7 @@ using System;
 using Hospital.Kitchen.Core.Implementation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hospital.Kitchen.Core.Migrations
 {
     [DbContext(typeof(KitchenDBContext))]
-    partial class KitchenDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260307024843_AddTrayReceivedAndLastUpdateDateTime")]
+    partial class AddTrayReceivedAndLastUpdateDateTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
