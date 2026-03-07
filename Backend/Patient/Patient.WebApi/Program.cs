@@ -7,8 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-builder.Services.AddPatientServices(builder.Configuration);
-builder.Services.AddJwtAuthentication(builder.Configuration);
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddPatientServices(builder.Configuration);
+    builder.Services.AddJwtAuthentication(builder.Configuration);
+}
 
 var app = builder.Build();
 

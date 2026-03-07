@@ -4,8 +4,11 @@ using Hospital.Kitchen.WebApi.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddKitchenServices(builder.Configuration);
-builder.Services.AddJwtAuthentication(builder.Configuration);
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddKitchenServices(builder.Configuration);
+    builder.Services.AddJwtAuthentication(builder.Configuration);
+}
 
 var app = builder.Build();
 
