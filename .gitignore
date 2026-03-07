@@ -75,10 +75,11 @@ secrets.json
 !.vscode/extensions.json
 *.code-workspace
 
-# Angular
+# Angular / Frontend (Frontend/hospital_meals_frontend)
 node_modules/
 dist/
 .angular/
+.angular/cache
 tmp/
 temp/
 *.tsbuildinfo
@@ -86,18 +87,26 @@ temp/
 .yarn-integrity
 .cache/
 .parcel-cache/
+.vite/
 .sass-cache/
 *.ngfactory.ts
 *.ngsummary.json
 *.metadata.json
 /build
-/e2e/*.js
-/e2e/*.map
+e2e/*.js
+e2e/*.map
+e2e/**/*.js
+e2e/**/*.map
 /coverage
-/libpeerconnection.log
+coverage/
+libpeerconnection.log
 testem.log
 /typings
 *.tgz
+.eslintcache
+*.local
+.storybook-out/
+storybook-static/
 
 # Environment / OS
 .DS_Store
@@ -134,3 +143,4 @@ PublishProfiles/
 *.orig
 *.rej
 *.stackdump
+/Frontend/hospital_meals_frontend/.vscode
