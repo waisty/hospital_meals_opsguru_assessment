@@ -116,13 +116,19 @@ namespace Hospital.Meals.Core.Implementation
         }
 
         // Recipe ingredient
-        public async Task<IReadOnlyList<RecipeIngredient>> GetRecipeIngredientsByRecipeIdAsync(string recipeId, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<RecipeIngredientWithName>> GetRecipeIngredientsByRecipeIdAsync(string recipeId, CancellationToken cancellationToken = default)
         {
-            return await _context.RecipeIngredients
-                .Where(ri => ri.RecipeId == recipeId)
-                .OrderBy(ri => ri.IngredientId)
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
+            var ret = await (from recipeIngredient in _context.RecipeIngredients
+                              where recipeIngredient.RecipeId == recipeId
+                              join ingredient in _context.Ingredients on recipeIngredient.IngredientId equals ingredient.Id
+                              orderby ingredient.Name
+                              select new { recipeIngredient, ingredientName = ingredient.Name }).ToAsyncEnumerable().Select(x =>
+                              {
+                                  return x.recipeIngredient.ToRecipeIngredientWithName(x.ingredientName);
+                              }).ToListAsync().ConfigureAwait(false);
+
+            return ret;
+                
         }
 
         public async Task SetRecipeIngredientsForRecipeAsync(string recipeId, IReadOnlyList<RecipeIngredient> recipeIngredients, CancellationToken cancellationToken = default)
@@ -147,15 +153,17 @@ namespace Hospital.Meals.Core.Implementation
         // Patient request
         private async Task AddPatientRequestAsync(PatientRequest request, CancellationToken cancellationToken = default)
         {
+            var recipe = await this.GetRecipeByIdAsync(request.RecipeId, cancellationToken) ?? throw new Exception($"Recipe '{request.RecipeId}' not found");
+            var recipeIngredients = await this.GetRecipeIngredientsByRecipeIdAsync(request.RecipeId, cancellationToken);
             await ExecuteInTransactionAsync(async (ctx) =>
             {
                 _context.PatientRequests.Add(request);
+
                 await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-                await _kitchenApiClient.PublishTrayAsync(new KitchenPublishTrayRequest()
-                {
-                     
-                });
+                var publishTrayRequest = recipe.ToKitchenPublishTrayRequest(recipeIngredients, request);
+
+                await _kitchenApiClient.PublishTrayAsync(publishTrayRequest);
             }, cancellationToken);
             
         }

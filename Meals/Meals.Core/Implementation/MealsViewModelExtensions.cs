@@ -92,5 +92,39 @@ namespace Hospital.Meals.Core.Implementation
             Id = dietType.Id,
             Name = dietType.Name
         };
+
+        public static KitchenPublishTrayRequest ToKitchenPublishTrayRequest(this Recipe recipe, IEnumerable<RecipeIngredientWithName> recipeIngredients, PatientRequest patientRequest)
+        {
+            return new KitchenPublishTrayRequest()
+            {
+                PatientId = patientRequest.PatientId,
+                PatientName = patientRequest.PatientName,
+                PatientMealRequestId = patientRequest.Id,
+                RecipeName = recipe.Name,
+                Ingredients = [.. recipeIngredients.Select(x => x.ToKitchenPublishTrayIngredientItem())]
+            };
+        }
+
+        public static RecipeIngredientWithName ToRecipeIngredientWithName(this RecipeIngredient recipeIngredient, string name)
+        {
+            return new RecipeIngredientWithName()
+            {
+                IngredientId = recipeIngredient.IngredientId,
+                IngredientName = name,
+                Quantity = recipeIngredient.Quantity,
+                RecipeId = recipeIngredient.RecipeId,
+                Unit = recipeIngredient.Unit
+            };
+        }
+
+        public static KitchenPublishTrayIngredientItem ToKitchenPublishTrayIngredientItem(this RecipeIngredientWithName recipeIngredient)
+        {
+            return new KitchenPublishTrayIngredientItem()
+            {
+                IngredientName = recipeIngredient.IngredientName,
+                Qty = recipeIngredient.Quantity,
+                Unit = recipeIngredient.Unit
+            };
+        }
     }
 }

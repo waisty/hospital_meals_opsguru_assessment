@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Hospital.Meals.Core.InternalModels
 {
@@ -7,6 +8,7 @@ namespace Hospital.Meals.Core.InternalModels
     {
         public string RecipeId { get; set; } = "";
         public string IngredientId { get; set; } = "";
+        
         public decimal Quantity { get; set; }
         public string? Unit { get; set; }
 
@@ -27,5 +29,10 @@ namespace Hospital.Meals.Core.InternalModels
                 .HasForeignKey(e => e.IngredientId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
+    }
+
+    internal class RecipeIngredientWithName : RecipeIngredient
+    {
+        public string IngredientName { get; set; } = "";
     }
 }
