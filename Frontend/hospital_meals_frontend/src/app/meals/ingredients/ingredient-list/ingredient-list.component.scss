@@ -1,5 +1,3 @@
-@use '../../../shared/styles/variables' as v;
-
 .ingredient-list-with-search {
   .search-bar {
     display: flex;
@@ -104,30 +102,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem;
-  }
-
-  .tag {
-    display: inline-block;
-    padding: 0.2rem 0.4rem;
-    font-size: 0.75rem;
-    border-radius: 0.25rem;
-    color: #0f172a;
-  }
-
-  .tag-exclusion-allergy {
-    background: v.$tag-exclusion-allergy-bg;
-    border: 1px solid v.$tag-exclusion-allergy-border;
-    color: v.$tag-exclusion-allergy-text;
-  }
-
-  .tag-exclusion-clinical-state {
-    background: v.$tag-exclusion-clinical-bg;
-    border: 1px solid v.$tag-exclusion-clinical-border;
-  }
-
-  .tag-exclusion-diet-type {
-    background: v.$tag-exclusion-diet-bg;
-    border: 1px solid v.$tag-exclusion-diet-border;
   }
 
   .no-exclusions {

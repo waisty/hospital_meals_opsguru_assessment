@@ -9,11 +9,12 @@ import { isSearchLongEnough } from '../../../shared/constants/search.constants';
 import type { IngredientExclusionNamesItem } from '../../models';
 import { EditButtonComponent } from '../../../shared/components/edit-button/edit-button.component';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
+import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 
 @Component({
   selector: 'app-ingredient-list',
   standalone: true,
-  imports: [PaginationComponent, EditButtonComponent],
+  imports: [PaginationComponent, EditButtonComponent, StatusBadgeComponent],
   templateUrl: './ingredient-list.component.html',
   styleUrl: './ingredient-list.component.scss',
 })

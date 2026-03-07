@@ -46,7 +46,17 @@ $color-error-border: #fecaca;
 // Placeholder
 $color-placeholder: #9ca3af;
 
-// Exclusion tags (recipes table, ingredients table, request summary - same colours everywhere)
+// Status badges (meal request status, exclusions, clinical states, allergies - one component)
+$status-badge-accepted-bg: #dcfce7;
+$status-badge-accepted-text: #166534;
+$status-badge-accepted-border: #22c55e;
+$status-badge-rejected-bg: #fee2e2;
+$status-badge-rejected-text: #b91c1c;
+$status-badge-rejected-border: #ef4444;
+$status-badge-pending-bg: #f1f5f9;
+$status-badge-pending-text: #64748b;
+$status-badge-pending-border: #94a3b8;
+// Exclusion / allergy / clinical-state / diet (same as previous tag-exclusion-*)
 $tag-exclusion-allergy-bg: #dc2626;
 $tag-exclusion-allergy-border: #b91c1c;
 $tag-exclusion-allergy-text: #fff;

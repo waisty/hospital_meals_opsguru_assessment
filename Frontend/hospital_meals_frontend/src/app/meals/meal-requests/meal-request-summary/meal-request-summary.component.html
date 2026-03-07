@@ -32,7 +32,7 @@
           @if (clinicalStateNames().length > 0) {
             <span class="tag-list">
               @for (name of clinicalStateNames(); track name) {
-                <span class="tag tag-clinical-state">{{ name }}</span>
+                <app-status-badge [label]="name" [variant]="'clinical-state'" />
               }
             </span>
           } @else {
@@ -44,7 +44,7 @@
           @if (allergyNames().length > 0) {
             <span class="tag-list">
               @for (name of allergyNames(); track name) {
-                <span class="tag tag-allergy">{{ name }}</span>
+                <app-status-badge [label]="name" [variant]="'allergy'" />
               }
             </span>
           } @else {
@@ -86,13 +86,13 @@
                   @if (ex.allergyNames.length > 0 || ex.clinicalStateNames.length > 0 || ex.dietTypeNames.length > 0) {
                     <span class="exclusion-label">Exclusions:</span>
                     @for (n of ex.allergyNames; track n) {
-                      <span class="tag tag-allergy">{{ n }}</span>
+                      <app-status-badge [label]="n" [variant]="'allergy'" />
                     }
                     @for (n of ex.clinicalStateNames; track n) {
-                      <span class="tag tag-clinical-state">{{ n }}</span>
+                      <app-status-badge [label]="n" [variant]="'clinical-state'" />
                     }
                     @for (n of ex.dietTypeNames; track n) {
-                      <span class="tag tag-diet">{{ n }}</span>
+                      <app-status-badge [label]="n" [variant]="'diet'" />
                     }
                   }
                 </span>

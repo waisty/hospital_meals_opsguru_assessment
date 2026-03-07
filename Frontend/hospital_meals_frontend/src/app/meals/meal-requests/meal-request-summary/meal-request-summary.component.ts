@@ -8,6 +8,7 @@ import { RecipeService } from '../../services/recipe.service';
 import { PatientRequestService } from '../../services/patient-request.service';
 import { RecipeListComponent } from '../../recipes/recipe-list/recipe-list.component';
 import { RecipeExclusionTagsComponent } from '../../../shared/components/recipe-exclusion-tags/recipe-exclusion-tags.component';
+import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { computeRecipeExclusionSummary } from '../../utils/recipe-exclusions.util';
 import type { PatientDetailViewModel } from '../../../patient/models';
 import type { MealViewModel, RecipeViewModel } from '../../models';
@@ -17,7 +18,7 @@ import type { IngredientExclusionNamesItem } from '../../models';
 @Component({
   selector: 'app-meal-request-summary',
   standalone: true,
-  imports: [RecipeListComponent, RecipeExclusionTagsComponent],
+  imports: [RecipeListComponent, RecipeExclusionTagsComponent, StatusBadgeComponent],
   templateUrl: './meal-request-summary.component.html',
   styleUrl: './meal-request-summary.component.scss',
 })

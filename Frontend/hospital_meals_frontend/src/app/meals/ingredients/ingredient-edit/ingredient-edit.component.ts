@@ -7,11 +7,12 @@ import { IngredientService } from '../../services/ingredient.service';
 import { ReferenceDataService } from '../../services/reference-data.service';
 import type { IngredientDetailViewModel } from '../../models';
 import type { AllergyViewModel, ClinicalStateViewModel, DietTypeViewModel } from '../../../patient/models';
+import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 
 @Component({
   selector: 'app-ingredient-edit',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, StatusBadgeComponent],
   templateUrl: './ingredient-edit.component.html',
   styleUrl: './ingredient-edit.component.scss',
 })

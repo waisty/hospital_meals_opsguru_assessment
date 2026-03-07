@@ -50,8 +50,8 @@
           @if (d.allergyExclusionIds.length > 0) {
             <ul class="tag-list">
               @for (id of d.allergyExclusionIds; track id) {
-                <li class="tag tag-exclusion-allergy">
-                  <span>{{ getAllergyName(id) }}</span>
+                <li>
+                  <app-status-badge [label]="getAllergyName(id)" [variant]="'allergy'" />
                   <button
                     type="button"
                     class="tag-remove"
@@ -90,8 +90,8 @@
           @if (d.clinicalStateExclusionIds.length > 0) {
             <ul class="tag-list">
               @for (id of d.clinicalStateExclusionIds; track id) {
-                <li class="tag tag-exclusion-clinical-state">
-                  <span>{{ getClinicalStateName(id) }}</span>
+                <li>
+                  <app-status-badge [label]="getClinicalStateName(id)" [variant]="'clinical-state'" />
                   <button
                     type="button"
                     class="tag-remove"
@@ -130,8 +130,8 @@
           @if (d.dietTypeExclusionIds.length > 0) {
             <ul class="tag-list">
               @for (id of d.dietTypeExclusionIds; track id) {
-                <li class="tag tag-exclusion-diet-type">
-                  <span>{{ getDietTypeName(id) }}</span>
+                <li>
+                  <app-status-badge [label]="getDietTypeName(id)" [variant]="'diet'" />
                   <button
                     type="button"
                     class="tag-remove"

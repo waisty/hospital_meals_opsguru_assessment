@@ -38,13 +38,13 @@
               <td class="col-exclusions">
                 <ul class="tag-list">
                   @for (name of getAllergyNames(i.id); track name) {
-                    <li class="tag tag-exclusion-allergy">{{ name }}</li>
+                    <li><app-status-badge [label]="name" [variant]="'allergy'" /></li>
                   }
                   @for (name of getClinicalStateNames(i.id); track name) {
-                    <li class="tag tag-exclusion-clinical-state">{{ name }}</li>
+                    <li><app-status-badge [label]="name" [variant]="'clinical-state'" /></li>
                   }
                   @for (name of getDietTypeNames(i.id); track name) {
-                    <li class="tag tag-exclusion-diet-type">{{ name }}</li>
+                    <li><app-status-badge [label]="name" [variant]="'diet'" /></li>
                   }
                   @if (getAllergyNames(i.id).length === 0 && getClinicalStateNames(i.id).length === 0 && getDietTypeNames(i.id).length === 0) {
                     <li class="no-exclusions">-</li>

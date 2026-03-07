@@ -1,0 +1,46 @@
+@use '../../styles/variables' as v;
+
+.status-badge {
+  display: inline-block;
+  padding: 0.15rem 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 0.25rem;
+  border: 1px solid transparent;
+
+  &[data-variant='accepted'] {
+    background: v.$status-badge-accepted-bg;
+    color: v.$status-badge-accepted-text;
+    border-color: v.$status-badge-accepted-border;
+  }
+
+  &[data-variant='rejected'] {
+    background: v.$status-badge-rejected-bg;
+    color: v.$status-badge-rejected-text;
+    border-color: v.$status-badge-rejected-border;
+  }
+
+  &[data-variant='pending'] {
+    background: v.$status-badge-pending-bg;
+    color: v.$status-badge-pending-text;
+    border-color: v.$status-badge-pending-border;
+  }
+
+  &[data-variant='allergy'] {
+    background: v.$tag-exclusion-allergy-bg;
+    color: v.$tag-exclusion-allergy-text;
+    border-color: v.$tag-exclusion-allergy-border;
+  }
+
+  &[data-variant='clinical-state'] {
+    background: v.$tag-exclusion-clinical-bg;
+    color: v.$color-text-primary;
+    border-color: v.$tag-exclusion-clinical-border;
+  }
+
+  &[data-variant='diet'] {
+    background: v.$tag-exclusion-diet-bg;
+    color: v.$color-text-primary;
+    border-color: v.$tag-exclusion-diet-border;
+  }
+}

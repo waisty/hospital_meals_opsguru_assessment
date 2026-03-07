@@ -7,11 +7,12 @@ import { ReferenceDataService } from '../../services/reference-data.service';
 import type { IngredientDetailViewModel } from '../../models';
 import type { AllergyViewModel, ClinicalStateViewModel, DietTypeViewModel } from '../../../patient/models';
 import { EditButtonComponent } from '../../../shared/components/edit-button/edit-button.component';
+import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 
 @Component({
   selector: 'app-ingredient-detail',
   standalone: true,
-  imports: [RouterLink, EditButtonComponent],
+  imports: [RouterLink, EditButtonComponent, StatusBadgeComponent],
   templateUrl: './ingredient-detail.component.html',
   styleUrl: './ingredient-detail.component.scss',
 })

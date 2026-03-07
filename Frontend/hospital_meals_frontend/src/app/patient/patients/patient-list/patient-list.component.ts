@@ -8,11 +8,12 @@ import type { PagedResult } from '../../../shared/models';
 import { isSearchLongEnough } from '../../../shared/constants/search.constants';
 import { EditButtonComponent } from '../../../shared/components/edit-button/edit-button.component';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
+import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 
 @Component({
   selector: 'app-patient-list',
   standalone: true,
-  imports: [PaginationComponent, EditButtonComponent],
+  imports: [PaginationComponent, EditButtonComponent, StatusBadgeComponent],
   templateUrl: './patient-list.component.html',
   styleUrl: './patient-list.component.scss',
 })

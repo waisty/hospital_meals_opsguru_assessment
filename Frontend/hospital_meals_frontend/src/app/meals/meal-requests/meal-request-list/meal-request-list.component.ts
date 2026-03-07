@@ -5,13 +5,14 @@ import type { PatientRequestViewModel } from '../../models';
 import { PatientRequestService } from '../../services/patient-request.service';
 import type { PagedResult } from '../../../shared/models';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
+import { StatusBadgeComponent, type StatusBadgeVariant } from '../../../shared/components/status-badge/status-badge.component';
 import { MealRequestApprovalStatus } from '../../models';
 import { isSearchLongEnough } from '../../../shared/constants/search.constants';
 
 @Component({
   selector: 'app-meal-request-list',
   standalone: true,
-  imports: [PaginationComponent],
+  imports: [PaginationComponent, StatusBadgeComponent],
   templateUrl: './meal-request-list.component.html',
   styleUrl: './meal-request-list.component.scss',
 })
@@ -75,15 +76,15 @@ export class MealRequestListComponent {
     }
   }
 
-  /** CSS class for status badge (accepted=green, rejected=red, other=gray). */
-  statusBadgeClass(status: MealRequestApprovalStatus): string {
+  /** Status badge variant for meal request approval status. */
+  statusBadgeVariant(status: MealRequestApprovalStatus): StatusBadgeVariant {
     switch (status) {
       case MealRequestApprovalStatus.Accepted:
-        return 'status-accepted';
+        return 'accepted';
       case MealRequestApprovalStatus.Rejected:
-        return 'status-rejected';
+        return 'rejected';
       default:
-        return 'status-other';
+        return 'pending';
     }
   }
 

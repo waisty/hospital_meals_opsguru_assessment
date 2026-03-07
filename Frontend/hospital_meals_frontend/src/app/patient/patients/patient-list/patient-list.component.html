@@ -40,10 +40,10 @@
           <td class="col-allergies">
             <ul class="tag-list">
               @for (name of getAllergyNames(p.id); track name) {
-                <li class="tag tag-allergy">{{ name }}</li>
+                <li><app-status-badge [label]="name" [variant]="'allergy'" /></li>
               }
               @for (name of getClinicalStateNames(p.id); track name) {
-                <li class="tag tag-clinical-state">{{ name }}</li>
+                <li><app-status-badge [label]="name" [variant]="'clinical-state'" /></li>
               }
               @if (getAllergyNames(p.id).length === 0 && getClinicalStateNames(p.id).length === 0) {
                 <li class="no-allergies">-</li>

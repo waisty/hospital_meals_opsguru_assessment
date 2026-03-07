@@ -1,13 +1,13 @@
 @if (summary() && (summary()!.allergyNames.length > 0 || summary()!.clinicalStateNames.length > 0 || summary()!.dietTypeNames.length > 0)) {
   <span class="exclusions">
     @for (n of summary()!.allergyNames; track n) {
-      <span class="tag tag-allergy">{{ n }}</span>
+      <app-status-badge [label]="n" [variant]="'allergy'" />
     }
     @for (n of summary()!.clinicalStateNames; track n) {
-      <span class="tag tag-clinical-state">{{ n }}</span>
+      <app-status-badge [label]="n" [variant]="'clinical-state'" />
     }
     @for (n of summary()!.dietTypeNames; track n) {
-      <span class="tag tag-diet">{{ n }}</span>
+      <app-status-badge [label]="n" [variant]="'diet'" />
     }
   </span>
 } @else if (showEmptyAsDash()) {

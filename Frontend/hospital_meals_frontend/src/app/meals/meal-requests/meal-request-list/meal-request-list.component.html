@@ -35,9 +35,7 @@
               <td>{{ r.recipeId }}</td>
               <td>{{ formatDate(r.requestedDateTime) }}</td>
               <td>
-                <span class="status-badge {{ statusBadgeClass(r.approvalStatus) }}">
-                  {{ approvalStatusLabel(r.approvalStatus) }}
-                </span>
+                <app-status-badge [label]="approvalStatusLabel(r.approvalStatus)" [variant]="statusBadgeVariant(r.approvalStatus)" />
               </td>
               <td>{{ r.statusReason ?? '-' }}</td>
               <td>{{ formatDate(r.finalizedDateTime) }}</td>
