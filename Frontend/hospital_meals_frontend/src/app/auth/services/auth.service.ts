@@ -38,6 +38,12 @@ export class AuthService {
     return u?.admin === true || u?.mealsAdmin === true || u?.mealsUser === true;
   });
 
+  /** Whether the user can manage meals setup (ingredients, recipes, meals). Admin or mealsAdmin only. */
+  readonly canAccessMealsSetup = computed(() => {
+    const u = this.userSignal();
+    return u?.admin === true || u?.mealsAdmin === true;
+  });
+
   /** Whether the user can access the Kitchen dashboard (admin or kitchenUser). */
   readonly canAccessKitchen = computed(() => {
     const u = this.userSignal();

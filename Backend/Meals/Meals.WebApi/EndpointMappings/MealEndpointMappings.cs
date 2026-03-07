@@ -21,13 +21,19 @@ public static class MealEndpointMappings
             return meal is null ? Results.NotFound() : Results.Ok(meal);
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
-        group.MapGet("/meals", async (int page, int pageSize, IMealHandler handler, CancellationToken ct) =>
+        group.MapGet("/meals", async (int page, int pageSize, string? search, IMealHandler handler, CancellationToken ct) =>
         {
             if (page < 1) page = 1;
             if (pageSize < 1 || pageSize > 100) pageSize = 10;
-            var result = await handler.ListMealsAsync(page, pageSize, ct);
+            var result = await handler.ListMealsAsync(page, pageSize, search, ct);
             return Results.Ok(result);
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
+
+        group.MapPut("/meals/{id}", async (string id, MealUpdateRequest request, IMealHandler handler, CancellationToken ct) =>
+        {
+            var updated = await handler.UpdateMealAsync(id, request, ct);
+            return updated ? Results.NoContent() : Results.NotFound();
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
 
         return group;
     }

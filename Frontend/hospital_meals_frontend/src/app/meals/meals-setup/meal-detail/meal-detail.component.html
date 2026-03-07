@@ -1,0 +1,32 @@
+<div class="meal-detail-view">
+  @if (loading()) {
+    <p class="loading">Loading…</p>
+  } @else if (error()) {
+    <p class="error">{{ error() }}</p>
+    <a routerLink="/meals/setup/meals" class="back-link">← Back to meals</a>
+  } @else if (detail(); as d) {
+    <header class="page-header">
+      <a routerLink="/meals/setup/meals" class="back-link">← Back to meals</a>
+      <div class="header-row">
+        <h2>Meal details</h2>
+        <app-edit-button [link]="['/meals/setup/meals', d.id, 'edit']" title="Edit meal" />
+      </div>
+      <p class="subtitle">{{ d.name }}</p>
+    </header>
+
+    <div class="detail-layout">
+      <section class="meal-info">
+        <h3>Meal</h3>
+        <dl class="info-list">
+          <dt>Name</dt>
+          <dd>{{ d.name }}</dd>
+          <dt>Recipe</dt>
+          <dd>{{ getRecipeName(d.recipeId) }}</dd>
+        </dl>
+      </section>
+    </div>
+  } @else {
+    <p class="error">Meal not found.</p>
+    <a routerLink="/meals/setup/meals" class="back-link">← Back to meals</a>
+  }
+</div>

@@ -1,6 +1,7 @@
 export { authGuard } from './auth.guard';
 export { adminGuard } from './admin.guard';
 export { mealsGuard } from './meals.guard';
+export { mealsAdminGuard } from './meals-admin.guard';
 export { redirectIfLoggedInGuard } from './redirect-if-logged-in.guard';
 export { initialRedirectGuard } from './initial-redirect.guard';
 export { homeRedirectGuard } from './home-redirect.guard';

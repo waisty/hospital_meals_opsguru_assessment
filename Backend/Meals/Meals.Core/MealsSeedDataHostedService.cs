@@ -304,10 +304,10 @@ namespace Hospital.Meals.Core.Implementation
         {
             var seed = new[]
             {
-                new Meal { Id = "MEAL-BREAKFAST", Name = "Breakfast Scramble", RecipeId = "REGULAR-BREAKFAST", DietTypeId = "REGULAR" },
-                new Meal { Id = "MEAL-SALAD", Name = "Garden Salad Bowl", RecipeId = "VEGETARIAN-LUNCH", DietTypeId = "VEGETARIAN" },
-                new Meal { Id = "MEAL-CHICKEN-RICE", Name = "Grilled Chicken & Rice", RecipeId = "DIABETIC-DINNER", DietTypeId = "DIABETIC" },
-                new Meal { Id = "MEAL-VEG-SOUP", Name = "Vegetable Soup", RecipeId = "LOW-SODIUM-SOUP", DietTypeId = "LOW-SODIUM" },
+                new Meal { Id = "MEAL-BREAKFAST", Name = "Breakfast Scramble", RecipeId = "REGULAR-BREAKFAST" },
+                new Meal { Id = "MEAL-SALAD", Name = "Garden Salad Bowl", RecipeId = "VEGETARIAN-LUNCH" },
+                new Meal { Id = "MEAL-CHICKEN-RICE", Name = "Grilled Chicken & Rice", RecipeId = "DIABETIC-DINNER" },
+                new Meal { Id = "MEAL-VEG-SOUP", Name = "Vegetable Soup", RecipeId = "LOW-SODIUM-SOUP" },
             };
             foreach (var entity in seed)
             {

@@ -21,6 +21,12 @@ import { MealRequestsComponent } from './meals/meal-requests/meal-requests.compo
 import { IngredientsComponent } from './meals/ingredients/ingredients.component';
 import { IngredientDetailComponent } from './meals/ingredients/ingredient-detail/ingredient-detail.component';
 import { IngredientEditComponent } from './meals/ingredients/ingredient-edit/ingredient-edit.component';
+import { RecipesComponent } from './meals/recipes/recipes.component';
+import { RecipeDetailComponent } from './meals/recipes/recipe-detail/recipe-detail.component';
+import { RecipeEditComponent } from './meals/recipes/recipe-edit/recipe-edit.component';
+import { MealsSetupComponent } from './meals/meals-setup/meals-setup.component';
+import { MealDetailComponent } from './meals/meals-setup/meal-detail/meal-detail.component';
+import { MealEditComponent } from './meals/meals-setup/meal-edit/meal-edit.component';
 import { SetupPlaceholderComponent } from './meals/setup/setup-placeholder.component';
 import { KitchenDashboardComponent } from './kitchen/kitchen-dashboard/kitchen-dashboard.component';
 import {
@@ -29,6 +35,7 @@ import {
   authGuard,
   adminGuard,
   mealsGuard,
+  mealsAdminGuard,
   homeRedirectGuard,
 } from './auth/guards';
 
@@ -86,11 +93,51 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'meal-requests', pathMatch: 'full' },
       { path: 'meal-requests', component: MealRequestsComponent },
-      { path: 'setup/ingredients', component: IngredientsComponent },
-      { path: 'setup/ingredients/:id/edit', component: IngredientEditComponent },
-      { path: 'setup/ingredients/:id', component: IngredientDetailComponent },
-      { path: 'setup/recipes', component: SetupPlaceholderComponent, data: { title: 'Recipes' } },
-      { path: 'setup/meals', component: SetupPlaceholderComponent, data: { title: 'Meals' } },
+      {
+        path: 'setup/ingredients',
+        component: IngredientsComponent,
+        canActivate: [mealsAdminGuard],
+      },
+      {
+        path: 'setup/ingredients/:id/edit',
+        component: IngredientEditComponent,
+        canActivate: [mealsAdminGuard],
+      },
+      {
+        path: 'setup/ingredients/:id',
+        component: IngredientDetailComponent,
+        canActivate: [mealsAdminGuard],
+      },
+      {
+        path: 'setup/recipes',
+        component: RecipesComponent,
+        canActivate: [mealsAdminGuard],
+      },
+      {
+        path: 'setup/recipes/:id/edit',
+        component: RecipeEditComponent,
+        canActivate: [mealsAdminGuard],
+      },
+      {
+        path: 'setup/recipes/:id',
+        component: RecipeDetailComponent,
+        canActivate: [mealsAdminGuard],
+      },
+      {
+        path: 'setup/meals',
+        component: MealsSetupComponent,
+        canActivate: [mealsAdminGuard],
+      },
+      {
+        path: 'setup/meals/:id/edit',
+        component: MealEditComponent,
+        canActivate: [mealsAdminGuard],
+      },
+      {
+        path: 'setup/meals/:id',
+        component: MealDetailComponent,
+        canActivate: [mealsAdminGuard],
+      },
     ],
   },
   {

@@ -1,0 +1,83 @@
+.meal-detail-view {
+  max-width: 56rem;
+  margin: 0 auto;
+
+  .loading {
+    margin: 1rem 0;
+    color: #64748b;
+  }
+
+  .error {
+    margin: 1rem 0;
+    color: #b91c1c;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: #64748b;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .page-header {
+    margin-bottom: 1.5rem;
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    h2 {
+      margin: 0 0 0.25rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 0.9375rem;
+      color: #64748b;
+    }
+  }
+
+  .meal-info {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+
+    h3 {
+      margin: 0 0 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+  }
+
+  .info-list {
+    margin: 0;
+    font-size: 0.875rem;
+
+    dt {
+      margin-top: 0.5rem;
+      font-weight: 500;
+      color: #64748b;
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+
+    dd {
+      margin: 0.25rem 0 0;
+      color: #0f172a;
+    }
+  }
+}

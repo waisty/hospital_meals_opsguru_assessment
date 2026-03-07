@@ -35,8 +35,8 @@ internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, I
 
     // ── Seed helpers ─────────────────────────────────────────────────
 
-    public void SeedMeal(string id, string name, string recipeId, string? dietTypeId = null) =>
-        _meals[id] = new Meal { Id = id, Name = name, RecipeId = recipeId, DietTypeId = dietTypeId };
+    public void SeedMeal(string id, string name, string recipeId) =>
+        _meals[id] = new Meal { Id = id, Name = name, RecipeId = recipeId };
 
     public void SeedRecipe(string id, string name, string? description = null) =>
         _recipes[id] = new Recipe { Id = id, Name = name, Description = description };
@@ -86,12 +86,28 @@ internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, I
         return Task.FromResult(new PagedResult<Meal> { Items = items, TotalCount = all.Count, Page = page, PageSize = pageSize });
     }
 
+    public Task<bool> UpdateMealAsync(string id, string name, string recipeId, CancellationToken ct = default)
+    {
+        if (!_meals.TryGetValue(id, out var meal)) return Task.FromResult(false);
+        meal.Name = name;
+        meal.RecipeId = recipeId;
+        return Task.FromResult(true);
+    }
+
     // ── Recipe ───────────────────────────────────────────────────────
 
     public Task AddRecipeAsync(Recipe recipe, CancellationToken ct = default)
     {
         _recipes[recipe.Id] = recipe;
         return Task.CompletedTask;
+    }
+
+    public Task<bool> UpdateRecipeAsync(string id, string name, string? description, CancellationToken ct = default)
+    {
+        if (!_recipes.TryGetValue(id, out var recipe)) return Task.FromResult(false);
+        recipe.Name = name;
+        recipe.Description = description;
+        return Task.FromResult(true);
     }
 
     public Task<Recipe?> GetRecipeByIdAsync(string id, CancellationToken ct = default)

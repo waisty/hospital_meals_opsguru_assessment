@@ -1,0 +1,55 @@
+<div class="meal-edit-view">
+  @if (loading()) {
+    <p class="loading">Loading…</p>
+  } @else if (error()) {
+    <p class="error">{{ error() }}</p>
+    <a routerLink="/meals/setup/meals" class="back-link">← Back to meals</a>
+  } @else if (detail(); as d) {
+    <header class="page-header">
+      <button type="button" class="back-link" (click)="backToList()">← Back to meals</button>
+      <h2>{{ isCreateMode() ? 'Add meal' : 'Edit meal' }}</h2>
+      @if (!isCreateMode()) {
+        <p class="subtitle">{{ d.name }}</p>
+      }
+    </header>
+
+    <form class="meal-form" (ngSubmit)="save()">
+      <div class="form-group">
+        <label for="meal-name">Name</label>
+        <input
+          id="meal-name"
+          type="text"
+          class="form-input"
+          [ngModel]="formName()"
+          (ngModelChange)="formName.set($event)"
+          name="name"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="meal-recipe">Recipe</label>
+        <select
+          id="meal-recipe"
+          class="form-input form-select"
+          [ngModel]="formRecipeId()"
+          (ngModelChange)="formRecipeId.set($event)"
+          name="recipeId"
+          required
+        >
+          <option value="">Select recipe…</option>
+          @for (r of recipes(); track r.id) {
+            <option [value]="r.id">{{ r.name }}</option>
+          }
+        </select>
+      </div>
+      <div class="save-row">
+        <button type="submit" class="btn-save" [disabled]="saving()">
+          {{ saving() ? 'Saving…' : (isCreateMode() ? 'Save meal' : 'Save meal') }}
+        </button>
+      </div>
+    </form>
+  } @else {
+    <p class="error">Meal not found.</p>
+    <a routerLink="/meals/setup/meals" class="back-link">← Back to meals</a>
+  }
+</div>

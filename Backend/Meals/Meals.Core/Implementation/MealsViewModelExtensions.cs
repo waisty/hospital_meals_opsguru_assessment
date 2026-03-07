@@ -12,7 +12,6 @@ namespace Hospital.Meals.Core.Implementation
             Id = meal.Id,
             Name = meal.Name,
             RecipeId = meal.RecipeId,
-            DietTypeId = meal.DietTypeId,
             Disabled = meal.Disabled
         };
 

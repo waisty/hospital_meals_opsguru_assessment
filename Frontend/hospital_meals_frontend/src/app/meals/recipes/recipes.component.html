@@ -1,0 +1,7 @@
+<div class="recipes-view">
+  <header class="page-header">
+    <h2>Recipes</h2>
+    <app-add-button link="/meals/setup/recipes/new/edit" label="Add recipe" />
+  </header>
+  <app-recipe-list [showEditButton]="true" [clickToNavigateEnabled]="true" [suspendLoadUntilSearch]="false" />
+</div>

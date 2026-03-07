@@ -19,6 +19,11 @@ export interface RecipeCreateRequest {
   description?: string | null;
 }
 
+export interface RecipeUpdateRequest {
+  name: string;
+  description?: string | null;
+}
+
 export interface RecipeIngredientViewModel {
   ingredientId: string;
   quantity: number;

@@ -1,0 +1,7 @@
+<div class="meals-setup-view">
+  <header class="page-header">
+    <h2>Meals</h2>
+    <app-add-button link="/meals/setup/meals/new/edit" label="Add meal" />
+  </header>
+  <app-meal-list [showEditButton]="true" [clickToNavigateEnabled]="true" [suspendLoadUntilSearch]="false" />
+</div>

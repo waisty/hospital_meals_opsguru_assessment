@@ -20,8 +20,7 @@ namespace Hospital.Meals.Core.Implementation
             {
                 Id = request.Id,
                 Name = request.Name,
-                RecipeId = request.RecipeId,
-                DietTypeId = request.DietTypeId
+                RecipeId = request.RecipeId
             };
             await _repo.AddMealAsync(meal, cancellationToken).ConfigureAwait(false);
         }
@@ -32,9 +31,9 @@ namespace Hospital.Meals.Core.Implementation
             return meal == null ? null : meal.ToMealViewModel();
         }
 
-        public async Task<PagedResult<MealViewModel>> ListMealsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<PagedResult<MealViewModel>> ListMealsAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default)
         {
-            var paged = await _repo.ListMealsAsync(page, pageSize, cancellationToken).ConfigureAwait(false);
+            var paged = await _repo.ListMealsAsync(page, pageSize, search, cancellationToken).ConfigureAwait(false);
             return new PagedResult<MealViewModel>
             {
                 Items = paged.Items.Select(m => m.ToMealViewModel()).ToList(),
@@ -42,6 +41,11 @@ namespace Hospital.Meals.Core.Implementation
                 Page = paged.Page,
                 PageSize = paged.PageSize
             };
+        }
+
+        public async Task<bool> UpdateMealAsync(string id, MealUpdateRequest request, CancellationToken cancellationToken = default)
+        {
+            return await _repo.UpdateMealAsync(id, request.Name, request.RecipeId, cancellationToken).ConfigureAwait(false);
         }
     }
 }

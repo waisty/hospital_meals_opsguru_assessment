@@ -15,6 +15,12 @@ public static class RecipeEndpointMappings
             return Results.Created($"/api/v1/recipes/{request.Id}", null);
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
 
+        group.MapPut("/recipes/{id}", async (string id, RecipeUpdateRequest request, IRecipeHandler handler, CancellationToken ct) =>
+        {
+            var updated = await handler.UpdateRecipeAsync(id, request, ct);
+            return updated ? Results.NoContent() : Results.NotFound();
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+
         group.MapGet("/recipes/{id}", async (string id, IRecipeHandler handler, CancellationToken ct) =>
         {
             var recipe = await handler.GetRecipeByIdAsync(id, ct);
@@ -27,11 +33,11 @@ public static class RecipeEndpointMappings
             return detail is null ? Results.NotFound() : Results.Ok(detail);
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
-        group.MapGet("/recipes", async (int page, int pageSize, IRecipeHandler handler, CancellationToken ct) =>
+        group.MapGet("/recipes", async (int page, int pageSize, string? search, IRecipeHandler handler, CancellationToken ct) =>
         {
             if (page < 1) page = 1;
             if (pageSize < 1 || pageSize > 100) pageSize = 10;
-            var result = await handler.ListRecipesAsync(page, pageSize, ct);
+            var result = await handler.ListRecipesAsync(page, pageSize, search, ct);
             return Results.Ok(result);
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 

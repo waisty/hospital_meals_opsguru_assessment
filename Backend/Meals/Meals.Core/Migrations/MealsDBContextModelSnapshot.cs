@@ -188,11 +188,6 @@ namespace Hospital.Meals.Core.Migrations
                         .HasColumnType("character varying(256)")
                         .HasColumnName("id");
 
-                    b.Property<string>("DietTypeId")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
-                        .HasColumnName("diet_type_id");
-
                     b.Property<bool>("Disabled")
                         .HasColumnType("boolean")
                         .HasColumnName("disabled");
@@ -209,14 +204,24 @@ namespace Hospital.Meals.Core.Migrations
                         .HasColumnType("character varying(256)")
                         .HasColumnName("recipe_id");
 
-                    b.HasKey("Id");
+                    b.Property<NpgsqlTsVector>("SearchVector")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasColumnName("search_vector")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "simple")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Name" });
 
-                    b.HasIndex("DietTypeId");
+                    b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
 
                     b.HasIndex("RecipeId");
+
+                    b.HasIndex("SearchVector");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
 
                     b.ToTable("meals", "dbo");
                 });
@@ -326,10 +331,22 @@ namespace Hospital.Meals.Core.Migrations
                         .HasColumnType("character varying(256)")
                         .HasColumnName("name");
 
+                    b.Property<NpgsqlTsVector>("SearchVector")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasColumnName("search_vector")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "simple")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Name", "Description" });
+
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
+
+                    b.HasIndex("SearchVector");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
 
                     b.ToTable("recipes", "dbo");
                 });
@@ -410,11 +427,6 @@ namespace Hospital.Meals.Core.Migrations
 
             modelBuilder.Entity("Hospital.Meals.Core.InternalModels.Meal", b =>
                 {
-                    b.HasOne("Hospital.Meals.Core.InternalModels.DietType", null)
-                        .WithMany()
-                        .HasForeignKey("DietTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("Hospital.Meals.Core.InternalModels.Recipe", null)
                         .WithMany()
                         .HasForeignKey("RecipeId")

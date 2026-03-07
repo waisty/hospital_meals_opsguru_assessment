@@ -1,0 +1,59 @@
+<div class="recipe-list-with-search">
+  <div class="search-bar">
+    <label for="recipe-search">Search</label>
+    <input
+      id="recipe-search"
+      type="search"
+      placeholder="Name or description…"
+      [value]="searchTerm()"
+      (input)="onSearchInput($any($event.target).value)"
+      autocomplete="off"
+    />
+  </div>
+
+  @if (listError()) {
+    <p class="error">{{ listError() }}</p>
+  } @else if (isLoadSuspended()) {
+    <p class="hint">Enter at least 2 characters to search.</p>
+  } @else if (result() === null) {
+    <p class="loading">Loading…</p>
+  } @else {
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            @if (showEditButton()) {
+              <th class="col-actions"></th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of items; track r.id) {
+            <tr [class.clickable-row]="clickToNavigateEnabled()" (click)="onRowClick(r.id)">
+              <td>{{ r.name }}</td>
+              <td>{{ r.description ?? '—' }}</td>
+              @if (showEditButton()) {
+                <td class="col-actions">
+                  <app-edit-button [link]="['/meals/setup/recipes', r.id, 'edit']" title="Edit recipe" [stopPropagation]="true" />
+                </td>
+              }
+            </tr>
+          } @empty {
+            <tr>
+              <td [attr.colspan]="showEditButton() ? 3 : 2" class="empty">No recipes found.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <app-pagination
+      [page]="page()"
+      [pageSize]="pageSize()"
+      [totalCount]="totalCount"
+      (pageChange)="onPageChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)"
+    />
+  }
+</div>

@@ -7,6 +7,7 @@ namespace Hospital.Meals.Core.Contracts
     {
         Task AddMealAsync(Meal meal, CancellationToken cancellationToken = default);
         Task<Meal?> GetMealByIdAsync(string id, CancellationToken cancellationToken = default);
-        Task<PagedResult<Meal>> ListMealsAsync(int page, int pageSize, CancellationToken cancellationToken = default);
+        Task<PagedResult<Meal>> ListMealsAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default);
+        Task<bool> UpdateMealAsync(string id, string name, string recipeId, CancellationToken cancellationToken = default);
     }
 }

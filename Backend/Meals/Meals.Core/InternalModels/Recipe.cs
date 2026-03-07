@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NpgsqlTypes;
 
 namespace Hospital.Meals.Core.InternalModels
 {
@@ -9,6 +10,7 @@ namespace Hospital.Meals.Core.InternalModels
         public string Name { get; set; } = "";
         public string? Description { get; set; }
         public bool Disabled { get; set; }
+        public NpgsqlTsVector SearchVector { get; set; } = null!;
 
         public static void Configure(EntityTypeBuilder<Recipe> entity)
         {
@@ -19,6 +21,14 @@ namespace Hospital.Meals.Core.InternalModels
             entity.HasIndex(e => e.Name).IsUnique();
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.Disabled).HasColumnName("disabled");
+
+            entity.HasGeneratedTsVectorColumn(
+                    e => e.SearchVector,
+                    "simple",
+                    e => new { e.Name, e.Description })
+                .HasIndex(e => e.SearchVector)
+                .HasMethod("GIN");
+            entity.Property(e => e.SearchVector).HasColumnName("search_vector");
         }
     }
 }

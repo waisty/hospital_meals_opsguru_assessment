@@ -2,11 +2,13 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_ENDPOINTS } from '../../shared/config/api-endpoints.config';
+import { isSearchLongEnough } from '../../shared/constants/search.constants';
 import type { PagedResult } from '../../shared/models';
 import type {
   RecipeViewModel,
   RecipeDetailViewModel,
   RecipeCreateRequest,
+  RecipeUpdateRequest,
   RecipeIngredientViewModel,
   SetRecipeIngredientsRequest,
 } from '../models';
@@ -21,8 +23,15 @@ export class RecipeService {
     return this.endpoints.meals + API;
   }
 
-  listRecipes(page: number, pageSize: number): Observable<PagedResult<RecipeViewModel>> {
-    const params = new HttpParams().set('page', page).set('pageSize', pageSize);
+  listRecipes(
+    page: number,
+    pageSize: number,
+    search?: string | null
+  ): Observable<PagedResult<RecipeViewModel>> {
+    let params = new HttpParams().set('page', page).set('pageSize', pageSize);
+    if (isSearchLongEnough(search)) {
+      params = params.set('search', search!.trim());
+    }
     return this.http.get<PagedResult<RecipeViewModel>>(`${this.base}/recipes`, {
       params,
     });
@@ -40,6 +49,10 @@ export class RecipeService {
 
   createRecipe(request: RecipeCreateRequest): Observable<void> {
     return this.http.post<void>(`${this.base}/recipes`, request);
+  }
+
+  updateRecipe(id: string, request: RecipeUpdateRequest): Observable<void> {
+    return this.http.put<void>(`${this.base}/recipes/${id}`, request);
   }
 
   getRecipeIngredients(recipeId: string): Observable<RecipeIngredientViewModel[]> {

@@ -24,6 +24,11 @@ namespace Hospital.Meals.Core.Implementation
             await _repo.AddRecipeAsync(recipe, cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task<bool> UpdateRecipeAsync(string id, RecipeUpdateRequest request, CancellationToken cancellationToken = default)
+        {
+            return await _repo.UpdateRecipeAsync(id, request.Name, request.Description, cancellationToken).ConfigureAwait(false);
+        }
+
         public async Task<RecipeViewModel?> GetRecipeByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             var recipe = await _repo.GetRecipeByIdAsync(id, cancellationToken).ConfigureAwait(false);
@@ -39,9 +44,9 @@ namespace Hospital.Meals.Core.Implementation
             return recipe.ToRecipeDetailViewModel(ingredients);
         }
 
-        public async Task<PagedResult<RecipeViewModel>> ListRecipesAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<PagedResult<RecipeViewModel>> ListRecipesAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default)
         {
-            var paged = await _repo.ListRecipesAsync(page, pageSize, cancellationToken).ConfigureAwait(false);
+            var paged = await _repo.ListRecipesAsync(page, pageSize, search, cancellationToken).ConfigureAwait(false);
             return new PagedResult<RecipeViewModel>
             {
                 Items = paged.Items.Select(r => r.ToRecipeViewModel()).ToList(),

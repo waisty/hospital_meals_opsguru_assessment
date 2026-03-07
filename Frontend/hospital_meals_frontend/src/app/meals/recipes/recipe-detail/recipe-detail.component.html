@@ -1,0 +1,51 @@
+<div class="recipe-detail-view">
+  @if (loading()) {
+    <p class="loading">Loading…</p>
+  } @else if (error()) {
+    <p class="error">{{ error() }}</p>
+    <a routerLink="/meals/setup/recipes" class="back-link">← Back to recipes</a>
+  } @else if (detail(); as d) {
+    <header class="page-header">
+      <a routerLink="/meals/setup/recipes" class="back-link">← Back to recipes</a>
+      <div class="header-row">
+        <h2>Recipe details</h2>
+        <app-edit-button [link]="['/meals/setup/recipes', d.id, 'edit']" title="Edit recipe" />
+      </div>
+      <p class="subtitle">{{ d.name }}</p>
+    </header>
+
+    <div class="detail-layout">
+      <section class="recipe-info">
+        <h3>Recipe</h3>
+        <dl class="info-list">
+          <dt>Name</dt>
+          <dd>{{ d.name }}</dd>
+          <dt>Description</dt>
+          <dd>{{ d.description ?? '—' }}</dd>
+        </dl>
+      </section>
+
+      <aside class="right-side">
+        <section class="section-card ingredients-card">
+          <h3>Ingredients</h3>
+          <p class="card-hint">Ingredients and quantities for this recipe.</p>
+          @if (d.ingredients.length > 0) {
+            <ul class="ingredient-list ingredient-list-readonly">
+              @for (ing of d.ingredients; track ing.ingredientId) {
+                <li class="ingredient-item">
+                  <span class="ingredient-name">{{ ing.ingredientName }}</span>
+                  <span class="ingredient-qty">{{ formatQuantityUnit(ing.quantity, ing.unit) }}</span>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="empty-hint">No ingredients.</p>
+          }
+        </section>
+      </aside>
+    </div>
+  } @else {
+    <p class="error">Recipe not found.</p>
+    <a routerLink="/meals/setup/recipes" class="back-link">← Back to recipes</a>
+  }
+</div>
