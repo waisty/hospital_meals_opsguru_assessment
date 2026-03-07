@@ -23,7 +23,7 @@ namespace Hospital.Meals.Core.Implementation
             Disabled = recipe.Disabled
         };
 
-        public static RecipeDetailViewModel ToRecipeDetailViewModel(this Recipe recipe, IReadOnlyList<RecipeIngredient> ingredients) => new()
+        public static RecipeDetailViewModel ToRecipeDetailViewModel(this Recipe recipe, IReadOnlyList<RecipeIngredientWithName> ingredients) => new()
         {
             Id = recipe.Id,
             Name = recipe.Name,
@@ -32,11 +32,12 @@ namespace Hospital.Meals.Core.Implementation
             Ingredients = ingredients.Select(ri => ri.ToRecipeIngredientViewModel()).ToList()
         };
 
-        public static RecipeIngredientViewModel ToRecipeIngredientViewModel(this RecipeIngredient ri) => new()
+        public static RecipeIngredientViewModel ToRecipeIngredientViewModel(this RecipeIngredientWithName ri) => new()
         {
             IngredientId = ri.IngredientId,
             Quantity = ri.Quantity,
-            Unit = ri.Unit
+            Unit = ri.Unit,
+            IngredientName = ri.IngredientName,
         };
 
         public static IngredientViewModel ToIngredientViewModel(this Ingredient ingredient) => new()

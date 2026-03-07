@@ -1,10 +1,10 @@
-export interface PatientViewModel {
-  id: string;
-  name: string;
-  mobileNumber: string;
-  dietTypeId: string;
-  notes: string | null;
-}
+// export interface PatientViewModel {
+//   id: string;
+//   name: string;
+//   mobileNumber: string;
+//   dietTypeId: string;
+//   notes: string | null;
+// }
 
 export interface PatientDetailViewModel {
   id: string;
