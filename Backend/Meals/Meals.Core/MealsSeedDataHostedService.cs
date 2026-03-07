@@ -249,10 +249,10 @@ namespace Hospital.Meals.Core.Implementation
         {
             var seed = new[]
             {
-                new Recipe { Id = "REGULAR-BREAKFAST", Name = "Breakfast Scramble", Description = "Eggs with toast", DietTypeId = "REGULAR" },
-                new Recipe { Id = "VEGETARIAN-LUNCH", Name = "Garden Salad Bowl", Description = "Mixed greens with beans", DietTypeId = "VEGETARIAN" },
-                new Recipe { Id = "DIABETIC-DINNER", Name = "Grilled Chicken & Rice", Description = "Lean protein with rice", DietTypeId = "DIABETIC" },
-                new Recipe { Id = "LOW-SODIUM-SOUP", Name = "Vegetable Soup", Description = "Low-sodium vegetable soup", DietTypeId = "LOW-SODIUM" },
+                new Recipe { Id = "REGULAR-BREAKFAST", Name = "Breakfast Scramble", Description = "Eggs with toast" },
+                new Recipe { Id = "VEGETARIAN-LUNCH", Name = "Garden Salad Bowl", Description = "Mixed greens with beans" },
+                new Recipe { Id = "DIABETIC-DINNER", Name = "Grilled Chicken & Rice", Description = "Lean protein with rice" },
+                new Recipe { Id = "LOW-SODIUM-SOUP", Name = "Vegetable Soup", Description = "Low-sodium vegetable soup" },
             };
             foreach (var entity in seed)
             {

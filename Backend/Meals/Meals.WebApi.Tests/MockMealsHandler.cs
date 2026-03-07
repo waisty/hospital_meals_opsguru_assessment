@@ -79,7 +79,7 @@ public sealed class MockMealsHandler : IMealsHandler
 
     public Task AddRecipeAsync(RecipeCreateRequest request, CancellationToken ct = default)
     {
-        _recipes[request.Id] = new RecipeViewModel { Id = request.Id, Name = request.Name, Description = request.Description, DietTypeId = request.DietTypeId };
+        _recipes[request.Id] = new RecipeViewModel { Id = request.Id, Name = request.Name, Description = request.Description };
         return Task.CompletedTask;
     }
 
@@ -95,7 +95,7 @@ public sealed class MockMealsHandler : IMealsHandler
         _recipeIngredients.TryGetValue(id, out var ings);
         return Task.FromResult<RecipeDetailViewModel?>(new RecipeDetailViewModel
         {
-            Id = r.Id, Name = r.Name, Description = r.Description, DietTypeId = r.DietTypeId,
+            Id = r.Id, Name = r.Name, Description = r.Description,
             Ingredients = ings ?? []
         });
     }

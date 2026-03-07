@@ -55,8 +55,7 @@ namespace Hospital.Meals.Core.Implementation
             {
                 Id = request.Id,
                 Name = request.Name,
-                Description = request.Description,
-                DietTypeId = request.DietTypeId
+                Description = request.Description
             };
             await _repo.AddRecipeAsync(recipe, cancellationToken).ConfigureAwait(false);
         }

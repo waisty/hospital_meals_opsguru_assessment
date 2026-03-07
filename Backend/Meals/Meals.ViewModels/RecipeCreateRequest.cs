@@ -6,6 +6,5 @@ namespace Hospital.Meals.ViewModels
         [NonBlank]
         public string Name { get; set; } = "";
         public string? Description { get; set; }
-        public string? DietTypeId { get; set; }
     }
 }

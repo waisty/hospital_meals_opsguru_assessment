@@ -20,7 +20,6 @@ namespace Hospital.Meals.Core.Implementation
             Id = recipe.Id,
             Name = recipe.Name,
             Description = recipe.Description,
-            DietTypeId = recipe.DietTypeId,
             Disabled = recipe.Disabled
         };
 
@@ -29,7 +28,6 @@ namespace Hospital.Meals.Core.Implementation
             Id = recipe.Id,
             Name = recipe.Name,
             Description = recipe.Description,
-            DietTypeId = recipe.DietTypeId,
             Disabled = recipe.Disabled,
             Ingredients = ingredients.Select(ri => ri.ToRecipeIngredientViewModel()).ToList()
         };
