@@ -19,7 +19,8 @@ namespace Hospital.Patient.Core.Implementation
         {
             var patient = new PatientEntity
             {
-                Name = request.Name,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
                 MobileNumber = request.MobileNumber,
                 DietTypeId = request.DietTypeId,
                 Notes = request.Notes ?? ""
@@ -147,7 +148,8 @@ namespace Hospital.Patient.Core.Implementation
             var patient = await _repo.GetPatientByIdAsync(guid, cancellationToken).ConfigureAwait(false);
             if (patient is null)
                 return false;
-            patient.Name = request.Name;
+            patient.FirstName = request.FirstName;
+            patient.LastName = request.LastName;
             patient.MobileNumber = request.MobileNumber;
             patient.DietTypeId = request.DietTypeId;
             patient.Notes = request.Notes ?? "";

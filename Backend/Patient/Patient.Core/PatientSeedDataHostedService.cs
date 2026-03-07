@@ -143,32 +143,33 @@ namespace Hospital.Patient.Core.Implementation
         {
             var seedPatients = new[]
             {
-                (Name: "John Doe", MobileNumber: "+15551234001", DietTypeId: "REGULAR", Notes: "Sample patient 1"),
-                (Name: "Jane Smith", MobileNumber: "+15551234002", DietTypeId: "VEGETARIAN", Notes: "Sample patient 2"),
+                (FirstName: "John", LastName: "Doe", MobileNumber: "+15551234001", DietTypeId: "REGULAR", Notes: "Sample patient 1"),
+                (FirstName: "Jane", LastName: "Smith", MobileNumber: "+15551234002", DietTypeId: "VEGETARIAN", Notes: "Sample patient 2"),
             };
 
-            foreach (var (name, mobileNumber, dietTypeId, notes) in seedPatients)
+            foreach (var (firstName, lastName, mobileNumber, dietTypeId, notes) in seedPatients)
             {
                 try
                 {
                     var patient = new PatientEntity
                     {
-                        Name = name,
+                        FirstName = firstName,
+                        LastName = lastName,
                         MobileNumber = mobileNumber,
                         DietTypeId = dietTypeId,
                         Notes = notes ?? ""
                     };
                     db.Patients.Add(patient);
                     await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-                    _logger.LogInformation("Seed patient added: {Name} (Id: {Id})", name, patient.Id);
+                    _logger.LogInformation("Seed patient added: {FirstName} {LastName} (Id: {Id})", firstName, lastName, patient.Id);
 
                     // Link first patient to some allergies and clinical states
-                    if (name == "John Doe")
+                    if (firstName == "John" && lastName == "Doe")
                     {
                         await SeedPatientAllergiesAsync(db, patient.Id, new[] { "NUTS" }, cancellationToken).ConfigureAwait(false);
                         await SeedPatientClinicalStatesAsync(db, patient.Id, new[] { "HYPERTENSION" }, cancellationToken).ConfigureAwait(false);
                     }
-                    else if (name == "Jane Smith")
+                    else if (firstName == "Jane" && lastName == "Smith")
                     {
                         await SeedPatientAllergiesAsync(db, patient.Id, new[] { "DAIRY", "GLUTEN" }, cancellationToken).ConfigureAwait(false);
                         await SeedPatientClinicalStatesAsync(db, patient.Id, new[] { "DIABETIC" }, cancellationToken).ConfigureAwait(false);
@@ -176,7 +177,7 @@ namespace Hospital.Patient.Core.Implementation
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex, "Seed insert failed for patient {Name}; continuing with next.", name);
+                    _logger.LogWarning(ex, "Seed insert failed for patient {FirstName} {LastName}; continuing with next.", firstName, lastName);
                 }
             }
         }

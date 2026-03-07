@@ -11,7 +11,7 @@
         <h2>Patient details</h2>
         <a [routerLink]="['/patient/patients', d.id, 'edit']" class="btn-edit" role="button">Edit</a>
       </div>
-      <p class="subtitle">{{ d.name }}</p>
+      <p class="subtitle">{{ d.firstName }} {{ d.lastName }}</p>
     </header>
 
     <div class="detail-layout">
@@ -19,7 +19,7 @@
         <h3>Patient details</h3>
         <dl class="info-list">
           <dt>Name</dt>
-          <dd>{{ d.name }}</dd>
+          <dd>{{ d.firstName }} {{ d.lastName }}</dd>
           <dt>Mobile</dt>
           <dd>{{ d.mobileNumber }}</dd>
           <dt>Diet type</dt>

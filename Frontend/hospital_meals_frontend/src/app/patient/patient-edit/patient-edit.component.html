@@ -8,7 +8,7 @@
     <header class="page-header">
       <button type="button" class="back-link" (click)="backToList()">← Back to patients</button>
       <h2>Edit patient</h2>
-      <p class="subtitle">{{ d.name }}</p>
+      <p class="subtitle">{{ d.firstName }} {{ d.lastName }}</p>
     </header>
 
     <div class="edit-layout">
@@ -16,15 +16,26 @@
         <h3>Patient details</h3>
         <form class="patient-form" (ngSubmit)="savePatient()">
           <div class="form-group">
-            <label for="patient-name">Name</label>
+            <label for="patient-first-name">First name</label>
             <input
-              id="patient-name"
+              id="patient-first-name"
               type="text"
               class="form-input"
-              [ngModel]="formName()"
-              (ngModelChange)="formName.set($event)"
-              name="name"
+              [ngModel]="formFirstName()"
+              (ngModelChange)="formFirstName.set($event)"
+              name="firstName"
               required
+            />
+          </div>
+          <div class="form-group">
+            <label for="patient-last-name">Last name</label>
+            <input
+              id="patient-last-name"
+              type="text"
+              class="form-input"
+              [ngModel]="formLastName()"
+              (ngModelChange)="formLastName.set($event)"
+              name="lastName"
             />
           </div>
           <div class="form-group">

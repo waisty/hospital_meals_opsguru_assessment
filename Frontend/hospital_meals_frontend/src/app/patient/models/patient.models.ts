@@ -1,6 +1,7 @@
 export interface PatientViewModel {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   mobileNumber: string;
   dietTypeId: string;
   notes: string | null;
@@ -23,7 +24,8 @@ export interface PatientClinicalStateViewModel {
 
 export interface PatientDetailViewModel {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   mobileNumber: string;
   dietTypeId: string;
   notes: string | null;
@@ -32,7 +34,8 @@ export interface PatientDetailViewModel {
 }
 
 export interface PatientCreateRequest {
-  name: string;
+  firstName: string;
+  lastName: string;
   mobileNumber: string;
   dietTypeId: string;
   notes?: string | null;
@@ -43,7 +46,8 @@ export interface PatientCreateResponse {
 }
 
 export interface PatientUpdateRequest {
-  name: string;
+  firstName: string;
+  lastName: string;
   mobileNumber: string;
   dietTypeId: string;
   notes?: string | null;

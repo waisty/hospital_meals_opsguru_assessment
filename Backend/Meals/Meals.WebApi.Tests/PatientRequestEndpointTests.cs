@@ -27,7 +27,7 @@ public sealed class PatientRequestEndpointTests : IClassFixture<MealsWebApiFixtu
 
     private void SeedPatientWithNoRestrictions(string patientId)
     {
-        _fixture.MockPatientApi.SeedPatient(patientId, "Test Patient");
+        _fixture.MockPatientApi.SeedPatient(patientId, "Test", "Patient");
     }
 
     // ── Auth tests ──────────────────────────────────────────────────
@@ -100,7 +100,7 @@ public sealed class PatientRequestEndpointTests : IClassFixture<MealsWebApiFixtu
         SeedSafeRecipe();
         _fixture.MockRepo.SeedAllergy("poultry-allergy", "Poultry Allergy");
         _fixture.MockRepo.SeedIngredientAllergyExclusion("chicken", "poultry-allergy");
-        _fixture.MockPatientApi.SeedPatient(patientId, "Allergic Patient",
+        _fixture.MockPatientApi.SeedPatient(patientId, "Allergic", "Patient",
             allergyIds: ["poultry-allergy"]);
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
@@ -123,7 +123,7 @@ public sealed class PatientRequestEndpointTests : IClassFixture<MealsWebApiFixtu
         SeedSafeRecipe();
         _fixture.MockRepo.SeedAllergy("carrot-allergy", "Carrot Allergy");
         _fixture.MockRepo.SeedIngredientAllergyExclusion("carrot", "carrot-allergy");
-        _fixture.MockPatientApi.SeedPatient(patientId, "Carrot Allergic",
+        _fixture.MockPatientApi.SeedPatient(patientId, "Carrot", "Allergic",
             allergyIds: ["carrot-allergy"]);
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
@@ -144,7 +144,7 @@ public sealed class PatientRequestEndpointTests : IClassFixture<MealsWebApiFixtu
         var patientId = Guid.NewGuid().ToString();
         SeedSafeRecipe();
         _fixture.MockRepo.SeedAllergy("shellfish-allergy", "Shellfish Allergy");
-        _fixture.MockPatientApi.SeedPatient(patientId, "Shellfish Allergic",
+        _fixture.MockPatientApi.SeedPatient(patientId, "Shellfish", "Allergic",
             allergyIds: ["shellfish-allergy"]);
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
@@ -167,7 +167,7 @@ public sealed class PatientRequestEndpointTests : IClassFixture<MealsWebApiFixtu
         SeedSafeRecipe();
         _fixture.MockRepo.SeedClinicalState("renal-failure", "Renal Failure");
         _fixture.MockRepo.SeedIngredientClinicalStateExclusion("chicken", "renal-failure");
-        _fixture.MockPatientApi.SeedPatient(patientId, "Renal Patient",
+        _fixture.MockPatientApi.SeedPatient(patientId, "Renal", "Patient",
             clinicalStateIds: ["renal-failure"]);
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
@@ -192,7 +192,7 @@ public sealed class PatientRequestEndpointTests : IClassFixture<MealsWebApiFixtu
         SeedSafeRecipe();
         _fixture.MockRepo.SeedDietType("vegan", "Vegan");
         _fixture.MockRepo.SeedIngredientDietTypeExclusion("chicken", "vegan");
-        _fixture.MockPatientApi.SeedPatient(patientId, "Vegan Patient",
+        _fixture.MockPatientApi.SeedPatient(patientId, "Vegan", "Patient",
             dietTypeId: "vegan");
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);
@@ -214,7 +214,7 @@ public sealed class PatientRequestEndpointTests : IClassFixture<MealsWebApiFixtu
         var patientId = Guid.NewGuid().ToString();
         SeedSafeRecipe();
         _fixture.MockRepo.SeedDietType("keto", "Keto");
-        _fixture.MockPatientApi.SeedPatient(patientId, "Keto Patient",
+        _fixture.MockPatientApi.SeedPatient(patientId, "Keto", "Patient",
             dietTypeId: "keto");
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsUserClaim);

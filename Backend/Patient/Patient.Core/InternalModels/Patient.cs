@@ -8,7 +8,8 @@ namespace Hospital.Patient.Core.InternalModels
     internal class Patient
     {
         public Guid Id { get; set; }
-        public string Name { get; set; } = "";
+        public string FirstName { get; set; } = "";
+        public string LastName { get; set; } = "";
         public string MobileNumber { get; set; } = "";
         public string DietTypeId { get; set; } = "";
         public string Notes { get; set; } = "";
@@ -16,7 +17,8 @@ namespace Hospital.Patient.Core.InternalModels
         public virtual PatientViewModel ToPatientViewModel() => new()
         {
             Id = Id.ToString(),
-            Name = Name,
+            FirstName = FirstName,
+            LastName = LastName,
             MobileNumber = MobileNumber,
             DietTypeId = DietTypeId,
             Notes = Notes
@@ -25,7 +27,8 @@ namespace Hospital.Patient.Core.InternalModels
         public PatientWithDietTypeName ToPatientWithDietTypeName(string dietTypeName) => new()
         {
             Id = Id,
-            Name = Name,
+            FirstName = FirstName,
+            LastName = LastName,
             MobileNumber = MobileNumber,
             DietTypeId = DietTypeId,
             DietTypeName = dietTypeName,
@@ -35,7 +38,8 @@ namespace Hospital.Patient.Core.InternalModels
         public PatientWithDietTypeNameViewModel ToPatientWithDietTypeNameViewModel(string dietTypeName) => new()
         {
             Id = Id.ToString(),
-            Name = Name,
+            FirstName = FirstName,
+            LastName = LastName,
             MobileNumber = MobileNumber,
             DietTypeId = DietTypeId,
             DietTypeName = dietTypeName,
@@ -45,7 +49,8 @@ namespace Hospital.Patient.Core.InternalModels
         public PatientDetailViewModel ToPatientDetailViewModel(IReadOnlyList<PatientAllergyWithName> allergies, IReadOnlyList<PatientClinicalStateWithName> clinicalStates) => new()
         {
             Id = Id.ToString(),
-            Name = Name,
+            FirstName = FirstName,
+            LastName = LastName,
             MobileNumber = MobileNumber,
             DietTypeId = DietTypeId,
             Notes = Notes,
@@ -56,7 +61,8 @@ namespace Hospital.Patient.Core.InternalModels
         public PatientServiceDetailViewModel ToPatientServiceDetailViewModel(IReadOnlyList<string> allergyIds, IReadOnlyList<string> clinicalStateIds) => new()
         {
             Id = Id.ToString(),
-            Name = Name,
+            FirstName = FirstName,
+            LastName = LastName,
             MobileNumber = MobileNumber,
             DietTypeId = DietTypeId,
             Notes = Notes,
@@ -72,7 +78,10 @@ namespace Hospital.Patient.Core.InternalModels
                 .HasColumnName("id")
                 .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("gen_random_uuid()");
-            entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(256).IsRequired();
+            entity.Property(e => e.FirstName).HasColumnName("first_name").HasMaxLength(256).IsRequired();
+            entity.Property(e => e.LastName).HasColumnName("last_name").HasMaxLength(256).IsRequired();
+            entity.HasIndex(e => e.FirstName);
+            entity.HasIndex(e => e.LastName);
             entity.Property(e => e.MobileNumber).HasColumnName("mobile_number").HasMaxLength(32).IsRequired();
             entity.HasIndex(e => e.MobileNumber).IsUnique();
             entity.Property(e => e.DietTypeId).HasColumnName("diet_type_id").HasMaxLength(256).IsRequired();

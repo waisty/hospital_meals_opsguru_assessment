@@ -3,7 +3,9 @@ namespace Hospital.Patient.ViewModels
     public class PatientCreateRequest
     {
         [NonBlank]
-        public string Name { get; set; } = "";
+        public string FirstName { get; set; } = "";
+        [NonBlank]
+        public string LastName { get; set; } = "";
         [NonBlank]
         public string MobileNumber { get; set; } = "";
         public string DietTypeId { get; set; } = "";

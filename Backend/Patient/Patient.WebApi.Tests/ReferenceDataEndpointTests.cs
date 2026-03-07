@@ -95,7 +95,7 @@ public sealed class AllergyEndpointTests : IClassFixture<PatientWebApiFixture>
     public async Task GetPatientAllergies_ReturnsOk()
     {
         var patientId = Guid.NewGuid();
-        _fixture.MockHandler.SeedPatient(patientId, "P", "1", "r");
+        _fixture.MockHandler.SeedPatient(patientId, "P", "", "1", "r");
         await _fixture.MockHandler.UpdatePatientAllergiesAsync(patientId.ToString(), new PatientAllergiesUpdateRequest { AllergyIds = ["a1", "a2"] });
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.patientAdminClaim);
@@ -111,7 +111,7 @@ public sealed class AllergyEndpointTests : IClassFixture<PatientWebApiFixture>
     public async Task UpdatePatientAllergies_Existing_Returns204()
     {
         var patientId = Guid.NewGuid();
-        _fixture.MockHandler.SeedPatient(patientId, "P", "1", "r");
+        _fixture.MockHandler.SeedPatient(patientId, "P", "", "1", "r");
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.patientAdminClaim);
         var response = await client.PutAsJsonAsync($"/api/v1/patients/{patientId}/allergies",
@@ -195,7 +195,7 @@ public sealed class ClinicalStateEndpointTests : IClassFixture<PatientWebApiFixt
     public async Task UpdatePatientClinicalStates_Existing_Returns204()
     {
         var patientId = Guid.NewGuid();
-        _fixture.MockHandler.SeedPatient(patientId, "P", "1", "r");
+        _fixture.MockHandler.SeedPatient(patientId, "P", "", "1", "r");
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.patientAdminClaim);
         var response = await client.PutAsJsonAsync($"/api/v1/patients/{patientId}/clinical-states",

@@ -31,7 +31,7 @@ namespace Hospital.Patient.Core.Implementation
             var totalCount = await _context.Patients.CountAsync(cancellationToken).ConfigureAwait(false);
             var query = from p in _context.Patients
                         join dt in _context.DietTypes on p.DietTypeId equals dt.Id
-                        orderby p.Name
+                        orderby p.LastName, p.FirstName
                         select new { p, dietTypeName = dt.Name };
             var list = await query
                 .Skip((page - 1) * pageSize)

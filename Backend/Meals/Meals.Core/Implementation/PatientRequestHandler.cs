@@ -32,10 +32,11 @@ namespace Hospital.Meals.Core.Implementation
             var patientState = await _patientApiClient.GetPatientDetailAsync(request.PatientId, cancellationToken).ConfigureAwait(false)
                 ?? throw new Exception($"Patient '{request.PatientId}' not found");
 
+            var patientName = string.Join(" ", new[] { patientState.FirstName, patientState.LastName }.Where(s => !string.IsNullOrWhiteSpace(s))).Trim();
             var patientRequest = new PatientRequest
             {
                 PatientId = request.PatientId,
-                PatientName = patientState.Name,
+                PatientName = string.IsNullOrEmpty(patientName) ? "-" : patientName,
                 RecipeId = request.RecipeId,
                 RequestedDateTime = DateTime.UtcNow,
                 ApprovalStatus = MealRequestAppprovalStatus.Pending

@@ -36,7 +36,8 @@ export class PatientEditComponent {
   readonly error = signal<string | null>(null);
 
   /** Editable patient fields (synced from detail when loaded). */
-  readonly formName = signal('');
+  readonly formFirstName = signal('');
+  readonly formLastName = signal('');
   readonly formMobile = signal('');
   readonly formDietTypeId = signal('');
   readonly formNotes = signal<string | null>('');
@@ -75,7 +76,8 @@ export class PatientEditComponent {
                 const d = detail ?? null;
                 this.detail.set(d);
                 if (d) {
-                  this.formName.set(d.name);
+                  this.formFirstName.set(d.firstName);
+                  this.formLastName.set(d.lastName);
                   this.formMobile.set(d.mobileNumber);
                   this.formDietTypeId.set(d.dietTypeId);
                   this.formNotes.set(d.notes ?? '');
@@ -233,17 +235,19 @@ export class PatientEditComponent {
   savePatient(): void {
     const d = this.detail();
     if (!d || this.savingPatient()) return;
-    const name = this.formName().trim();
+    const firstName = this.formFirstName().trim();
+    const lastName = this.formLastName().trim();
     const mobile = this.formMobile().trim();
-    if (!name || !mobile) {
-      this.error.set('Name and mobile are required.');
+    if (!firstName || !mobile) {
+      this.error.set('First name and mobile are required.');
       return;
     }
     this.error.set(null);
     this.savingPatient.set(true);
     this.patientService
       .updatePatient(d.id, {
-        name,
+        firstName,
+        lastName: lastName.trim(),
         mobileNumber: mobile,
         dietTypeId: this.formDietTypeId(),
         notes: this.formNotes() || null,
@@ -254,7 +258,8 @@ export class PatientEditComponent {
             prev
               ? {
                   ...prev,
-                  name,
+                  firstName,
+                  lastName: lastName.trim(),
                   mobileNumber: mobile,
                   dietTypeId: this.formDietTypeId(),
                   notes: this.formNotes() || null,
