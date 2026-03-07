@@ -1,0 +1,38 @@
+<div class="setup-view">
+  <h2>Clinical States</h2>
+  <p class="subtitle">Manage clinical state reference data.</p>
+
+  @if (loading()) {
+    <p class="loading">Loading…</p>
+  } @else {
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of pagedItems(); track c.id) {
+            <tr>
+              <td>{{ c.id }}</td>
+              <td>{{ c.name }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="2" class="empty">No clinical states found.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <app-pagination
+      [page]="page()"
+      [pageSize]="pageSize()"
+      [totalCount]="totalCount()"
+      (pageChange)="onPageChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)"
+    />
+  }
+</div>

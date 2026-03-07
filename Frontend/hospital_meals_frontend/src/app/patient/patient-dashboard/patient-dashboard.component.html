@@ -3,7 +3,32 @@
     <a routerLink="/home" class="back">← Home</a>
     <h1>Patient Dashboard</h1>
   </header>
-  <main class="dashboard-main">
-    <p>Patient management area. Manage patients, allergies, clinical states, and diet types.</p>
-  </main>
+  <div class="dashboard-body">
+    <nav class="sidebar">
+      <ul class="menu">
+        <li>
+          <a routerLink="/patient/patients" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            Patients
+          </a>
+        </li>
+        <li class="menu-group">
+          <span class="menu-group-label">Setup</span>
+          <ul class="menu-sub">
+            <li>
+              <a routerLink="/patient/setup/allergies" routerLinkActive="active">Allergies</a>
+            </li>
+            <li>
+              <a routerLink="/patient/setup/clinical-states" routerLinkActive="active">Clinical States</a>
+            </li>
+            <li>
+              <a routerLink="/patient/setup/diet-types" routerLinkActive="active">Diet Types</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <main class="dashboard-main">
+      <router-outlet />
+    </main>
+  </div>
 </div>

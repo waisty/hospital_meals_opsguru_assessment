@@ -1,0 +1,40 @@
+<div class="pagination-bar">
+  <span class="pagination-summary">
+    @if (totalCount() > 0) {
+      Showing {{ startItem }}–{{ endItem }} of {{ totalCount() }}
+    } @else {
+      No items
+    }
+  </span>
+  <div class="pagination-controls">
+    <select
+      [value]="pageSize()"
+      (change)="onPageSizeChange($event)"
+      class="page-size-select"
+      aria-label="Items per page"
+    >
+      @for (opt of pageSizeOptions(); track opt) {
+        <option [value]="opt">{{ opt }} per page</option>
+      }
+    </select>
+    <button
+      type="button"
+      class="btn-page"
+      [disabled]="!hasPrev"
+      (click)="goPrev()"
+      aria-label="Previous page"
+    >
+      Previous
+    </button>
+    <span class="page-indicator">Page {{ page() }} of {{ totalPages }}</span>
+    <button
+      type="button"
+      class="btn-page"
+      [disabled]="!hasNext"
+      (click)="goNext()"
+      aria-label="Next page"
+    >
+      Next
+    </button>
+  </div>
+</div>

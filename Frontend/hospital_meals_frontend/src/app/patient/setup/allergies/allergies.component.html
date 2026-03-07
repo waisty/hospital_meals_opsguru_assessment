@@ -1,0 +1,38 @@
+<div class="setup-view">
+  <h2>Allergies</h2>
+  <p class="subtitle">Manage allergy reference data.</p>
+
+  @if (loading()) {
+    <p class="loading">Loading…</p>
+  } @else {
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (a of pagedItems(); track a.id) {
+            <tr>
+              <td>{{ a.id }}</td>
+              <td>{{ a.name }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="2" class="empty">No allergies found.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <app-pagination
+      [page]="page()"
+      [pageSize]="pageSize()"
+      [totalCount]="totalCount()"
+      (pageChange)="onPageChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)"
+    />
+  }
+</div>
