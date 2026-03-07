@@ -36,7 +36,9 @@ public sealed class PatientWebApiFixture : WebApplicationFactory<Program>
             services.AddJwtAuthentication(context.Configuration);
             services.AddSingleton<MockPatientHandler>();
             services.AddScoped<IPatientHandler>(sp => sp.GetRequiredService<MockPatientHandler>());
-            services.AddScoped<IReferenceDataHandler>(sp => sp.GetRequiredService<MockPatientHandler>());
+            services.AddScoped<IAllergyHandler>(sp => sp.GetRequiredService<MockPatientHandler>());
+            services.AddScoped<IClinicalStateHandler>(sp => sp.GetRequiredService<MockPatientHandler>());
+            services.AddScoped<IDietTypeHandler>(sp => sp.GetRequiredService<MockPatientHandler>());
         });
 
         return base.CreateHost(builder);

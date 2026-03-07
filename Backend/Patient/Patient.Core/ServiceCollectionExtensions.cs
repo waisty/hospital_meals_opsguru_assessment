@@ -22,7 +22,9 @@ namespace Hospital.Patient.Core
         {
             services.AddDbContext<PatientDBContext>();
             services.AddScoped<IPatientRepo, PatientRepo>();
-            services.AddScoped<IReferenceDataRepo, ReferenceDataRepo>();
+            services.AddScoped<IAllergyRepo, AllergyRepo>();
+            services.AddScoped<IClinicalStateRepo, ClinicalStateRepo>();
+            services.AddScoped<IDietTypeRepo, DietTypeRepo>();
             services.AddSingleton<DelegatingHandler, PatientServiceTokenHandler>();
             services.AddHttpClient<IMealsApiClient, MealsApiClient>(client =>
             {
@@ -34,7 +36,9 @@ namespace Hospital.Patient.Core
                 handlers.Add(new PatientServiceTokenHandler(configuration));
             });
             services.AddScoped<IPatientHandler, PatientHandler>();
-            services.AddScoped<IReferenceDataHandler, ReferenceDataHandler>();
+            services.AddScoped<IAllergyHandler, AllergyHandler>();
+            services.AddScoped<IClinicalStateHandler, ClinicalStateHandler>();
+            services.AddScoped<IDietTypeHandler, DietTypeHandler>();
             services.AddHostedService<PatientDbMigrationHostedService>();
             services.AddHostedService<PatientSeedDataHostedService>();
             return services;

@@ -4,7 +4,7 @@ using Hospital.Patient.ServiceViewModels;
 
 namespace Hospital.Patient.WebApi.Tests;
 
-public sealed class MockPatientHandler : IPatientHandler, IReferenceDataHandler
+public sealed class MockPatientHandler : IPatientHandler, IAllergyHandler, IClinicalStateHandler, IDietTypeHandler
 {
     private readonly Dictionary<Guid, PatientViewModel> _patients = new();
     private readonly Dictionary<string, AllergyViewModel> _allergies = new();
