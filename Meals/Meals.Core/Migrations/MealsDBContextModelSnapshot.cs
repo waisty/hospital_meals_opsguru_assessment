@@ -242,9 +242,9 @@ namespace Hospital.Meals.Core.Migrations
                         .HasColumnType("character varying(256)")
                         .HasColumnName("recipe_id");
 
-                    b.Property<DateTime>("RequestedForDate")
+                    b.Property<DateTime>("RequestedDateTime")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("requested_for_date");
+                        .HasColumnName("requested_date_time");
 
                     b.Property<string>("StatusReason")
                         .HasColumnType("text")

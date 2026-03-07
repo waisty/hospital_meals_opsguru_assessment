@@ -11,7 +11,7 @@ namespace Hospital.Meals.Core.InternalModels
         public string PatientId { get; set; } = "";
         public string PatientName { get; set; } = "";
         public string RecipeId { get; set; } = "";
-        public DateTime RequestedForDate { get; set; }
+        public DateTime RequestedDateTime { get; set; }
         public MealRequestAppprovalStatus ApprovalStatus { get; set; }
         public string? StatusReason { get; set; }
         public string? UnsafeIngredientId { get; set; }
@@ -28,7 +28,7 @@ namespace Hospital.Meals.Core.InternalModels
             entity.Property(e => e.PatientId).HasColumnName("patient_id").HasMaxLength(256).IsRequired();
             entity.Property(e => e.PatientName).HasColumnName("patient_name").HasMaxLength(256);
             entity.Property(e => e.RecipeId).HasColumnName("recipe_id").HasMaxLength(256).IsRequired();
-            entity.Property(e => e.RequestedForDate).HasColumnName("requested_for_date");
+            entity.Property(e => e.RequestedDateTime).HasColumnName("requested_date_time");
             entity.Property(e => e.ApprovalStatus).HasColumnName("approval_status").HasConversion<int>();
             entity.Property(e => e.StatusReason).HasColumnName("status_reason");
             entity.Property(e => e.UnsafeIngredientId).HasColumnName("unsafe_ingredient_id").HasMaxLength(256);

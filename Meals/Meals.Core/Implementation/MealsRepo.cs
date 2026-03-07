@@ -183,7 +183,7 @@ namespace Hospital.Meals.Core.Implementation
                 PatientId = request.PatientId,
                 PatientName = patientState.Name,
                 RecipeId = request.RecipeId,
-                RequestedForDate = DateTime.UtcNow,
+                RequestedDateTime = DateTime.UtcNow,
                 ApprovalStatus = MealRequestAppprovalStatus.Pending
             };
             await AddPatientRequestAsync(patientRequest, cancellationToken).ConfigureAwait(false);
@@ -286,7 +286,7 @@ namespace Hospital.Meals.Core.Implementation
         {
             var totalCount = await _context.PatientRequests.CountAsync(cancellationToken).ConfigureAwait(false);
             var items = await _context.PatientRequests
-                .OrderBy(r => r.RequestedForDate)
+                .OrderBy(r => r.RequestedDateTime)
                 .ThenBy(r => r.PatientId)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
