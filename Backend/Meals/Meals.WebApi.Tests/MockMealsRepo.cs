@@ -115,6 +115,14 @@ internal sealed class MockMealsRepo : IMealRepo, IRecipeRepo, IIngredientRepo, I
         return Task.CompletedTask;
     }
 
+    public Task<bool> UpdateIngredientAsync(string id, string name, string? description, CancellationToken ct = default)
+    {
+        if (!_ingredients.TryGetValue(id, out var ingredient)) return Task.FromResult(false);
+        ingredient.Name = name;
+        ingredient.Description = description;
+        return Task.FromResult(true);
+    }
+
     public Task<Ingredient?> GetIngredientByIdAsync(string id, CancellationToken ct = default)
     {
         _ingredients.TryGetValue(id, out var ingredient);

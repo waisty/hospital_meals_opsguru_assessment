@@ -7,12 +7,13 @@ import { IngredientService } from '../../services/ingredient.service';
 import type { PagedResult } from '../../../shared/models';
 import { isSearchLongEnough } from '../../../shared/constants/search.constants';
 import type { IngredientExclusionNamesItem } from '../../models';
+import { EditButtonComponent } from '../../../shared/components/edit-button/edit-button.component';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-ingredient-list',
   standalone: true,
-  imports: [PaginationComponent],
+  imports: [PaginationComponent, EditButtonComponent],
   templateUrl: './ingredient-list.component.html',
   styleUrl: './ingredient-list.component.scss',
 })
@@ -21,6 +22,7 @@ export class IngredientListComponent {
   private readonly injector = inject(Injector);
   private readonly router = inject(Router);
 
+  readonly showEditButton = input<boolean>(false);
   readonly clickToNavigateEnabled = input<boolean>(true);
   readonly suspendLoadUntilSearch = input<boolean>(false);
 

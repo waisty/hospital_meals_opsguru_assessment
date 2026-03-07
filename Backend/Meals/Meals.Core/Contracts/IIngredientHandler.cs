@@ -5,6 +5,7 @@ namespace Hospital.Meals.Core.Contracts
     public interface IIngredientHandler
     {
         Task AddIngredientAsync(IngredientCreateRequest request, CancellationToken cancellationToken = default);
+        Task<bool> UpdateIngredientAsync(string id, IngredientUpdateRequest request, CancellationToken cancellationToken = default);
         Task<IngredientViewModel?> GetIngredientByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<IngredientDetailViewModel?> GetIngredientDetailByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<PagedResult<IngredientViewModel>> ListIngredientsAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default);

@@ -19,6 +19,11 @@ export interface IngredientCreateRequest {
   description?: string | null;
 }
 
+export interface IngredientUpdateRequest {
+  name: string;
+  description?: string | null;
+}
+
 export interface SetIngredientAllergyExclusionsRequest {
   allergyIds: string[];
 }

@@ -20,6 +20,16 @@ namespace Hospital.Meals.Core.Implementation
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task<bool> UpdateIngredientAsync(string id, string name, string? description, CancellationToken cancellationToken = default)
+        {
+            var ingredient = await _context.Ingredients.FirstOrDefaultAsync(i => i.Id == id, cancellationToken).ConfigureAwait(false);
+            if (ingredient == null) return false;
+            ingredient.Name = name;
+            ingredient.Description = description;
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            return true;
+        }
+
         public async Task<Ingredient?> GetIngredientByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             return await _context.Ingredients
@@ -29,7 +39,7 @@ namespace Hospital.Meals.Core.Implementation
 
         public async Task<PagedResult<Ingredient>> ListIngredientsAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default)
         {
-            // Full-text search only runs when search is at least 2 characters
+            // Full-text search only runs when search is at least 2 characters (same as patients / patient requests)
             if (!string.IsNullOrWhiteSpace(search) && search.Trim().Length < 2)
                 search = null;
 
@@ -37,14 +47,27 @@ namespace Hospital.Meals.Core.Implementation
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                var words = search.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                foreach (var word in words)
+                var term = string.Join(" & ", search!
+                    .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(word => $"{word}:*"));
+
+                var matchingIds = await _context.Database
+                    .SqlQueryRaw<string>(
+                        "SELECT id FROM dbo.ingredients WHERE search_vector @@ to_tsquery('simple', {0})",
+                        term)
+                    .ToListAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                if (matchingIds.Count == 0)
                 {
-                    var pattern = $"%{word}%";
-                    query = query.Where(i =>
-                        Microsoft.EntityFrameworkCore.EF.Functions.ILike(i.Name, pattern) ||
-                        (i.Description != null && Microsoft.EntityFrameworkCore.EF.Functions.ILike(i.Description, pattern)));
+                    return new PagedResult<Ingredient>
+                    {
+                        Items = new List<Ingredient>(),
+                        TotalCount = 0,
+                        Page = page,
+                        PageSize = pageSize
+                    };
                 }
+                query = query.Where(i => matchingIds.Contains(i.Id));
             }
 
             query = query.OrderBy(i => i.Name);

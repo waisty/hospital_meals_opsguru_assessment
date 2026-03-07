@@ -25,11 +25,14 @@
             <th>Name</th>
             <th>Description</th>
             <th>Exclusions (allergies / clinical states / diet types)</th>
+            @if (showEditButton()) {
+              <th class="col-actions"></th>
+            }
           </tr>
         </thead>
         <tbody>
           @for (i of items; track i.id) {
-            <tr class="clickable-row" (click)="onRowClick(i.id)">
+            <tr [class.clickable-row]="clickToNavigateEnabled()" (click)="onRowClick(i.id)">
               <td>{{ i.name }}</td>
               <td>{{ i.description ?? '—' }}</td>
               <td class="col-exclusions">
@@ -48,10 +51,15 @@
                   }
                 </ul>
               </td>
+              @if (showEditButton()) {
+                <td class="col-actions">
+                  <app-edit-button [link]="['/meals/setup/ingredients', i.id, 'edit']" title="Edit ingredient" [stopPropagation]="true" />
+                </td>
+              }
             </tr>
           } @empty {
             <tr>
-              <td colspan="3" class="empty">No ingredients found.</td>
+              <td [attr.colspan]="showEditButton() ? 4 : 3" class="empty">No ingredients found.</td>
             </tr>
           }
         </tbody>

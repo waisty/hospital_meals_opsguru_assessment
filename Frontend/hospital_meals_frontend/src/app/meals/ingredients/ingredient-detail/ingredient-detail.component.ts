@@ -1,16 +1,17 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { filter, forkJoin, switchMap, tap } from 'rxjs';
+import { filter, switchMap, tap } from 'rxjs';
 import { IngredientService } from '../../services/ingredient.service';
 import { ReferenceDataService } from '../../services/reference-data.service';
 import type { IngredientDetailViewModel } from '../../models';
 import type { AllergyViewModel, ClinicalStateViewModel, DietTypeViewModel } from '../../../patient/models';
+import { EditButtonComponent } from '../../../shared/components/edit-button/edit-button.component';
 
 @Component({
   selector: 'app-ingredient-detail',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, EditButtonComponent],
   templateUrl: './ingredient-detail.component.html',
   styleUrl: './ingredient-detail.component.scss',
 })
@@ -24,32 +25,7 @@ export class IngredientDetailComponent {
   readonly allClinicalStates = signal<ClinicalStateViewModel[]>([]);
   readonly allDietTypes = signal<DietTypeViewModel[]>([]);
   readonly loading = signal(true);
-  readonly saving = signal(false);
   readonly error = signal<string | null>(null);
-
-  readonly availableAllergies = computed(() => {
-    const d = this.detail();
-    const all = this.allAllergies();
-    if (!d) return all;
-    const assigned = new Set(d.allergyExclusionIds);
-    return all.filter((a) => !assigned.has(a.id));
-  });
-
-  readonly availableClinicalStates = computed(() => {
-    const d = this.detail();
-    const all = this.allClinicalStates();
-    if (!d) return all;
-    const assigned = new Set(d.clinicalStateExclusionIds);
-    return all.filter((c) => !assigned.has(c.id));
-  });
-
-  readonly availableDietTypes = computed(() => {
-    const d = this.detail();
-    const all = this.allDietTypes();
-    if (!d) return all;
-    const assigned = new Set(d.dietTypeExclusionIds);
-    return all.filter((dt) => !assigned.has(dt.id));
-  });
 
   constructor() {
     this.route.paramMap
@@ -101,118 +77,5 @@ export class IngredientDetailComponent {
 
   getDietTypeName(id: string): string {
     return this.allDietTypes().find((d) => d.id === id)?.name ?? id;
-  }
-
-  removeAllergyExclusion(allergyId: string): void {
-    const d = this.detail();
-    if (!d || this.saving()) return;
-    this.detail.update((prev) =>
-      prev
-        ? { ...prev, allergyExclusionIds: prev.allergyExclusionIds.filter((id) => id !== allergyId) }
-        : null
-    );
-  }
-
-  addAllergyExclusion(allergyId: string): void {
-    const d = this.detail();
-    if (!d || this.saving() || !allergyId) return;
-    this.detail.update((prev) =>
-      prev ? { ...prev, allergyExclusionIds: [...prev.allergyExclusionIds, allergyId] } : null
-    );
-  }
-
-  removeClinicalStateExclusion(clinicalStateId: string): void {
-    const d = this.detail();
-    if (!d || this.saving()) return;
-    this.detail.update((prev) =>
-      prev
-        ? {
-            ...prev,
-            clinicalStateExclusionIds: prev.clinicalStateExclusionIds.filter((id) => id !== clinicalStateId),
-          }
-        : null
-    );
-  }
-
-  addClinicalStateExclusion(clinicalStateId: string): void {
-    const d = this.detail();
-    if (!d || this.saving() || !clinicalStateId) return;
-    this.detail.update((prev) =>
-      prev
-        ? { ...prev, clinicalStateExclusionIds: [...prev.clinicalStateExclusionIds, clinicalStateId] }
-        : null
-    );
-  }
-
-  removeDietTypeExclusion(dietTypeId: string): void {
-    const d = this.detail();
-    if (!d || this.saving()) return;
-    this.detail.update((prev) =>
-      prev
-        ? {
-            ...prev,
-            dietTypeExclusionIds: prev.dietTypeExclusionIds.filter((id) => id !== dietTypeId),
-          }
-        : null
-    );
-  }
-
-  addDietTypeExclusion(dietTypeId: string): void {
-    const d = this.detail();
-    if (!d || this.saving() || !dietTypeId) return;
-    this.detail.update((prev) =>
-      prev ? { ...prev, dietTypeExclusionIds: [...prev.dietTypeExclusionIds, dietTypeId] } : null
-    );
-  }
-
-  onAllergySelect(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    const value = select.value;
-    if (value) {
-      this.addAllergyExclusion(value);
-      select.value = '';
-    }
-  }
-
-  onClinicalStateSelect(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    const value = select.value;
-    if (value) {
-      this.addClinicalStateExclusion(value);
-      select.value = '';
-    }
-  }
-
-  onDietTypeSelect(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    const value = select.value;
-    if (value) {
-      this.addDietTypeExclusion(value);
-      select.value = '';
-    }
-  }
-
-  saveExclusions(): void {
-    const d = this.detail();
-    if (!d || this.saving()) return;
-    this.error.set(null);
-    this.saving.set(true);
-    forkJoin({
-      allergies: this.ingredientService.setIngredientAllergyExclusions(d.id, {
-        allergyIds: d.allergyExclusionIds,
-      }),
-      clinicalStates: this.ingredientService.setIngredientClinicalStateExclusions(d.id, {
-        clinicalStateIds: d.clinicalStateExclusionIds,
-      }),
-      dietTypes: this.ingredientService.setIngredientDietTypeExclusions(d.id, {
-        dietTypeIds: d.dietTypeExclusionIds,
-      }),
-    }).subscribe({
-      next: () => this.saving.set(false),
-      error: () => {
-        this.saving.set(false);
-        this.error.set('Failed to save exclusions. Please try again.');
-      },
-    });
   }
 }

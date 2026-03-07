@@ -20,6 +20,7 @@ import { MealsDashboardComponent } from './meals/meals-dashboard/meals-dashboard
 import { MealRequestsComponent } from './meals/meal-requests/meal-requests.component';
 import { IngredientsComponent } from './meals/ingredients/ingredients.component';
 import { IngredientDetailComponent } from './meals/ingredients/ingredient-detail/ingredient-detail.component';
+import { IngredientEditComponent } from './meals/ingredients/ingredient-edit/ingredient-edit.component';
 import { SetupPlaceholderComponent } from './meals/setup/setup-placeholder.component';
 import { KitchenDashboardComponent } from './kitchen/kitchen-dashboard/kitchen-dashboard.component';
 import {
@@ -86,6 +87,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'meal-requests', pathMatch: 'full' },
       { path: 'meal-requests', component: MealRequestsComponent },
       { path: 'setup/ingredients', component: IngredientsComponent },
+      { path: 'setup/ingredients/:id/edit', component: IngredientEditComponent },
       { path: 'setup/ingredients/:id', component: IngredientDetailComponent },
       { path: 'setup/recipes', component: SetupPlaceholderComponent, data: { title: 'Recipes' } },
       { path: 'setup/meals', component: SetupPlaceholderComponent, data: { title: 'Meals' } },

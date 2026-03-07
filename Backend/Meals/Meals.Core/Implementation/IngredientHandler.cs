@@ -26,6 +26,11 @@ namespace Hospital.Meals.Core.Implementation
             await _repo.AddIngredientAsync(ingredient, cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task<bool> UpdateIngredientAsync(string id, IngredientUpdateRequest request, CancellationToken cancellationToken = default)
+        {
+            return await _repo.UpdateIngredientAsync(id, request.Name, request.Description, cancellationToken).ConfigureAwait(false);
+        }
+
         public async Task<IngredientViewModel?> GetIngredientByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             var ingredient = await _repo.GetIngredientByIdAsync(id, cancellationToken).ConfigureAwait(false);

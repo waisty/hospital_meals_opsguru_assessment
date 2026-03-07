@@ -8,6 +8,7 @@ import type {
   IngredientViewModel,
   IngredientDetailViewModel,
   IngredientCreateRequest,
+  IngredientUpdateRequest,
   IngredientExclusionNamesRequest,
   IngredientExclusionNamesResponse,
   SetIngredientAllergyExclusionsRequest,
@@ -61,6 +62,10 @@ export class IngredientService {
 
   createIngredient(request: IngredientCreateRequest): Observable<void> {
     return this.http.post<void>(`${this.base}/ingredients`, request);
+  }
+
+  updateIngredient(id: string, request: IngredientUpdateRequest): Observable<void> {
+    return this.http.put<void>(`${this.base}/ingredients/${id}`, request);
   }
 
   getIngredientAllergyExclusionIds(ingredientId: string): Observable<string[]> {

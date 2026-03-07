@@ -27,6 +27,12 @@ public static class IngredientEndpointMappings
             return ingredient is null ? Results.NotFound() : Results.Ok(ingredient);
         }).RequireAuthorization(JwtAuthenticationExtensions.MealsUserPolicyName);
 
+        group.MapPut("/ingredients/{id}", async (string id, IngredientUpdateRequest request, IIngredientHandler handler, CancellationToken ct) =>
+        {
+            var updated = await handler.UpdateIngredientAsync(id, request, ct);
+            return updated ? Results.NoContent() : Results.NotFound();
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsAdminPolicyName);
+
         group.MapGet("/ingredients/{id}/detail", async (string id, IIngredientHandler handler, CancellationToken ct) =>
         {
             var detail = await handler.GetIngredientDetailByIdAsync(id, ct);

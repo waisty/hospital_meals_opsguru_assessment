@@ -6,6 +6,7 @@ namespace Hospital.Meals.Core.Contracts
     internal interface IIngredientRepo
     {
         Task AddIngredientAsync(Ingredient ingredient, CancellationToken cancellationToken = default);
+        Task<bool> UpdateIngredientAsync(string id, string name, string? description, CancellationToken cancellationToken = default);
         Task<Ingredient?> GetIngredientByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<PagedResult<Ingredient>> ListIngredientsAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<string>> GetAllergyIdsByIngredientIdAsync(string ingredientId, CancellationToken cancellationToken = default);

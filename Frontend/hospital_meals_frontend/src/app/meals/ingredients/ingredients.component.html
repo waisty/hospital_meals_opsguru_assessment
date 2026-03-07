@@ -1,6 +1,7 @@
 <div class="ingredients-view">
   <header class="page-header">
     <h2>Ingredients</h2>
+    <app-add-button link="/meals/setup/ingredients/new/edit" label="Add ingredient" />
   </header>
-  <app-ingredient-list [suspendLoadUntilSearch]="false" />
+  <app-ingredient-list [showEditButton]="true" [clickToNavigateEnabled]="true" [suspendLoadUntilSearch]="false" />
 </div>

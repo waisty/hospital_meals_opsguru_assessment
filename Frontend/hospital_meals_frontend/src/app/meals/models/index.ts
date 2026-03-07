@@ -2,6 +2,7 @@ export type {
   IngredientViewModel,
   IngredientDetailViewModel,
   IngredientCreateRequest,
+  IngredientUpdateRequest,
   IngredientExclusionNamesRequest,
   IngredientExclusionNamesResponse,
   IngredientExclusionNamesItem,
