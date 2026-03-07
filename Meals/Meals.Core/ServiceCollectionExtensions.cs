@@ -26,7 +26,7 @@ namespace Hospital.Meals.Core
             services.AddSingleton<DelegatingHandler, MealsServiceTokenHandler>();
             services.AddHttpClient<IPatientApiClient, PatientApiClient>(client =>
             {
-                var baseUrl = configuration["PatientAPIEndpoint"] ?? configuration["PatientServiceEndpoint"] ?? throw new InvalidOperationException("PatientAPIEndpoint or PatientServiceEndpoint not configured.");
+                var baseUrl = configuration["PatientAPIEndpoint"] ?? throw new InvalidOperationException("PatientAPIEndpoint not configured.");
                 client.BaseAddress = new Uri(baseUrl.TrimEnd('/') + "/");
                 client.Timeout = TimeSpan.FromHours(6);
             }).ConfigureAdditionalHttpMessageHandlers((handlers, sp) =>
