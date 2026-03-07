@@ -18,7 +18,7 @@ public static class EndpointMapping
         {
             var id = await handler.AddPatientAsync(request, ct);
             return Results.Created($"/api/v1/patients/{id}", new PatientCreateResponse { Id = id.ToString() });
-        }).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminPolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminOrMealsUserPolicyName);
 
         api.MapGet("/patients/{id}", async (string id, IPatientHandler handler, CancellationToken ct) =>
         {

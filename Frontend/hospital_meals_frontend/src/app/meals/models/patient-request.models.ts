@@ -10,11 +10,11 @@ export interface PatientRequestViewModel {
   patientId: string;
   patientName: string;
   recipeId: string;
-  requestedDateTime: string;
+  requestedDateTime: Date;
   approvalStatus: MealRequestApprovalStatus;
   statusReason: string | null;
   unsafeIngredientId: string | null;
-  finalizedDateTime: string | null;
+  finalizedDateTime: Date | null;
 }
 
 export interface PatientRequestCreateRequest {

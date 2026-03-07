@@ -8,16 +8,16 @@ namespace Hospital.Auth.Core.Implementation
 {
     internal static class AuthViewModelExtensions
     {
-        public static UserAuthResponse ToUserAuthResponse(this User user, string tokenString)
+        public static UserAuthResponse ToUserAuthResponse(this User user, string tokenString, bool admin, bool kitchenUser, bool mealsAdmin, bool mealsUser, bool patientAdmin)
         {
             return new UserAuthResponse()
             {
                 AuthToken = tokenString,
-                Admin = user.Admin,
-                KitchenUser = user.Admin || user.KitchenUser,
-                MealsAdmin = user.Admin || user.MealsAdmin,
-                MealsUser = user.Admin || user.MealsUser,
-                PatientAdmin = user.Admin || user.PatientAdmin
+                Admin = admin,
+                KitchenUser = kitchenUser,
+                MealsAdmin = mealsAdmin,
+                MealsUser = mealsUser,
+                PatientAdmin = patientAdmin
             };
         }
     

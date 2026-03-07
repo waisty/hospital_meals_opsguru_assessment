@@ -14,8 +14,8 @@ export interface TrayViewModel {
   patientName: string;
   recipeName: string;
   state: TrayState;
-  receivedDateTime: string;
-  lastUpdateDateTime: string | null;
+  receivedDateTime: Date;
+  lastUpdateDateTime: Date | null;
   ingredients: TrayIngredientItem[];
 }
 

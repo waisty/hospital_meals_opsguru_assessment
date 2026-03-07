@@ -12,6 +12,7 @@ public static class JwtAuthenticationExtensions
     public const string AdminPolicyName = "Admin";
     public const string MealsServicePolicyName = "MealsService";
     public const string PatientAdminOrMealsServicePolicyName = "PatientAdminOrMealsService";
+    public const string PatientAdminOrMealsUserPolicyName = "PatientAdminOrMealsUser";
 
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
@@ -52,6 +53,11 @@ public static class JwtAuthenticationExtensions
             {
                 policy.RequireAssertion(context =>
                     context.User.HasClaim(c => c.Type == ClaimIds.patientAdminClaim) || context.User.HasClaim(c => c.Type == ClaimIds.mealsServiceClaim));
+            });
+            options.AddPolicy(PatientAdminOrMealsUserPolicyName, (policy) =>
+            {
+                policy.RequireAssertion(context =>
+                    context.User.HasClaim(c => c.Type == ClaimIds.patientAdminClaim) || context.User.HasClaim(c => c.Type == ClaimIds.mealsUserClaim));
             });
         });
 

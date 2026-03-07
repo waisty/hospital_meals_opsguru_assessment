@@ -29,27 +29,32 @@ namespace Hospital.Auth.Core.Implementation
             }
             else
             {
+                bool admin = user.Admin;
+                bool mealsAdmin = user.Admin || user.MealsAdmin;
+                bool patientAdmin = user.Admin || user.PatientAdmin;
+                bool mealsUser = user.Admin || user.MealsAdmin || user.MealsUser;
+                bool kitchenUser = user.Admin || user.KitchenUser;
                 var claimsList = new List<Claim>
                 {
                     new Claim(ClaimIds.usernameClaim, request.Username)
                 };
-                if (user.Admin)
+                if (admin)
                 {
                     claimsList.Add(new Claim(ClaimIds.adminClaim, user.Admin.ToString()));
                 }
-                if (user.Admin || user.MealsAdmin)
+                if (mealsAdmin)
                 {
                     claimsList.Add(new Claim(ClaimIds.mealsAdminClaim, user.MealsAdmin.ToString()));
                 }
-                if (user.Admin || user.PatientAdmin)
+                if (patientAdmin)
                 {
                     claimsList.Add(new Claim(ClaimIds.patientAdminClaim, user.PatientAdmin.ToString()));
                 }
-                if (user.Admin || user.MealsUser)
+                if (mealsUser)
                 {
                     claimsList.Add(new Claim(ClaimIds.mealsUserClaim, user.MealsUser.ToString()));
                 }
-                if (user.Admin || user.KitchenUser)
+                if (kitchenUser)
                 {
                     claimsList.Add(new Claim(ClaimIds.kitchenUserClaim, user.KitchenUser.ToString()));
                 }
@@ -72,7 +77,7 @@ namespace Hospital.Auth.Core.Implementation
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var tokenString = tokenHandler.WriteToken(token);
 
-                return user.ToUserAuthResponse(tokenString);
+                return user.ToUserAuthResponse(tokenString, admin, kitchenUser, mealsAdmin, mealsUser, patientAdmin);
             }
         }
     }
