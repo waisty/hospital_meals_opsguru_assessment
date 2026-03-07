@@ -56,6 +56,12 @@ src/app/
 - Styles: separate `.sass` files (referenced via `styleUrl`, singular)
 - Prefix selectors with `app-` (configured prefix)
 
+## Colours and Typography
+
+- **Colours** and **fonts** (family, sizes, weights) must be stored in **variables**, not hardcoded in components.
+- Use the shared palette in `src/app/shared/styles/_variables.sass`: `@use '../shared/styles/variables' as v` (adjust path for component location) and reference e.g. `v.$color-text-primary`, `v.$font-size-base`.
+- Add new colours or font variables to `_variables.sass` so the design stays consistent and easy to change.
+
 ## Routing
 
 - Top-level routes in `app.routes.ts` with lazy loading per domain:

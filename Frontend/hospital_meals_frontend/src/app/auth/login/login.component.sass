@@ -1,29 +1,32 @@
+@use '../../shared/styles/variables' as v
+
 .login-page
   min-height: 100dvh
   display: flex
   align-items: center
   justify-content: center
   padding: 1.5rem
-  background: linear-gradient(145deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)
+  background: v.$color-white
 
 .login-card
   width: 100%
   max-width: 22rem
   padding: 2rem
-  background: #1e293b
+  background: v.$color-login-card-bg
+  border: none
   border-radius: 12px
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5)
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15), 0 2px 4px -2px rgba(0, 0, 0, 0.1)
 
   h1
     margin: 0 0 0.25rem
     font-size: 1.5rem
     font-weight: 600
-    color: #f8fafc
+    color: v.$color-login-card-text
 
   .subtitle
     margin: 0 0 1.5rem
     font-size: 0.875rem
-    color: #94a3b8
+    color: v.$color-login-card-text-subtle
 
 .login-form
   display: flex
@@ -33,8 +36,9 @@
   .error
     padding: 0.75rem
     font-size: 0.875rem
-    color: #fca5a5
-    background: rgba(239, 68, 68, 0.15)
+    color: v.$color-error-text
+    background: v.$color-error-bg
+    border: 1px solid v.$color-error-border
     border-radius: 8px
 
   .field
@@ -45,42 +49,43 @@
     label
       font-size: 0.875rem
       font-weight: 500
-      color: #cbd5e1
+      color: v.$color-login-card-text
 
     input
       padding: 0.625rem 0.75rem
       font-size: 1rem
-      color: #f8fafc
-      background: #0f172a
-      border: 1px solid #334155
+      color: v.$color-text-primary
+      background: v.$color-white
+      border: 1px solid v.$color-border-input
       border-radius: 8px
       outline: none
       transition: border-color 0.2s
 
       &::placeholder
-        color: #64748b
+        color: v.$color-placeholder
 
       &:focus
-        border-color: #38bdf8
+        border-color: v.$color-login-input-focus
 
     .field-error
       font-size: 0.75rem
-      color: #fca5a5
+      color: v.$color-login-field-error-text
 
   .btn-primary
     margin-top: 0.5rem
     padding: 0.75rem 1rem
     font-size: 1rem
     font-weight: 500
-    color: #0f172a
-    background: #38bdf8
+    color: v.$color-login-button-text
+    background: v.$color-login-button-bg
     border: none
     border-radius: 8px
     cursor: pointer
-    transition: background 0.2s
+    transition: background 0.2s, color 0.2s
 
     &:hover:not(:disabled)
-      background: #7dd3fc
+      background: v.$color-login-button-hover-bg
+      color: v.$color-login-button-hover-text
 
     &:disabled
       opacity: 0.7
