@@ -1,0 +1,108 @@
+@use '../shared/styles/variables' as v;
+
+.home-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: v.$color-bg-page;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: v.$color-bg-surface;
+  border-bottom: 1px solid v.$color-border;
+
+  h1 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: v.$color-text-primary;
+  }
+
+  .logout {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: v.$color-text-secondary;
+    background: v.$color-white;
+    border: 1px solid v.$color-border;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+
+    &:hover {
+      color: v.$color-text-primary;
+      border-color: v.$color-border-hover;
+      background: v.$color-bg-surface-hover;
+    }
+  }
+}
+
+.main {
+  flex: 1;
+  padding: 2rem 1.5rem;
+  background: v.$color-bg-page;
+  color: v.$color-text-primary;
+
+  h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: v.$color-text-primary;
+  }
+
+  .intro {
+    margin: 0 0 1.5rem;
+    font-size: 0.9375rem;
+    color: v.$color-text-primary;
+  }
+}
+
+.dashboard-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dashboard-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 12rem;
+  padding: 1.25rem 1.5rem;
+  background: v.$color-dashboard-card-bg;
+  border: 1px solid v.$color-border;
+  border-radius: 10px;
+  color: v.$color-text-primary;
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    background: v.$color-dashboard-card-hover;
+    border-color: v.$color-border-hover;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+
+  &[data-area="patient"] {
+    border-left: 4px solid v.$color-accent-slate;
+  }
+  &[data-area="meals"] {
+    border-left: 4px solid v.$color-accent-violet;
+  }
+  &[data-area="kitchen"] {
+    border-left: 4px solid v.$color-accent-emerald;
+  }
+
+  .card-label {
+    font-weight: 500;
+  }
+
+  .card-arrow {
+    margin-left: 0.5rem;
+    color: v.$color-text-muted;
+    font-size: 1.25rem;
+  }
+}

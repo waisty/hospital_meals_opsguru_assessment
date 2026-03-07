@@ -13,7 +13,7 @@ export interface DashboardLink {
   standalone: true,
   imports: [RouterLink],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.sass',
+  styleUrl: './home.component.scss',
 })
 export class HomeComponent {
   protected readonly auth = inject(AuthService);

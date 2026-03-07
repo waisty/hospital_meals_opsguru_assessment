@@ -6,6 +6,6 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './patient-dashboard.component.html',
-  styleUrl: './patient-dashboard.component.sass',
+  styleUrl: './patient-dashboard.component.scss',
 })
 export class PatientDashboardComponent {}

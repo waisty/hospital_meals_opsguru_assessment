@@ -6,6 +6,6 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './kitchen-dashboard.component.html',
-  styleUrl: './kitchen-dashboard.component.sass',
+  styleUrl: './kitchen-dashboard.component.scss',
 })
 export class KitchenDashboardComponent {}

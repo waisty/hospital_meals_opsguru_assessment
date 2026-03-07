@@ -6,6 +6,6 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './meals-dashboard.component.html',
-  styleUrl: './meals-dashboard.component.sass',
+  styleUrl: './meals-dashboard.component.scss',
 })
 export class MealsDashboardComponent {}
