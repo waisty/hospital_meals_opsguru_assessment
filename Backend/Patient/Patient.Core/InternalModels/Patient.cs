@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Hospital.Patient.ViewModels;
+using Hospital.Patient.ServiceViewModels;
 
 namespace Hospital.Patient.Core.InternalModels
 {
@@ -21,7 +22,18 @@ namespace Hospital.Patient.Core.InternalModels
             Notes = Notes
         };
 
-        public PatientDetailViewModel ToPatientDetailViewModel(IReadOnlyList<string> allergyIds, IReadOnlyList<string> clinicalStateIds) => new()
+        public PatientDetailViewModel ToPatientDetailViewModel(IReadOnlyList<PatientAllergyWithName> allergies, IReadOnlyList<PatientClinicalStateWithName> clinicalStates) => new()
+        {
+            Id = Id.ToString(),
+            Name = Name,
+            MobileNumber = MobileNumber,
+            DietTypeId = DietTypeId,
+            Notes = Notes,
+            Allergies = allergies.Select(a => a.ToPatientAllergyViewModel()).ToList(),
+            ClinicalStates = clinicalStates.Select(cs => cs.ToPatientClinicalStateViewModel()).ToList()
+        };
+
+        public PatientServiceDetailViewModel ToPatientServiceDetailViewModel(IReadOnlyList<string> allergyIds, IReadOnlyList<string> clinicalStateIds) => new()
         {
             Id = Id.ToString(),
             Name = Name,

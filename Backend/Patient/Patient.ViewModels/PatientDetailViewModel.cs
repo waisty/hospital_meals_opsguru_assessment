@@ -10,7 +10,7 @@ namespace Hospital.Patient.ViewModels
         public string MobileNumber { get; set; } = "";
         public string DietTypeId { get; set; } = "";
         public string? Notes { get; set; }
-        public IReadOnlyList<string> AllergyIds { get; set; } = [];
-        public IReadOnlyList<string> ClinicalStateIds { get; set; } = [];
+        public IReadOnlyList<PatientAllergyViewModel> Allergies { get; set; } = [];
+        public IReadOnlyList<PatientClinicalStateViewModel> ClinicalStates { get; set; } = [];
     }
 }

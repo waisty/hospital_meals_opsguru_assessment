@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Hospital.Patient.ViewModels;
 
 namespace Hospital.Patient.Core.InternalModels
 {
@@ -7,6 +8,13 @@ namespace Hospital.Patient.Core.InternalModels
     {
         public Guid PatientId { get; set; }
         public string AllergyId { get; set; } = "";
+
+        public PatientAllergyWithName ToPatientAllergyWithName(string allergyName) => new()
+        {
+            PatientId = PatientId,
+            AllergyId = AllergyId,
+            AllergyName = allergyName
+        };
 
         public static void Configure(EntityTypeBuilder<PatientAllergy> entity)
         {
@@ -23,5 +31,16 @@ namespace Hospital.Patient.Core.InternalModels
                 .HasForeignKey(e => e.AllergyId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
+    }
+
+    internal class PatientAllergyWithName : PatientAllergy
+    {
+        public string AllergyName { get; set; } = "";
+
+        public PatientAllergyViewModel ToPatientAllergyViewModel() => new()
+        {
+            AllergyId = AllergyId,
+            AllergyName = AllergyName
+        };
     }
 }

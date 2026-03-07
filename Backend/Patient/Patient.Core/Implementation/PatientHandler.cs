@@ -1,6 +1,7 @@
 using Hospital.Patient.Core.Contracts;
 using Hospital.Patient.Core.InternalModels;
 using Hospital.Patient.ViewModels;
+using Hospital.Patient.ServiceViewModels;
 using PatientEntity = Hospital.Patient.Core.InternalModels.Patient;
 
 namespace Hospital.Patient.Core.Implementation
@@ -52,21 +53,29 @@ namespace Hospital.Patient.Core.Implementation
             if (!Guid.TryParse(id, out var guid))
                 return null;
             var patient = await _repo.GetPatientByIdAsync(guid, cancellationToken);
-            
 
-            //Task[] tasks = [getPatientTask, getAllergyIdsTask, getClinicalStateIdsTask];
-
-            //await Task.WhenAll(tasks);
-
-            //var patient = getPatientTask.GetAwaiter().GetResult();
             if (patient == null) return null;
 
-            var allergyIds = await _repo.GetAllergyIdsByPatientIdAsync(guid, cancellationToken);
-            var clinicalStateIds = await _repo.GetClinicalStateIdsByPatientIdAsync(guid, cancellationToken);
-            //var allergyIds = getAllergyIdsTask.GetAwaiter().GetResult();
-            //var clinicalStateIds = getClinicalStateIdsTask.GetAwaiter().GetResult();
+            var allergies = await _repo.GetPatientAllergiesWithNameAsync(guid, cancellationToken);
+            var clinicalStates = await _repo.GetPatientClinicalStatesWithNameAsync(guid, cancellationToken);
 
-            return patient.ToPatientDetailViewModel(allergyIds, clinicalStateIds);
+            return patient.ToPatientDetailViewModel(allergies, clinicalStates);
+        }
+
+        public async Task<PatientServiceDetailViewModel?> GetPatientServiceDetailByIdAsync(string id, CancellationToken cancellationToken = default)
+        {
+            if (!Guid.TryParse(id, out var guid))
+                return null;
+            var patient = await _repo.GetPatientByIdAsync(guid, cancellationToken);
+
+            if (patient == null) return null;
+
+            var allergies = await _repo.GetPatientAllergiesWithNameAsync(guid, cancellationToken);
+            var clinicalStates = await _repo.GetPatientClinicalStatesWithNameAsync(guid, cancellationToken);
+
+            return patient.ToPatientServiceDetailViewModel(
+                allergies.Select(a => a.AllergyId).ToList(),
+                clinicalStates.Select(cs => cs.ClinicalStateId).ToList());
         }
 
         public async Task<string> AddAllergyAsync(AllergyCreateRequest request, CancellationToken cancellationToken = default)
@@ -98,7 +107,8 @@ namespace Hospital.Patient.Core.Implementation
         {
             if (!Guid.TryParse(patientId, out var guid))
                 return Array.Empty<string>();
-            return await _repo.GetAllergyIdsByPatientIdAsync(guid, cancellationToken).ConfigureAwait(false);
+            var allergies = await _repo.GetPatientAllergiesWithNameAsync(guid, cancellationToken).ConfigureAwait(false);
+            return allergies.Select(a => a.AllergyId).ToList();
         }
 
         public async Task<bool> UpdatePatientAllergiesAsync(string patientId, PatientAllergiesUpdateRequest request, CancellationToken cancellationToken = default)
@@ -141,7 +151,8 @@ namespace Hospital.Patient.Core.Implementation
         {
             if (!Guid.TryParse(patientId, out var guid))
                 return Array.Empty<string>();
-            return await _repo.GetClinicalStateIdsByPatientIdAsync(guid, cancellationToken).ConfigureAwait(false);
+            var clinicalStates = await _repo.GetPatientClinicalStatesWithNameAsync(guid, cancellationToken).ConfigureAwait(false);
+            return clinicalStates.Select(cs => cs.ClinicalStateId).ToList();
         }
 
         public async Task<bool> UpdatePatientClinicalStatesAsync(string patientId, PatientClinicalStatesUpdateRequest request, CancellationToken cancellationToken = default)

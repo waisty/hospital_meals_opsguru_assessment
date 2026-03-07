@@ -30,7 +30,13 @@ public static class EndpointMapping
         {
             var detail = await handler.GetPatientDetailByIdAsync(id, ct);
             return detail is null ? Results.NotFound() : Results.Ok(detail);
-        }).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminOrMealsServicePolicyName);
+        }).RequireAuthorization(JwtAuthenticationExtensions.PatientAdminPolicyName);
+
+        api.MapGet("/patients/{id}/service-detail", async (string id, IPatientHandler handler, CancellationToken ct) =>
+        {
+            var detail = await handler.GetPatientServiceDetailByIdAsync(id, ct);
+            return detail is null ? Results.NotFound() : Results.Ok(detail);
+        }).RequireAuthorization(JwtAuthenticationExtensions.MealsServicePolicyName);
 
         api.MapGet("/patients", async (int page, int pageSize, IPatientHandler handler, CancellationToken ct) =>
         {

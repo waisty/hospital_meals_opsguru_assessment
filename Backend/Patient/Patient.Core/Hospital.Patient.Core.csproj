@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Patient.ViewModels\Hospital.Patient.ViewModels.csproj" />
+    <ProjectReference Include="..\Patient.ServiceViewModels\Hospital.Patient.ServiceViewModels.csproj" />
   </ItemGroup>
 
 </Project>

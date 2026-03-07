@@ -18,7 +18,7 @@ namespace Hospital.Patient.Core.Contracts
         Task<bool> UpdateAllergyAndPublishAsync(string id, string name, CancellationToken cancellationToken = default);
         Task<Allergy?> GetAllergyByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<Allergy>> ListAllergiesAsync(CancellationToken cancellationToken = default);
-        Task<IReadOnlyList<string>> GetAllergyIdsByPatientIdAsync(Guid patientId, CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<PatientAllergyWithName>> GetPatientAllergiesWithNameAsync(Guid patientId, CancellationToken cancellationToken = default);
         Task SetAllergyIdsForPatientAsync(Guid patientId, IReadOnlyList<string> allergyIds, CancellationToken cancellationToken = default);
 
         // Clinical state
@@ -30,7 +30,7 @@ namespace Hospital.Patient.Core.Contracts
         Task<bool> UpdateClinicalStateAndPublishAsync(string id, string name, CancellationToken cancellationToken = default);
         Task<ClinicalState?> GetClinicalStateByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<ClinicalState>> ListClinicalStatesAsync(CancellationToken cancellationToken = default);
-        Task<IReadOnlyList<string>> GetClinicalStateIdsByPatientIdAsync(Guid patientId, CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<PatientClinicalStateWithName>> GetPatientClinicalStatesWithNameAsync(Guid patientId, CancellationToken cancellationToken = default);
         Task SetClinicalStateIdsForPatientAsync(Guid patientId, IReadOnlyList<string> clinicalStateIds, CancellationToken cancellationToken = default);
 
         // Diet type

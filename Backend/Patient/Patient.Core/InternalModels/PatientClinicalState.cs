@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Hospital.Patient.ViewModels;
 
 namespace Hospital.Patient.Core.InternalModels
 {
@@ -7,6 +8,13 @@ namespace Hospital.Patient.Core.InternalModels
     {
         public Guid PatientId { get; set; }
         public string ClinicalStateId { get; set; } = "";
+
+        public PatientClinicalStateWithName ToPatientClinicalStateWithName(string clinicalStateName) => new()
+        {
+            PatientId = PatientId,
+            ClinicalStateId = ClinicalStateId,
+            ClinicalStateName = clinicalStateName
+        };
 
         public static void Configure(EntityTypeBuilder<PatientClinicalState> entity)
         {
@@ -23,5 +31,16 @@ namespace Hospital.Patient.Core.InternalModels
                 .HasForeignKey(e => e.ClinicalStateId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
+    }
+
+    internal class PatientClinicalStateWithName : PatientClinicalState
+    {
+        public string ClinicalStateName { get; set; } = "";
+
+        public PatientClinicalStateViewModel ToPatientClinicalStateViewModel() => new()
+        {
+            ClinicalStateId = ClinicalStateId,
+            ClinicalStateName = ClinicalStateName
+        };
     }
 }

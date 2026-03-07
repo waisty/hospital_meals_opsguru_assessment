@@ -1,5 +1,6 @@
 using Hospital.Patient.Core.Contracts;
 using Hospital.Patient.ViewModels;
+using Hospital.Patient.ServiceViewModels;
 
 namespace Hospital.Patient.WebApi.Tests;
 
@@ -62,6 +63,22 @@ public sealed class MockPatientHandler : IPatientHandler
         _patientClinicalStates.TryGetValue(guid, out var csIds);
 
         return Task.FromResult<PatientDetailViewModel?>(new PatientDetailViewModel
+        {
+            Id = p.Id, Name = p.Name, MobileNumber = p.MobileNumber, DietTypeId = p.DietTypeId,
+            Allergies = (allergyIds ?? []).Select(id => new PatientAllergyViewModel { AllergyId = id, AllergyName = id }).ToList(),
+            ClinicalStates = (csIds ?? []).Select(id => new PatientClinicalStateViewModel { ClinicalStateId = id, ClinicalStateName = id }).ToList()
+        });
+    }
+
+    public Task<PatientServiceDetailViewModel?> GetPatientServiceDetailByIdAsync(string id, CancellationToken cancellationToken = default)
+    {
+        if (!Guid.TryParse(id, out var guid) || !_patients.TryGetValue(guid, out var p))
+            return Task.FromResult<PatientServiceDetailViewModel?>(null);
+
+        _patientAllergies.TryGetValue(guid, out var allergyIds);
+        _patientClinicalStates.TryGetValue(guid, out var csIds);
+
+        return Task.FromResult<PatientServiceDetailViewModel?>(new PatientServiceDetailViewModel
         {
             Id = p.Id, Name = p.Name, MobileNumber = p.MobileNumber, DietTypeId = p.DietTypeId,
             AllergyIds = allergyIds ?? [], ClinicalStateIds = csIds ?? []

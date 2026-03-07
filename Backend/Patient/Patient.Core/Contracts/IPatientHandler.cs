@@ -1,4 +1,5 @@
 using Hospital.Patient.ViewModels;
+using Hospital.Patient.ServiceViewModels;
 
 namespace Hospital.Patient.Core.Contracts
 {
@@ -9,6 +10,7 @@ namespace Hospital.Patient.Core.Contracts
         Task<PatientViewModel?> GetPatientByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<PagedResult<PatientViewModel>> ListPatientsAsync(int page, int pageSize, CancellationToken cancellationToken = default);
         Task<PatientDetailViewModel?> GetPatientDetailByIdAsync(string id, CancellationToken cancellationToken = default);
+        Task<PatientServiceDetailViewModel?> GetPatientServiceDetailByIdAsync(string id, CancellationToken cancellationToken = default);
 
         // Allergy
         Task<string> AddAllergyAsync(AllergyCreateRequest request, CancellationToken cancellationToken = default);

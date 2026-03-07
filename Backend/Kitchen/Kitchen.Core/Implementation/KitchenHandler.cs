@@ -14,6 +14,7 @@ namespace Hospital.Kitchen.Core.Implementation
 
         public async Task<Guid> CreateTrayAsync(CreateTrayRequest request, CancellationToken cancellationToken = default)
         {
+            var now = DateTime.UtcNow;
             var tray = new Tray
             {
                 PatientMealRequestId = request.PatientMealRequestId,
@@ -21,8 +22,8 @@ namespace Hospital.Kitchen.Core.Implementation
                 PatientName = request.PatientName,
                 RecipeName = request.RecipeName,
                 State = request.State,
-                ReceivedDateTime = DateTime.UtcNow,
-                LastUpdateDateTime = DateTime.UtcNow,
+                ReceivedDateTime = now,
+                LastUpdateDateTime = now,
                 TrayIngredients = (request.Ingredients ?? [])
                     .Select(i => new TrayIngredient
                     {

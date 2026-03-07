@@ -93,13 +93,18 @@ namespace Hospital.Patient.Core.Implementation
                 .ConfigureAwait(false);
         }
 
-        public async Task<IReadOnlyList<string>> GetAllergyIdsByPatientIdAsync(Guid patientId, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<PatientAllergyWithName>> GetPatientAllergiesWithNameAsync(Guid patientId, CancellationToken cancellationToken = default)
         {
-            return await _context.PatientAllergies
-                .Where(pa => pa.PatientId == patientId)
-                .Select(pa => pa.AllergyId)
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
+            var ret = await (from pa in _context.PatientAllergies
+                            where pa.PatientId == patientId
+                            join allergy in _context.Allergies on pa.AllergyId equals allergy.Id
+                            orderby allergy.Name
+                            select new { pa, allergyName = allergy.Name }).ToAsyncEnumerable().Select(x =>
+                            {
+                                return x.pa.ToPatientAllergyWithName(x.allergyName);
+                            }).ToListAsync().ConfigureAwait(false);
+
+            return ret;
         }
 
         public async Task SetAllergyIdsForPatientAsync(Guid patientId, IReadOnlyList<string> allergyIds, CancellationToken cancellationToken = default)
@@ -162,13 +167,18 @@ namespace Hospital.Patient.Core.Implementation
                 .ConfigureAwait(false);
         }
 
-        public async Task<IReadOnlyList<string>> GetClinicalStateIdsByPatientIdAsync(Guid patientId, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<PatientClinicalStateWithName>> GetPatientClinicalStatesWithNameAsync(Guid patientId, CancellationToken cancellationToken = default)
         {
-            return await _context.PatientClinicalStates
-                .Where(pc => pc.PatientId == patientId)
-                .Select(pc => pc.ClinicalStateId)
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
+            var ret = await (from pc in _context.PatientClinicalStates
+                            where pc.PatientId == patientId
+                            join cs in _context.ClinicalStates on pc.ClinicalStateId equals cs.Id
+                            orderby cs.Name
+                            select new { pc, clinicalStateName = cs.Name }).ToAsyncEnumerable().Select(x =>
+                            {
+                                return x.pc.ToPatientClinicalStateWithName(x.clinicalStateName);
+                            }).ToListAsync().ConfigureAwait(false);
+
+            return ret;
         }
 
         public async Task SetClinicalStateIdsForPatientAsync(Guid patientId, IReadOnlyList<string> clinicalStateIds, CancellationToken cancellationToken = default)

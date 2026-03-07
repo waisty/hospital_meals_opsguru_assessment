@@ -6,14 +6,24 @@
 //   notes: string | null;
 // }
 
+export interface PatientAllergyViewModel {
+  allergyId: string;
+  allergyName: string;
+}
+
+export interface PatientClinicalStateViewModel {
+  clinicalStateId: string;
+  clinicalStateName: string;
+}
+
 export interface PatientDetailViewModel {
   id: string;
   name: string;
   mobileNumber: string;
   dietTypeId: string;
   notes: string | null;
-  allergyIds: string[];
-  clinicalStateIds: string[];
+  allergies: PatientAllergyViewModel[];
+  clinicalStates: PatientClinicalStateViewModel[];
 }
 
 export interface PatientCreateRequest {

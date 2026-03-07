@@ -21,7 +21,7 @@ internal sealed class PatientApiClient : IPatientApiClient
 
     public async Task<PatientDetailViewModel?> GetPatientDetailAsync(string patientId, CancellationToken cancellationToken = default)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{PatientDetailPath}/{patientId}/detail");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{PatientDetailPath}/{patientId}/service-detail");
         var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
         if (response.StatusCode == System.Net.HttpStatusCode.NotFound)

@@ -111,13 +111,13 @@ public sealed class PatientEndpointTests : IClassFixture<PatientWebApiFixture>
     }
 
     [Fact]
-    public async Task GetPatientDetail_WithMealsServiceClaim_ReturnsOk()
+    public async Task GetPatientServiceDetail_WithMealsServiceClaim_ReturnsOk()
     {
         var id = Guid.NewGuid();
         _fixture.MockHandler.SeedPatient(id, "Service Patient", "555-8888", "regular");
 
         using var client = _fixture.CreateAuthenticatedClient(ClaimIds.mealsServiceClaim);
-        var response = await client.GetAsync($"/api/v1/patients/{id}/detail");
+        var response = await client.GetAsync($"/api/v1/patients/{id}/service-detail");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
