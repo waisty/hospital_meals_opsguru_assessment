@@ -23,7 +23,7 @@ export interface RecipeIngredientViewModel {
   ingredientId: string;
   quantity: number;
   unit: string | null;
-  name: string
+  ingredientName: string;
 }
 
 export interface SetRecipeIngredientsRequest {
